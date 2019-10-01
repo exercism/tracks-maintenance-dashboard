@@ -9,7 +9,7 @@ import { useRemoteCanonicalVersion } from '../../hooks/useRemoteCanonicalVersion
 
 import { CheckOrCross } from './../CheckOrCross'
 import { LoadingIndicator } from '../LoadingIndicator'
-import { Popover, ContainedPopover } from '../Popover'
+import { ContainedPopover } from '../Popover'
 
 
 export function TrackVersions({ trackId }: { trackId: TrackIdentifier }): JSX.Element {
