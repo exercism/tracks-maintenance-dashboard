@@ -1,13 +1,13 @@
-name: Continious Deployment (AWS)
+name: Continuous Deployment to AWS
 
 on:
   release:
     types: [published]
-    
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@master
     - name: Use Node.js 12.x
