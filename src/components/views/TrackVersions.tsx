@@ -8,6 +8,7 @@ import { useRemoteCanonicalVersion } from '../../hooks/useRemoteCanonicalVersion
 
 import { CheckOrCross } from './../CheckOrCross'
 import { LoadingIndicator } from '../LoadingIndicator'
+import { Popover, ContainedPopover } from '../Popover'
 
 
 export function TrackVersions({ trackId }: { trackId: TrackIdentifier }): JSX.Element {
@@ -84,31 +85,14 @@ function ExerciseTable({
 
 function VersionInfoButton({ trackData }: { trackData: TrackData }) {
   const { versioning } = trackData
-  const [isVisible, setVisible] = useState(false)
 
   return (
-    <div style={{ position: 'relative', display: 'inline-block' }}>
-      <button type="button" style={{ background: 0, border: 0 }} onClick={() => setVisible((prev) => !prev)}>
-        <span aria-label="more information" role="img">ℹ️</span>
-      </button>
-      {isVisible && (
-        <div className="popover fade show bs-popover-bottom" role="tooltip" style={{
-          position: 'absolute',
-          top: 25,
-          left: -150,
-          width: 300,
-          maxWidth: 300
-        }}>
-          <div className="arrow" style={{ left: 153 }}></div>
-          <div className="popover-body">
-            <p>
-              The version information is fetched from the {trackData.name} repository, at <code>{versioning || '<unknown>'}</code>.
-            </p>
-            <p className="mb-0">The casing of the <code>{"{placeholder}"}</code> is matched.</p>
-          </div>
-        </div>
-      )}
-    </div>
+    <ContainedPopover toggle={<span aria-label="more information" role="img">ℹ️</span>}>
+      <p>
+        The version information is fetched from the {trackData.name} repository, at <code>{versioning || '<unknown>'}</code>.
+      </p>
+      <p className="mb-0">The casing of the <code>{"{placeholder}"}</code> is matched.</p>
+    </ContainedPopover>
   )
 }
 
@@ -165,7 +149,7 @@ function ForegoneSection({ exercises }: { exercises: ReadonlyArray<string> }) {
     <section className="mb-4">
       <h3>Foregone</h3>
       <p>
-        Exercises listed here have the <code>forgone</code> flag set to <code>true</code>. 
+        Exercises listed here have the <code>forgone</code> flag set to <code>true</code>.
         This means that the track has <em>explicitely</em> chosen to forego
         implementing this exercise.
       </p>
@@ -188,7 +172,7 @@ function DeprecatedSection({ exercises }: { exercises: ReadonlyArray<ExerciseCon
     <section className="mb-4">
       <h3>Deprecated</h3>
       <p>
-        Exercises listed here have the <code>deprecated</code> flag set to <code>true</code>. 
+        Exercises listed here have the <code>deprecated</code> flag set to <code>true</code>.
         This means that the exercise has been implemented but will no longer be
         updated, as it's no longer considered part of the track.
       </p>
@@ -218,8 +202,8 @@ function useInvalidExercises(foregone: ReadonlyArray<string>, exercises: Readonl
   return exercises.reduce((result, exercise) => {
     if (exercise.foregone) {
       result.foregone.push(exercise.slug)
-    } 
-    
+    }
+
     if (exercise.deprecated) {
       result.deprecated.push(exercise)
     }
