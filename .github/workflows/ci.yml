@@ -1,4 +1,4 @@
-name: Continious Integration (Node)
+name: Continuous Integration via Node
 
 on: [push]
 
