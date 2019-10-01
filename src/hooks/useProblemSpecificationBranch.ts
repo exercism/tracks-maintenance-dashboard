@@ -1,10 +1,11 @@
 import { createContext, useContext } from 'react'
 
-const ProblemSpecificationBranch = createContext<Branch>('master')
+type NormalisedBranch = string
+
+const DEFAULT_BRANCH: Branch = 'master'
+const ProblemSpecificationBranch = createContext<Branch | undefined>(DEFAULT_BRANCH)
 
 export const ProvideBranch = ProblemSpecificationBranch.Provider
-
-type NormalisedBranch = string
 
 export function useProblemSpecificationBranch(): NormalisedBranch {
   const value = useContext(ProblemSpecificationBranch)
@@ -14,7 +15,7 @@ export function useProblemSpecificationBranch(): NormalisedBranch {
       return 'trackanatomy'
     }
     default: {
-      return value
+      return value || DEFAULT_BRANCH
     }
   }
 }

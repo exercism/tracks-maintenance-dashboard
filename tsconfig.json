@@ -1,15 +1,24 @@
 {
-    "include": [
-        "./src/*"
+  "include": [
+    "./src/*"
+  ],
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "es2015"
     ],
-    "compilerOptions": {
-        "lib": [
-            "dom",
-            "es2015"
-        ],
-        "jsx": "react",
-        "allowSyntheticDefaultImports": true,
-        "strict": true,
-        "resolveJsonModule": true
-    }
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "target": "es5",
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "noEmit": true
+  }
 }

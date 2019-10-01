@@ -1,6 +1,6 @@
 import React from 'react'
 import { useRemoteVersion } from '../hooks/useRemoteVersion'
-import { LoadingIndicator } from '../LoadingIndicator'
+import { LoadingIndicator } from '../components/LoadingIndicator'
 
 type RenderRemoteVersionProp = (props: {
   version: Version

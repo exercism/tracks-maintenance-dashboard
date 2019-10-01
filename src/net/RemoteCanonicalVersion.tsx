@@ -1,6 +1,6 @@
 import React from 'react'
 import { useRemoteCanonicalVersion } from '../hooks/useRemoteCanonicalVersion'
-import { LoadingIndicator } from '../LoadingIndicator'
+import { LoadingIndicator } from '../components/LoadingIndicator'
 
 type RenderRemoteCanonicalVersionProp = (props: {
   version: Version

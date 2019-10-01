@@ -1,3 +1,4 @@
+// TODO: update to ALL the supported tracks
 type TrackIdentifier = 'csharp' | 'javascript' | 'ruby' | 'typescript'
 type Branch = 'master' | 'track-anatomy'
 type View = 'unimplemented' | ''
@@ -23,6 +24,7 @@ interface ExerciseConfiguration extends Readonly<ExerciseConfiguration> {
   topics: ReadonlyArray<string> | null
   auto_approve?: boolean
   deprecated?: boolean
+  foregone?: boolean
 }
 
 interface TrackData extends Readonly<TrackData> {

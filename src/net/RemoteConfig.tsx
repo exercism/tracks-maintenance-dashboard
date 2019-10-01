@@ -1,6 +1,6 @@
 import React from 'react'
 import { useRemoteConfig } from '../hooks/useRemoteConfig'
-import { LoadingIndicator } from '../LoadingIndicator'
+import { LoadingIndicator } from '../components/LoadingIndicator'
 
 type RenderRemoteConfigProp = (props: {
   config: TrackConfiguration
