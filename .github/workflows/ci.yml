@@ -1,6 +1,9 @@
 name: Continuous Integration via Node
 
-on: [push]
+on:
+  push:
+    branches:
+      - '*'
 
 jobs:
   build:
