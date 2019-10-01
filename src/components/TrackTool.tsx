@@ -29,8 +29,8 @@ export function TrackTool({
       <UnselectTrackButton onClick={onUnselect} />
       <ViewSelect view={view || DEFAULT_VIEW} onChangeView={onChangeView} />
 
-      <div className="d-flex flex-wrap">
-        <Header trackId={trackId} />
+      <div className="d-flex flex-wrap row">
+        <div className="col" style={{ maxWidth: '27rem' }}><Header trackId={trackId} /></div>
         <TrackAside trackId={trackId} />
       </div>
 
@@ -78,7 +78,7 @@ function Header({ trackId }: { trackId: TrackIdentifier }): JSX.Element {
   const { config, done } = useRemoteConfig(trackId)
 
   return (
-    <header className="card mt-4 mb-4 mr-4" style={{ maxWidth: '25rem', width: '100%' }}>
+    <header className="card mt-4 mb-4" style={{ maxWidth: '25rem', width: '100%' }}>
       <figure style={{ maxWidth: 234, padding: '0 10px', margin: '10px auto' }}>
         <TrackIcon className="card-img-top" trackId={trackId} />
       </figure>
