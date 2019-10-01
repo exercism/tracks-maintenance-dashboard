@@ -79,8 +79,13 @@
   {
     "slug": "elixir",
     "name": "Elixir",
+    "core_enabled": true
+  },
+  {
+    "slug": "erlang",
+    "name": "Erlang",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/mix.exs"
+    "versioning": "exercises/{slug}/src/{exercise_slug}.app.src"
   },
   {
     "slug": "factor",

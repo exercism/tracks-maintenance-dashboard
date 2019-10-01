@@ -137,7 +137,7 @@ export function useRemoteVersion(
         }
 
         const match = textResult.match(
-          /(?:V|v)(?:ersion:?)?(?:| | = "|: ")([0-9]+\.[0-9]+\.[0-9]+)/
+          /(?:V|v|vsn)(?:ersion:?)?(?:| | = "|: "|, ")([0-9]+\.[0-9]+\.[0-9]+)/
         )
         const version = match && match[1]
         if (!version) {
