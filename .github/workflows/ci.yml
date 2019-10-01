@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - '*'
+    tags:
+      - '__dont_run_on_tags__'
 
 jobs:
   build:
