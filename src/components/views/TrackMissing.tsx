@@ -135,7 +135,7 @@ function ExerciseList({
           opacity: 1;
         }
       `}</style>
-      <ol className="exercises-list list-unstyled row mt-2 mb-2">{exercises.map(renderExercise)}</ol>
+      <ol className="exercises-list list-unstyled row mt-4 mb-2">{exercises.map(renderExercise)}</ol>
     </>
   )
 }

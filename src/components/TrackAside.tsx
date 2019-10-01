@@ -60,7 +60,7 @@ function IconWithPopover({ loading, valid, children }: { loading: boolean; valid
   }
 
   return (
-    <ContainedPopover toggle={<CheckOrCross value={valid} />}>
+    <ContainedPopover align="right" toggle={<CheckOrCross value={valid} />}>
       {children}
     </ContainedPopover>
   )
