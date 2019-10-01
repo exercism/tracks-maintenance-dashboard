@@ -10,7 +10,7 @@ import './styles.css'
 
 function App() {
   const [selectedTrackId, doSelectTrack] = useTrack()
-  const [selectedBranch, doSelectBranch] = useBranch()
+  const [selectedBranch] = useBranch()
   const [selectedView, doSelectView] = useView()
 
   const doUnselectTrack = useCallback(() => doSelectTrack(null), [doSelectTrack])
@@ -26,7 +26,6 @@ function App() {
   return (
     <div className="app container">
       <React.Fragment>
-        <BranchSelector selected={selectedBranch} onSelect={doSelectBranch} />
         <ProvideBranch value={selectedBranch}>
           <TrackTool
             trackId={selectedTrackId}

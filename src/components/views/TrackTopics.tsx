@@ -226,6 +226,9 @@ function findNearbyTopics(topic: string, topics: ReadonlyArray<string>): Readonl
     return NEARBY_TOPICS_CACHE[topic]
   }
 
-  NEARBY_TOPICS_CACHE[topic] = topics.filter((potential) => levenshtein(topic, potential) < 5 || potential.split('_').indexOf(topic) !== -1 || topic.split('_').indexOf(potential) !== -1)
+  NEARBY_TOPICS_CACHE[topic] = topics.filter(
+    (potential) => levenshtein(topic, potential) < 5
+      || potential.split('_').indexOf(topic) !== -1
+      || topic.split('_').indexOf(potential) !== -1)
   return NEARBY_TOPICS_CACHE[topic]
 }
