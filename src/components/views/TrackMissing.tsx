@@ -121,13 +121,14 @@ function ExerciseList({
         }
 
         .exercises-list > li > a img.hover {
-          will-transform: opacity;
+          will-change: opacity;
           opacity: 0;
           position: absolute;
           top: 0;
           left: 0;
           right: 0;
           bottom: 0;
+          transition: opacity 100ms ease;
         }
 
         .exercises-list > li > a:hover img.hover {
