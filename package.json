@@ -1,7 +1,9 @@
 {
-  "name": "@exercism/versions",
+  "name": "@exercism/tracks-maintenance-dashboard",
   "version": "0.1.0",
-  "description": "",
+  "description": "Tool for maintainers and track contributors",
+  "license": "MIT",
+  "author": "Derk-Jan Karrenbeld <derk-jan+git@karrenbeld.info>",
   "keywords": [],
   "main": "src/index.tsx",
   "dependencies": {
@@ -28,5 +30,6 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "homepage": "https://tracks.exercism.io"
 }
