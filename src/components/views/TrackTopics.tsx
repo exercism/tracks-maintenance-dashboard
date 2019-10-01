@@ -7,6 +7,7 @@ import { useRemoteTopics } from '../../hooks/useRemoteTopics'
 import { CheckOrCross } from './../CheckOrCross'
 import { LoadingIndicator } from '../LoadingIndicator'
 import { Popover, ContainedPopover } from '../Popover'
+import levenshtein from 'js-levenshtein'
 
 
 export function TrackTopics({ trackId }: { trackId: TrackIdentifier }): JSX.Element {
@@ -39,9 +40,13 @@ function ExerciseTable({
   exercises: ReadonlyArray<ExerciseConfiguration>
   foregone?: ReadonlyArray<string>
 }) {
-  const track = useTrackData(trackId)
+  const [details, setDetails] = useState<string | undefined>(undefined)
   const { list, done } = useRemoteTopics()
   const validExercises = useValidExercises(foregone || NO_FOREGONE_EXERCISES, exercises)
+
+  const doToggleDetails = useCallback((key: string) => {
+    setDetails((prev) => prev === key ? undefined : key)
+  }, [setDetails])
 
   const lookupTopic = useMemo(() => {
     if (!list) {
@@ -61,10 +66,12 @@ function ExerciseTable({
           exercise={exercise}
           key={exercise.slug}
           topics={lookupTopic}
+          detailsActive={details === exercise.slug}
+          onToggleDetails={doToggleDetails}
         />
       )
     },
-    [trackId, lookupTopic]
+    [details, trackId, lookupTopic]
   )
 
   if (!done) {
@@ -86,39 +93,53 @@ function ExerciseTable({
           </tr>
         </thead>
         <tbody>{validExercises.map(renderExercise)}</tbody>
+        <tfoot>
+          <tr>
+            <td colSpan={3}>
+              <p className="text-muted mb-0">
+                Showing <span className="badge badge-pill badge-primary">{validExercises.length}</span> out of <span className="badge badge-pill badge-secondary">{exercises.length}</span> exercises.
+                Deprecated and foregone exercises are hidden.
+              </p>
+            </td>
+          </tr>
+        </tfoot>
       </table>
     </>
   )
 }
 
-function VersionInfoButton({ trackData }: { trackData: TrackData }) {
-  const { versioning } = trackData
-
-  return (
-    <ContainedPopover align="center" toggle={<span aria-label="more information" role="img">ℹ️</span>}>
-      <p>
-        The version information is fetched from the {trackData.name} repository, at <code>{versioning || '<unknown>'}</code>.
-      </p>
-      <p className="mb-0">The casing of the <code>{"{placeholder}"}</code> is matched.</p>
-    </ContainedPopover>
-  )
-}
-
 function ExerciseRow({
   exercise,
-  topics
+  topics,
+  detailsActive,
+  onToggleDetails
 }: {
-  exercise: ExerciseConfiguration
-  topics: Record<string, boolean>
+  exercise: ExerciseConfiguration;
+  topics: Record<string, boolean>;
+  detailsActive: boolean;
+  onToggleDetails(key: string): void;
 }) {
 
-  const annotatedTopics = (exercise.topics || []).map((topic) => {
-    if (topics[topic]) {
-      return { topic, valid: true }
-    }
+  const topicsList = useMemo(() => Object.keys(topics), [topics])
 
-    return { topic, valid: false }
-  })
+  const annotatedTopics = useMemo(() =>
+    (exercise.topics || []) .map((topic) => ({ topic, valid: !!topics[topic] })),
+    [exercise.topics, topics]
+  )
+
+  const suggestions = useMemo(() =>
+    annotatedTopics.reduce((suggestions, annotated) => {
+      if (annotated.valid) {
+        return suggestions
+      }
+
+      suggestions[annotated.topic] = findNearbyTopics(annotated.topic, topicsList)
+      return suggestions
+    }, {} as Record<string, ReadonlyArray<string>>),
+    [annotatedTopics, topicsList]
+  )
+
+  const hasSuggestions = Object.keys(suggestions).length > 0
 
   return (
     <tr key={exercise.slug}>
@@ -135,10 +156,45 @@ function ExerciseRow({
         </ul>
       </td>
       <td>
-        <CheckOrCross value={annotatedTopics.every((annotated) => annotated.valid)} />
+        <ContainedPopover
+          active={detailsActive}
+          onToggle={() => onToggleDetails(exercise.slug)}
+          toggle={<CheckOrCross value={!hasSuggestions} />}
+          align="right">
+          {
+            hasSuggestions
+            ? <SuggestionsList suggestions={suggestions} />
+            : <NoSuggestions />
+          }
+        </ContainedPopover>
       </td>
     </tr>
   )
+}
+
+function SuggestionsList({ suggestions }: { suggestions: Record<string, ReadonlyArray<string>> }) {
+  return (
+    <>
+      <ul className="list-unstyled mb-2">
+        {
+          Object.keys(suggestions).map((topic) => (
+            <li key={topic}>
+              <span className="badge badge-danger mr-2">{topic}</span>{
+                suggestions[topic].length === 0
+                ? (<span>no suggestions</span>)
+                : (<span>perhaps {suggestions[topic].map((suggestion) => <span key={suggestion} className="badge mr-1">{suggestion}</span>)}</span>)
+              }
+            </li>
+          ))
+        }
+      </ul>
+      <p className="mb-0">If you believe a topic is missing, add it <a href="https://github.com/exercism/problem-specifications/edit/master/TOPICS.txt">here</a> via a pull request.</p>
+    </>
+  )
+}
+
+function NoSuggestions() {
+  return <span>All topics are in <code>TOPICS.txt</code>.</span>
 }
 
 function ExerciseNameCell({ exercise }: { exercise: ExerciseConfiguration }) {
@@ -171,4 +227,17 @@ function useValidExercises(foregone: ReadonlyArray<string>, exercises: ReadonlyA
   }
 
   return exercises.filter((exercise) => exercise.foregone !== true && foregone.indexOf(exercise.slug) === -1 && exercise.deprecated !== true)
+}
+
+const NEARBY_TOPICS_CACHE = {
+
+} as Record<string, ReadonlyArray<string>>
+
+function findNearbyTopics(topic: string, topics: ReadonlyArray<string>): ReadonlyArray<string> {
+  if (NEARBY_TOPICS_CACHE[topic] !== undefined) {
+    return NEARBY_TOPICS_CACHE[topic]
+  }
+
+  NEARBY_TOPICS_CACHE[topic] = topics.filter((potential) => levenshtein(topic, potential) < 5)
+  return NEARBY_TOPICS_CACHE[topic]
 }

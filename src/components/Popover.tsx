@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 
 interface PopoverProps {
   align?: 'center' | 'right'
@@ -29,14 +29,16 @@ export function Popover({ children, active, title, align }: PopoverProps) {
   )
 }
 
-export function ContainedPopover({ children, title, toggle, active, align }: PopoverProps & { toggle: React.ReactNode }) {
+export function ContainedPopover({ children, title, toggle, active, align, onToggle }: PopoverProps & { onToggle?: () => void; toggle: React.ReactNode }) {
   const [isActive, setActive] = useState(active === true)
+  const doToggleActive = useCallback(() => onToggle ? onToggle() : setActive((prev) => !prev), [onToggle])
+
   return (
     <div style={{ position: 'relative', display: 'inline-block'}}>
-      <button type="button" style={{ background: 0, border: 0 }} onClick={() => setActive((prev) => !prev)}>
+      <button type="button" style={{ background: 0, border: 0 }} onClick={doToggleActive}>
         {toggle}
       </button>
-      <Popover active={isActive} title={title} align={align}>{children}</Popover>
+      <Popover active={active !== undefined ? active : isActive} title={title} align={align}>{children}</Popover>
     </div>
   )
 }
