@@ -1,7 +1,7 @@
 // TODO: update to ALL the supported tracks
 type TrackIdentifier = 'csharp' | 'javascript' | 'ruby' | 'typescript'
 type Branch = 'master' | 'track-anatomy'
-type View = 'unimplemented' | ''
+type View = 'unimplemented' | '' | 'topics'
 
 type SelectedTrackIdentifier = TrackIdentifier | null
 type SelectedBranch = Branch | null

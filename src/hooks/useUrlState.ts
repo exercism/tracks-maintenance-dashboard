@@ -23,8 +23,6 @@ export function useUrlState<K extends keyof SupportedState>(key: K, sanitize: sa
 
   const value = getOptionFromUrl(key, sanitize)
 
-  console.log({ value, key })
-
   // Router
   useEffect(() => {
     const originalHandler = window.onpopstate
@@ -68,7 +66,7 @@ function sanitizeBranch(anyBranch: string): Branch {
 }
 
 function sanitizeView(anyView: string): View | undefined {
-  const branches: View[] = ['unimplemented']
+  const branches: View[] = ['unimplemented', 'topics']
   return branches.find((branch) => branch === anyView)
 }
 

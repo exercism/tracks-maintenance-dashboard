@@ -7,6 +7,7 @@ import { TrackDescription } from './TrackDescription'
 import { TrackIcon } from './TrackIcon'
 
 import { TrackMissing } from './views/TrackMissing'
+import { TrackTopics } from './views/TrackTopics'
 import { TrackVersions } from './views/TrackVersions'
 
 export interface TrackToolProps {
@@ -69,6 +70,13 @@ function ViewSelect({ view, onChangeView }: { view: View; onChangeView: TrackToo
         >
           Unimplemented
         </button>
+      <button
+        className={`btn btn-sm btn-outline-primary ${view === 'topics' && 'active'} mb-3`}
+        aria-pressed={view === 'topics' ? 'true' : 'false'}
+        onClick={view === 'topics' ? noop : () => onChangeView('topics')}
+        >
+          Topics
+        </button>
     </div>
   )
 }
@@ -92,6 +100,9 @@ function TrackView({ trackId, view }: { trackId: TrackIdentifier; view: View }):
   switch(view) {
     case 'unimplemented': {
       return <TrackMissing trackId={trackId} />
+    }
+    case 'topics': {
+      return <TrackTopics trackId={trackId} />
     }
     case '': {
       return <TrackVersions trackId={trackId} />
