@@ -104,13 +104,21 @@ export function useRemoteCanonicalList(): RemoteCanonicalList {
           (leaf: { path: string }) => leaf['path']
         ) as string[]
       })
-      .then((items) => {
+      .then(async (items) => {
         if (!active || !items) {
           return undefined
         }
 
-        writeCache(problemSpecBranch, items)
-        dispatch({ type: 'list', list: items })
+        const sparseItems = await Promise.all(items.map((item) =>
+          fetch(`https://raw.githubusercontent.com/exercism/problem-specifications/master/exercises/${item}/.deprecated`)
+            .then((result) => result.ok, () => false)
+            .then((deprecated) => deprecated ? null : item)
+        ))
+
+        const validItems = sparseItems.filter(Boolean) as string[]
+
+        writeCache(problemSpecBranch, validItems)
+        dispatch({ type: 'list', list: validItems })
       })
       .catch((err) => {
         dispatch({ type: 'error' })

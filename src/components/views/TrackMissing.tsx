@@ -2,13 +2,14 @@ import React, { useMemo, useCallback } from 'react'
 import { useRemoteConfig } from '../../hooks/useRemoteConfig'
 import { useRemoteCanonicalList } from '../../hooks/useRemoteCanonicalList'
 import { LoadingIndicator } from '../LoadingIndicator'
-import { transform } from '@babel/core'
+import { useProblemSpecificationBranch } from '../../hooks/useProblemSpecificationBranch'
 
 const NO_EXERCISES = Object.freeze([])
 
 export function TrackMissing({ trackId }: { trackId: TrackIdentifier }): JSX.Element {
   const track = useRemoteConfig(trackId)
   const canonical = useRemoteCanonicalList()
+  const branch = useProblemSpecificationBranch()
 
   const isShowable =
     track.done && track.config && canonical.done && canonical.list
@@ -44,7 +45,7 @@ export function TrackMissing({ trackId }: { trackId: TrackIdentifier }): JSX.Ele
       </header>
 
       {!isShowable ? (
-        <LoadingIndicator />
+        <LoadingIndicator>Loading tree of <code>exercism/problem-specifications/{branch}</code>. Filtering those with <code>.deprecated</code>.</LoadingIndicator>
       ) : (
         <ExerciseList exercises={unimplementedExercises} />
       )}
