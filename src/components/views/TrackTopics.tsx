@@ -1,14 +1,11 @@
-import React, { useCallback, useState, useMemo } from 'react'
-
-import { RemoteConfig } from '../../net/RemoteConfig'
-import { useTrackData } from '../../hooks/useTrackData'
-import { useRemoteTopics } from '../../hooks/useRemoteTopics'
-
-import { CheckOrCross } from './../CheckOrCross'
-import { LoadingIndicator } from '../LoadingIndicator'
-import { Popover, ContainedPopover } from '../Popover'
 import levenshtein from 'js-levenshtein'
-
+import React, { useCallback, useMemo } from 'react'
+import { useRemoteTopics } from '../../hooks/useRemoteTopics'
+import { useToggleState } from '../../hooks/useToggleState'
+import { RemoteConfig } from '../../net/RemoteConfig'
+import { LoadingIndicator } from '../LoadingIndicator'
+import { ContainedPopover } from '../Popover'
+import { CheckOrCross } from './../CheckOrCross'
 
 export function TrackTopics({ trackId }: { trackId: TrackIdentifier }): JSX.Element {
 
@@ -40,13 +37,9 @@ function ExerciseTable({
   exercises: ReadonlyArray<ExerciseConfiguration>
   foregone?: ReadonlyArray<string>
 }) {
-  const [details, setDetails] = useState<string | undefined>(undefined)
+  const [details, setDetails] = useToggleState()
   const { list, done } = useRemoteTopics()
   const validExercises = useValidExercises(foregone || NO_FOREGONE_EXERCISES, exercises)
-
-  const doToggleDetails = useCallback((key: string) => {
-    setDetails((prev) => prev === key ? undefined : key)
-  }, [setDetails])
 
   const lookupTopic = useMemo(() => {
     if (!list) {
@@ -67,11 +60,11 @@ function ExerciseTable({
           key={exercise.slug}
           topics={lookupTopic}
           detailsActive={details === exercise.slug}
-          onToggleDetails={doToggleDetails}
+          onToggleDetails={setDetails}
         />
       )
     },
-    [details, trackId, lookupTopic]
+    [details, setDetails, lookupTopic]
   )
 
   if (!done) {
@@ -84,7 +77,7 @@ function ExerciseTable({
 
   return (
     <>
-      <table className="table mb-4 table-responsive">
+      <table className="table pb-4 table-responsive">
         <thead>
           <tr>
             <th style={{ minWidth: 256 }}>Exercise</th>
@@ -108,25 +101,20 @@ function ExerciseTable({
   )
 }
 
-function ExerciseRow({
-  exercise,
-  topics,
-  detailsActive,
-  onToggleDetails
-}: {
+interface ExerciseRowProps {
   exercise: ExerciseConfiguration;
   topics: Record<string, boolean>;
   detailsActive: boolean;
   onToggleDetails(key: string): void;
-}) {
+}
+
+function ExerciseRow({ exercise, topics, detailsActive, onToggleDetails }: ExerciseRowProps) {
 
   const topicsList = useMemo(() => Object.keys(topics), [topics])
-
   const annotatedTopics = useMemo(() =>
-    (exercise.topics || []) .map((topic) => ({ topic, valid: !!topics[topic] })),
+    (exercise.topics || []).map((topic) => ({ topic, valid: !!topics[topic] })),
     [exercise.topics, topics]
   )
-
   const suggestions = useMemo(() =>
     annotatedTopics.reduce((suggestions, annotated) => {
       if (annotated.valid) {

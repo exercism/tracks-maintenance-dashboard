@@ -1,9 +1,10 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import semver from 'semver'
 
 import { RemoteConfig } from '../../net/RemoteConfig'
 import { useTrackData } from '../../hooks/useTrackData'
 import { useRemoteVersion } from '../../hooks/useRemoteVersion'
+import { useToggleState } from '../../hooks/useToggleState'
 import { useRemoteCanonicalVersion } from '../../hooks/useRemoteCanonicalVersion'
 
 import { CheckOrCross } from './../CheckOrCross'
@@ -41,6 +42,7 @@ function ExerciseTable({
   exercises: ReadonlyArray<ExerciseConfiguration>
   foregone?: ReadonlyArray<string>
 }) {
+  const [details, setDetails] = useToggleState()
   const track = useTrackData(trackId)
   const validExercises = useValidExercises(foregone || NO_FOREGONE_EXERCISES, exercises)
   const { deprecated } = useInvalidExercises(foregone || NO_FOREGONE_EXERCISES, exercises)
@@ -49,23 +51,24 @@ function ExerciseTable({
     (exercise: ExerciseConfiguration) => {
       return (
         <ExerciseRow
-          trackId={trackId}
           exercise={exercise}
           key={exercise.slug}
+          trackId={trackId}
+          detailsActive={details === exercise.slug}
+          onToggleDetails={setDetails}
         />
       )
     },
-    [trackId]
+    [details, setDetails, trackId]
   )
 
   if (!exercises || exercises.length === 0) {
     return <div>No exercises found</div>
   }
 
-
   return (
     <>
-      <table className="table mb-4 table-responsive">
+      <table className="table pb-4 table-responsive">
         <thead>
           <tr>
             <th style={{ minWidth: 256 }}>Exercise</th>
@@ -75,6 +78,16 @@ function ExerciseTable({
           </tr>
         </thead>
         <tbody>{validExercises.map(renderExercise)}</tbody>
+        <tfoot>
+          <tr>
+            <td colSpan={4}>
+              <p className="text-muted mb-0">
+                Showing <span className="badge badge-pill badge-primary">{validExercises.length}</span> out of <span className="badge badge-pill badge-secondary">{exercises.length}</span> exercises.
+                Deprecated and foregone exercises are hidden.
+              </p>
+            </td>
+          </tr>
+        </tfoot>
       </table>
 
       <ForegoneSection exercises={foregone || NO_FOREGONE_EXERCISES} />
@@ -96,13 +109,14 @@ function VersionInfoButton({ trackData }: { trackData: TrackData }) {
   )
 }
 
-function ExerciseRow({
-  trackId,
-  exercise,
-}: {
-  trackId: TrackIdentifier
-  exercise: ExerciseConfiguration
-}) {
+interface ExerciseRowProps {
+  exercise: ExerciseConfiguration;
+  trackId: TrackIdentifier;
+  detailsActive: boolean;
+  onToggleDetails(key: string): void;
+}
+
+function ExerciseRow({ exercise, trackId, detailsActive, onToggleDetails }: ExerciseRowProps) {
   const {
     done: remoteDone,
     version: remoteVersion,
@@ -114,28 +128,20 @@ function ExerciseRow({
     url: canonicalUrl,
   } = useRemoteCanonicalVersion(exercise.slug)
 
+  const doToggle = useCallback(() => onToggleDetails(exercise.slug), [exercise, onToggleDetails])
+
   return (
     <tr key={exercise.slug}>
       <ExerciseNameCell exercise={exercise} />
-      <td>
-        <a href={remoteUrl}>
-          <code>
-            {remoteVersion || ((remoteDone && '<none>') || <LoadingIndicator />)}
-          </code>
-        </a>
-      </td>
-      <td>
-        <a href={canonicalUrl}>
-          <code>
-            {canonicalVersion || ((canonicalDone && '<none>') || <LoadingIndicator />)}
-          </code>
-        </a>
-      </td>
-      <td>
-        {canonicalDone && remoteDone
-          ? <CheckOrCross value={testVersion(canonicalVersion, remoteVersion)} />
-          : '⏳'}
-      </td>
+      <VersionCell url={remoteUrl} version={remoteVersion} done={remoteDone} />
+      <VersionCell url={canonicalUrl} version={canonicalVersion} done={canonicalDone} />
+      <DetailsCell
+        active={detailsActive}
+        onToggle={doToggle}
+        remoteVersion={remoteVersion}
+        canonicalVersion={canonicalVersion}
+        done={remoteDone && canonicalDone}
+      />
     </tr>
   )
 }
@@ -161,6 +167,66 @@ function ExerciseNameCell({ exercise }: { exercise: ExerciseConfiguration }) {
       />
       {exercise.slug}
     </Cell>
+  )
+}
+
+function VersionCell({ url, version, done }: { url: string | undefined; version: string | undefined; done: boolean }) {
+  return (
+    <td>
+      <a href={url}>
+        <code>
+          {version || ((done && '<none>') || <LoadingIndicator />)}
+        </code>
+      </a>
+    </td>
+  )
+}
+
+function DetailsCell({ active, onToggle, remoteVersion, canonicalVersion, done }: { active: boolean; onToggle(): void; remoteVersion: Version; canonicalVersion: Version; done: boolean }) {
+  if (!done) {
+    return (
+      <td>
+        <button type="button" style={{ background: 0, border: 0 }}>
+          <span role="img" aria-label="Fetching versions...">⏳</span>
+        </button>
+      </td>
+    )
+  }
+
+  const valid = testVersion(canonicalVersion, remoteVersion)
+
+  return (
+    <td>
+      <ContainedPopover
+          active={active}
+          onToggle={onToggle}
+          toggle={<CheckOrCross value={valid} />}
+          align="right">
+          {
+            valid
+            ? <VersionsMatch />
+            : <VersionsDontMatch />
+          }
+        </ContainedPopover>
+      </td>
+  )
+}
+
+function VersionsMatch() {
+  return (
+    <p className="mb-0">
+      The exercise is up-to-date with the latest canonical data.
+    </p>
+  )
+}
+
+function VersionsDontMatch() {
+  return (
+    <p className="mb-0">
+      The version in the <code>exercism/problem-specifications</code> repository is
+      higher than the local version. In order to resolve this, update the exercise by
+      re-generating the <code>README.md</code> and updating the exericse tests.
+    </p>
   )
 }
 

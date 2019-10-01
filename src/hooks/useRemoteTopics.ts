@@ -82,7 +82,7 @@ export function useRemoteTopics(): RemoteTopicsList {
           .split('\n')
           .map((topic) => topic.trim())
           .filter((item, index, self) => {
-            return item && item[0] != '-' && (!self[index + 1] || self[index + 1][0] !== '-')
+            return item && item[0] !== '-' && (!self[index + 1] || self[index + 1][0] !== '-')
           })
 
         if (!items) {
