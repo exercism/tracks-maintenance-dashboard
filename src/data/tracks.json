@@ -1,0 +1,306 @@
+[
+  {
+    "slug": "ada",
+    "name": "Ada",
+    "core_enabled": false
+  },
+  {
+    "slug": "bash",
+    "name": "Bash",
+    "core_enabled": true
+  },
+  {
+    "slug": "c",
+    "name": "C",
+    "core_enabled": true
+  },
+  {
+    "slug": "ceylon",
+    "name": "Ceylon",
+    "core_enabled": false
+  },
+  {
+    "slug": "cfml",
+    "name": "ColdFusion Markup Language",
+    "core_enabled": false
+  },
+  {
+    "slug": "clojure",
+    "name": "Clojure",
+    "core_enabled": false
+  },
+  {
+    "slug": "coffeescript",
+    "name": "CoffeeScript",
+    "core_enabled": false
+  },
+  {
+    "slug": "common-lisp",
+    "name": "Common Lisp",
+    "core_enabled": true
+  },
+  {
+    "slug": "coq",
+    "name": "Coq",
+    "core_enabled": false
+  },
+
+  {
+    "slug": "cpp",
+    "name": "C++",
+    "core_enabled": true
+  },
+  {
+    "slug": "crystal",
+    "name": "Crystal",
+    "core_enabled": false
+  },
+  {
+    "slug": "csharp",
+    "name": "C#",
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/{ExerciseSlug}Test.cs"
+  },
+  {
+    "slug": "d",
+    "name": "D",
+    "core_enabled": false
+  },
+  {
+    "slug": "dart",
+    "name": "Dart",
+    "core_enabled": true
+  },
+  {
+    "slug": "elm",
+    "name": "Elm",
+    "core_enabled": true
+  },
+  {
+    "slug": "elixir",
+    "name": "Elixir",
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/mix.exs"
+  },
+  {
+    "slug": "factor",
+    "name": "Factor",
+    "core_enabled": false
+  },
+  {
+    "slug": "fortran",
+    "name": "Fortran",
+    "core_enabled": false
+  },
+  {
+    "slug": "fsharp",
+    "name": "F#",
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/{ExerciseSlug}Test.fs"
+  },
+  {
+    "slug": "gnu-apl",
+    "name": "GNU APL",
+    "core_enabled": true
+  },
+  {
+    "slug": "go",
+    "name": "Go",
+    "core_enabled": true
+  },
+  {
+    "slug": "groovy",
+    "name": "Groovy",
+    "core_enabled": true
+  },
+
+  {
+    "slug": "haskell",
+    "name": "Haskell",
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/package.yaml"
+  },
+  {
+    "slug": "haxe",
+    "name": "Haxe",
+    "core_enabled": false
+  },
+  {
+    "slug": "idris",
+    "name": "Idris",
+    "core_enabled": false
+  },
+  {
+    "slug": "java",
+    "name": "Java",
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/.meta/version"
+  },
+  {
+    "slug": "javascript",
+    "name": "JavaScript",
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/package.json"
+  },
+  {
+    "slug": "julia",
+    "name": "Julia",
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/runtests.jl"
+  },
+  {
+    "slug": "kotlin",
+    "name": "Kotlin",
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/.meta/version"
+  },
+  {
+    "slug": "lua",
+    "name": "Lua",
+    "core_enabled": true
+  },
+  {
+    "slug": "mips",
+    "name": "MIPS",
+    "core_enabled": true
+  },
+  {
+    "slug": "nim",
+    "name": "Nim",
+    "core_enabled": true
+  },
+  {
+    "slug": "objective-c",
+    "name": "Objective-C",
+    "core_enabled": false
+  },
+  {
+    "slug": "ocaml",
+    "name": "OCaml",
+    "core_enabled": false,
+    "versioning": "exercises/{slug}/dune-project"
+  },
+  {
+    "slug": "perl5",
+    "name": "Perl 5",
+    "core_enabled": false
+  },
+  {
+    "slug": "perl6",
+    "name": "Perl 6",
+    "core_enabled": true
+  },
+  {
+    "slug": "pharo-smalltalk",
+    "name": "Pharo Smalltalk",
+    "core_enabled": true
+  },
+
+  {
+    "slug": "php",
+    "name": "PHP",
+    "core_enabled": true
+  },
+  {
+    "slug": "plsql",
+    "name": "PL/SQL",
+    "core_enabled": false
+  },
+  {
+    "slug": "pony",
+    "name": "Pony",
+    "core_enabled": false
+  },
+  {
+    "slug": "powershell",
+    "name": "PowerShell",
+    "core_enabled": true
+  },
+  {
+    "slug": "prolog",
+    "name": "Prolog",
+    "core_enabled": true
+  },
+  {
+    "slug": "purescript",
+    "name": "PureScript",
+    "core_enabled": false
+  },
+  {
+    "slug": "python",
+    "name": "Python",
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/{exercise_slug}_test.py"
+  },
+  {
+    "slug": "r",
+    "name": "R",
+    "core_enabled": true
+  },
+  {
+    "slug": "racket",
+    "name": "Racket",
+    "core_enabled": true
+  },
+  {
+    "slug": "ruby",
+    "name": "Ruby",
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/{exercise_slug}_test.rb"
+  },
+  {
+    "slug": "rust",
+    "name": "Rust",
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/Cargo.toml"
+  },
+  {
+    "slug": "scala",
+    "name": "Scala",
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/src/test/scala/{ExerciseSlug}Test.scala"
+  },
+  {
+    "slug": "scheme",
+    "name": "Scheme",
+    "core_enabled": false
+  },
+  {
+    "slug": "shen",
+    "name": "Shen",
+    "core_enabled": false
+  },
+  {
+    "slug": "swift",
+    "name": "Swift",
+    "core_enabled": false
+  },
+  {
+    "slug": "system-verilog",
+    "name": "SystemVerilog",
+    "core_enabled": false
+  },
+  {
+    "slug": "tcl",
+    "name": "Tcl",
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/{exercise-slug}.test"
+  },
+  {
+    "slug": "typescript",
+    "name": "TypeScript",
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/package.json"
+  },
+  {
+    "slug": "vbnet",
+    "name": "VB.Net",
+    "core_enabled": false
+  },
+  {
+    "slug": "x86-64-assembly",
+    "name": "x86-64 Assembly",
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/{exercise_slug}_test.c"
+  }
+]
