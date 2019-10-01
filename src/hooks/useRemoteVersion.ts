@@ -136,6 +136,30 @@ export function useRemoteVersion(
           return
         }
 
+        // Looks for the following prefixes:
+        // - Version
+        // - version
+        // - vsn
+        //
+        // Followed by:
+        // - : (white space optional)
+        // - : "
+        // - = "
+        // - , "
+        // - (single space)
+        //
+        // Ending with:
+        //
+        // major.minor.patch
+        //
+        // This matching method works for all tracks thusfar, without a single
+        // false match. Try to refrain from _special_ matching. We could,
+        // however, make the matching a bit more robust by explicitly mapping
+        // out the special case "vsn" and by matching quotes (if there is a
+        // quote before the version, there should be one after). The reason this
+        // is not in place is because some maintainers add a patch level or
+        // different metadata after the version.
+        //
         const match = textResult.match(
           /(?:V|v|vsn)(?:ersion:?)?(?:\s*?| | = "|: "|, ")([0-9]+\.[0-9]+\.[0-9]+)/
         )
