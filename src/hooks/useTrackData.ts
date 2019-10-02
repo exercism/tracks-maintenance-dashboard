@@ -78,12 +78,12 @@ export function useTrackAsideData(trackId: TrackIdentifier): TrackAsideData {
 
     let active = true
 
-    const fetchAnalyzer = currentData.analyzer === undefined 
-      ? fetch(`https://raw.githubusercontent.com/exercism/${trackId}-analyzer/master/README.md`, { method: 'HEAD' }).then((result) => result.ok, () => false)
+    const fetchAnalyzer = currentData.analyzer === undefined
+      ? fetch(`https://raw.githubusercontent.com/exercism/${trackId}-analyzer/master/Dockerfile`, { method: 'HEAD' }).then((result) => result.ok, () => false)
       : Promise.resolve(currentData.analyzer)
 
-    const fetchTestRunner = currentData.testRunner === undefined 
-      ? fetch(`https://raw.githubusercontent.com/exercism/${trackId}-test-runner/master/README.md`, { method: 'HEAD' }).then((result) => result.ok, () => false)
+    const fetchTestRunner = currentData.testRunner === undefined
+      ? fetch(`https://raw.githubusercontent.com/exercism/${trackId}-test-runner/master/Dockerfile`, { method: 'HEAD' }).then((result) => result.ok, () => false)
       : Promise.resolve(currentData.testRunner)
 
     ;(async () => {
