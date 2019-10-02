@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- Add missing `versioning` for `bash`
+
 ## 0.2.0
 
 - Add track checklist
