@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.2
+
+- Fix path expansion for cloudfront invalidation
+
 ## 0.2.1
 
 - Add missing `versioning` for `bash`
