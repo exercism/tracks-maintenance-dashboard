@@ -68,7 +68,7 @@ function ExerciseTable({
 
   return (
     <>
-      <table className="table pb-4 table-responsive">
+      <table className="table table-responsive" style={{ paddingBottom: '4.5rem' }}>
         <thead>
           <tr>
             <th style={{ minWidth: 256 }}>Exercise</th>
