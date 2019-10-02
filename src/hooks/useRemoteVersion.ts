@@ -1,7 +1,6 @@
 import { useReducer, useEffect } from 'react'
 import { useTrackData } from './useTrackData'
 
-type Slug = string
 type Version = string | undefined
 type RemoteVersion = {
   done: boolean
@@ -10,13 +9,13 @@ type RemoteVersion = {
   url: string | undefined
 }
 
-const CACHE = {} as Record<TrackIdentifier, Record<Slug, Version>>
+const CACHE = {} as Record<TrackIdentifier, Record<ExerciseIdentifier, Version>>
 
-function readCache(trackId: TrackIdentifier, slug: Slug) {
+function readCache(trackId: TrackIdentifier, slug: ExerciseIdentifier) {
   return (CACHE[trackId] || {})[slug]
 }
 
-function writeCache(trackId: TrackIdentifier, slug: Slug, version: Version) {
+function writeCache(trackId: TrackIdentifier, slug: ExerciseIdentifier, version: Version) {
   CACHE[trackId] = CACHE[trackId] || {}
   CACHE[trackId][slug] = version
 }
@@ -44,9 +43,15 @@ function fetchReducer(state: FetchState, action: FetchAction) {
   }
 }
 
+/**
+ * Fetches the remote exercise version
+ *
+ * @param trackId track identifier (slug)
+ * @param slug exercise slug
+ */
 export function useRemoteVersion(
   trackId: TrackIdentifier,
-  slug: Slug
+  slug: ExerciseIdentifier
 ): RemoteVersion {
   const trackData = useTrackData(trackId)
   const [state, dispatch] = useReducer(fetchReducer, initialState)

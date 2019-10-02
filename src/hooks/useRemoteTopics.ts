@@ -42,6 +42,9 @@ function fetchReducer(state: FetchState, action: FetchAction) {
   }
 }
 
+/**
+ * Fetches the remotely known topics list
+ */
 export function useRemoteTopics(): RemoteTopicsList {
   const problemSpecBranch = useProblemSpecificationBranch()
   const [state, dispatch] = useReducer(fetchReducer, initialState)

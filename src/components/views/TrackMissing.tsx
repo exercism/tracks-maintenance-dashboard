@@ -13,7 +13,7 @@ export function TrackMissing({ trackId }: { trackId: TrackIdentifier }): JSX.Ele
   const branch = useProblemSpecificationBranch()
 
   const isShowable =
-    track.done && track.config && canonical.done && canonical.list
+    track.done && track.config && canonical.done && canonical.data
 
   const unimplementedExercises = useMemo(() => {
     if (!isShowable) {
@@ -26,7 +26,7 @@ export function TrackMissing({ trackId }: { trackId: TrackIdentifier }): JSX.Ele
 
     const foregone = track.config!.foregone || []
 
-    // Create lookup table for known exericses
+    // Create lookup table for known exericses so that they can be removed from the un-implementedlist
     const lookup = track.config!.exercises.reduce(
       (lookup, item) => {
         lookup[item.slug] = item
@@ -43,24 +43,48 @@ export function TrackMissing({ trackId }: { trackId: TrackIdentifier }): JSX.Ele
     <section>
       <header>
         <h2>Unimplemented exercises</h2>
+        <p>
+          This is the list of exercises as found in the <ProblemSpecLink>problem specifications</ProblemSpecLink> but not
+          implemented in the <code>{trackId}</code> track. As maintainer, if you want an exercise to <em>never</em> be implemented, add its <code>slug</code> to
+          the <code>foregone</code> key in <code>config.json</code>. In order to add or port an exercise to the <code>{trackId}</code> track, see
+          the <a href={`https://github.com/exercism/${trackId}/blob/master/CONTRIBUTING.md`}>CONTRIBUTING guidelines</a>.
+        </p>
       </header>
 
       {!isShowable ? (
-        <LoadingIndicator>Loading tree of <code>exercism/problem-specifications/{branch}</code>. Filtering those with <code>.deprecated</code>.</LoadingIndicator>
+        <div className="alert alert-info">
+          <LoadingIndicator>Loading tree at <code>{branch}</code> branch. Filtering those with a <code>.deprecated</code> entry.</LoadingIndicator>
+        </div>
       ) : (
-        <ExerciseList exercises={unimplementedExercises} />
+        <MissingExercisesList missing={unimplementedExercises} data={canonical.data!} />
       )}
     </section>
   )
 }
 
-function ExerciseList({
-  exercises,
+function ProblemSpecLink({ children }: { children: React.ReactNode }) {
+  return (
+    <a href="https://github.com/exercism/problem-specifications/tree/master/exercises">
+      {children}
+    </a>
+  )
+}
+
+function MissingExercisesList({
+  missing,
+  data
 }: {
-  exercises: ReadonlyArray<ExerciseConfiguration['slug']>
+  missing: ReadonlyArray<ExerciseIdentifier>;
+  data: NonNullable<ReturnType<typeof useRemoteCanonicalList>['data']>
 }) {
   const renderExercise = useCallback(
-    (exercise: ExerciseConfiguration['slug']) => {
+    (exercise: ExerciseIdentifier) => {
+
+      // Hide deprecated exercises
+      if (data[exercise].deprecated) {
+        return null
+      }
+
       const canonicalUrl = `https://github.com/exercism/problem-specifications/tree/master/exercises/${exercise}`
       return (
         <li key={exercise} className="col-12 col-sm-6 col-md-4 col-lg-3 mb-2">
@@ -74,11 +98,11 @@ function ExerciseList({
         </li>
       )
     },
-    []
+    [data]
   )
 
-  if (!exercises) {
-    return <div>No exercises found</div>
+  if (!missing || missing.length === 0) {
+    return <div>No Unimplemented exercises found</div>
   }
 
   return (
@@ -114,7 +138,9 @@ function ExerciseList({
           opacity: 1;
         }
       `}</style>
-      <ol className="exercises-list list-unstyled row mt-4 mb-2">{exercises.map(renderExercise)}</ol>
+      <ol className="exercises-list list-unstyled row mt-4 mb-2">{
+        missing.map(renderExercise)
+      }</ol>
     </>
   )
 }

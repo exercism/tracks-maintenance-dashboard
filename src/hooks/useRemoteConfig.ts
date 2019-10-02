@@ -40,6 +40,11 @@ function fetchReducer(state: FetchState, action: FetchAction) {
   }
 }
 
+/**
+ * Fetches the config.json for the track
+ *
+ * @param trackId the Track Identifier (slug)
+ */
 export function useRemoteConfig(trackId: TrackIdentifier): RemoteConfiguration {
   const [state, dispatch] = useReducer(fetchReducer, initialState)
 

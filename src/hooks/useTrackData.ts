@@ -1,7 +1,13 @@
 import { useMemo, useReducer, useEffect } from 'react'
 
 import TRACKS from '../data/tracks.json'
+import { useRemoteConfig } from './useRemoteConfig'
 
+/**
+ * Fetches the local track data (like the versioning mapper)
+ *
+ * @param trackId The Track Identifier (slug)
+ */
 export function useTrackData(trackId: TrackIdentifier): TrackData {
   return useMemo(
     () => TRACKS.find((trackData) => trackData.slug === trackId) as TrackData,
@@ -11,10 +17,16 @@ export function useTrackData(trackId: TrackIdentifier): TrackData {
 
 interface TrackAsideData {
   done: boolean;
+  checklist: {
+    hasBlurb: boolean;
+    hasAutoApprove: boolean;
+    exerciseCoreCount: number;
+    exerciseWithTopicsCount: number;
+  };
   data: {
-    analyzer: boolean | undefined
-    testRunner: boolean | undefined
-  }
+    analyzer: boolean | undefined;
+    testRunner: boolean | undefined;
+  };
 }
 
 const CACHE = {} as Record<TrackIdentifier, TrackAsideData['data']>
@@ -58,7 +70,17 @@ function fetchReducer(state: FetchState, action: FetchAction) {
   }
 }
 
+const NO_EXERCISES: ReadonlyArray<ExerciseConfiguration> = []
+
+/**
+ * Fetches and serves the aside data.
+ * - data holds various checks regarding related (like related repo availability)
+ * - checklist holds various checks regarding self (like is it set-up correctly)
+ *
+ * @param trackId The Track Identifier (slug)
+ */
 export function useTrackAsideData(trackId: TrackIdentifier): TrackAsideData {
+  const { done: remoteTrackDone, config: remoteTrackData } = useRemoteConfig(trackId)
   const [state, dispatch] = useReducer(fetchReducer, initialState)
 
   const { loading: currentLoading } = state
@@ -105,8 +127,17 @@ export function useTrackAsideData(trackId: TrackIdentifier): TrackAsideData {
     }
   }, [trackId, currentLoading, currentData])
 
+  const remoteExercises = (remoteTrackDone && remoteTrackData && remoteTrackData.exercises) || NO_EXERCISES
+  const remoteFlags = useMemo(() => ({
+    hasBlurb: !!(remoteTrackData && remoteTrackData.blurb),
+    hasAutoApprove: !!remoteExercises.some((exercise) => exercise.auto_approve),
+    exerciseCoreCount: remoteExercises.filter((exercise) => exercise.core).length,
+    exerciseWithTopicsCount: remoteExercises.filter((exercise) => exercise.topics && exercise.topics.length !== 0).length,
+  }), [remoteTrackData, remoteExercises])
+
   return {
-    done: !currentLoading,
-    data: currentData
+    done: !currentLoading && remoteTrackDone,
+    data: currentData,
+    checklist: remoteFlags
   }
 }

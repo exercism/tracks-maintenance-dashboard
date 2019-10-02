@@ -14,6 +14,13 @@ export function TrackTopics({ trackId }: { trackId: TrackIdentifier }): JSX.Elem
     <section>
       <header className="mb-4">
         <h2>Exercise Topics</h2>
+        <p>
+          This is the list of exercises as found in the <code>{trackId}</code> track, without the deprecated or
+          foregone exercises. Each exercise should have one or more <strong>topics</strong> which indicate what the
+          exercise is about. In order to normalise these topics accorss tracks, a list of available topics lives in
+          the <TopicsFileLink><code>exercism/problem-specifications</code> repository</TopicsFileLink> as
+          the file <TopicsFileLink><code>TOPICS.txt</code></TopicsFileLink>.
+        </p>
       </header>
 
       <RemoteConfig trackId={trackId}>
@@ -25,6 +32,14 @@ export function TrackTopics({ trackId }: { trackId: TrackIdentifier }): JSX.Elem
   )
 }
 
+function TopicsFileLink({ children, edit }: { children: React.ReactNode; edit?: boolean }) {
+
+  return (
+    <a href={`https://github.com/exercism/problem-specifications/${ edit === true ? 'edit' : 'blob' }/master/TOPICS.txt`}>
+      {children}
+    </a>
+  )
+}
 
 const NO_EXCERCISES: ReadonlyArray<ExerciseConfiguration> = []
 const NO_FOREGONE_EXERCISES: ReadonlyArray<string> = []
@@ -69,7 +84,11 @@ function ExerciseTable({
   )
 
   if (!done) {
-    return <div><LoadingIndicator>Fetching <code>TOPICS.txt</code>...</LoadingIndicator></div>
+    return (
+      <div className="alert alert-info">
+        <LoadingIndicator>Fetching list of all <em>topics</em>...</LoadingIndicator>
+      </div>
+    )
   }
 
   if (!exercises || exercises.length === 0) {
@@ -91,7 +110,7 @@ function ExerciseTable({
           <tr>
             <td colSpan={3}>
               <p className="text-muted mb-0">
-                Showing <span className="badge badge-pill badge-primary">{validExercises.length}</span> out of <span className="badge badge-pill badge-secondary">{exercises.length}</span> exercises.
+                Showing <ValidBadge count={validExercises.length} /> out of <TotalBadge count={exercises.length} /> exercises.
                 Deprecated and foregone exercises are hidden.
               </p>
             </td>
@@ -99,6 +118,18 @@ function ExerciseTable({
         </tfoot>
       </table>
     </>
+  )
+}
+
+function ValidBadge({ count }: { count: number }) {
+  return (
+    <span className="badge badge-pill badge-primary">{count}</span>
+  )
+}
+
+function TotalBadge({ count }: { count: number }) {
+  return (
+    <span className="badge badge-pill badge-secondary">{count}</span>
   )
 }
 
@@ -177,13 +208,13 @@ function SuggestionsList({ suggestions }: { suggestions: Record<string, Readonly
           ))
         }
       </ul>
-      <p className="mb-0">If you believe a topic is missing, add it <a href="https://github.com/exercism/problem-specifications/edit/master/TOPICS.txt">here</a> via a pull request.</p>
+      <p className="mb-0">If you believe a topic is missing, add it <TopicsFileLink edit={true}>here</TopicsFileLink> via a pull request.</p>
     </>
   )
 }
 
 function NoSuggestions() {
-  return <span>All topics are in <code>TOPICS.txt</code>.</span>
+  return <span>All topics are in <TopicsFileLink><code>TOPICS.txt</code></TopicsFileLink>.</span>
 }
 
 function ExerciseNameCell({ exercise }: { exercise: ExerciseConfiguration }) {

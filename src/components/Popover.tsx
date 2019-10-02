@@ -1,4 +1,6 @@
 import React, { useState, useCallback } from 'react'
+import { LoadingIndicator } from './LoadingIndicator'
+import { CheckOrCross } from './CheckOrCross'
 
 interface PopoverProps {
   align?: 'center' | 'right'
@@ -40,5 +42,32 @@ export function ContainedPopover({ children, title, toggle, active, align, onTog
       </button>
       <Popover active={active !== undefined ? active : isActive} title={title} align={align}>{children}</Popover>
     </div>
+  )
+}
+
+interface IconWithPopoverProps {
+  loading: boolean;
+  valid: boolean;
+  children: React.ReactNode;
+  active?: boolean;
+  onToggle?(): void;
+}
+
+export function LoadingIconWithPopover({ active, onToggle, loading, valid, children }: IconWithPopoverProps) {
+  if (loading) {
+    return (
+      <button type="button" style={{ background: 0, border: 0}}>
+        <LoadingIndicator />
+      </button>
+    )
+  }
+
+  return (
+    <ContainedPopover active={active}
+      onToggle={onToggle}
+      align="right"
+      toggle={<CheckOrCross value={valid} />}>
+      {children}
+    </ContainedPopover>
   )
 }

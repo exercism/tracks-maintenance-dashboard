@@ -1,39 +1,34 @@
-import React from 'react'
-import { useTrackAsideData } from '../hooks/useTrackData'
-import { CheckOrCross } from './CheckOrCross'
-import { LoadingIndicator } from './LoadingIndicator'
+import React, { useCallback } from 'react'
 import { useRemoteConfig } from '../hooks/useRemoteConfig'
-import { ContainedPopover } from './Popover'
+import { useToggleState } from '../hooks/useToggleState'
+import { useTrackAsideData } from '../hooks/useTrackData'
+import { LoadingIconWithPopover } from './Popover'
 
 export function TrackAside({ trackId }: { trackId: TrackIdentifier }) {
   const { done: doneConfig, config } = useRemoteConfig(trackId)
   const { done, data } = useTrackAsideData(trackId)
 
+  const [currentDetails, doToggleDetails] = useToggleState()
+
   return (
-    <aside className="mt-md-4 mb-4 col-12 col-md">
+    <aside className="mt-md-4 mb-4 col-md">
       <ul className="list-group" style={{ whiteSpace: 'nowrap' }}>
         <li className="list-group-item d-flex justify-content-between">
-          <a href={`https://github.com/exercism/${trackId}`} className="d-block mr-4">
-            Repository
-          </a>
+          <RepositoryLink repository={trackId}>Repository</RepositoryLink>
         </li>
         <li className="list-group-item d-flex justify-content-between">
           <a href={`https://github.com/exercism/${trackId}/blob/master/config.json`} className="d-block mr-4">
             Normalised Configuration
           </a>
-          <ConfigurationIcon loading={!doneConfig} valid={!!config} />
+          <ConfigurationIcon currentDetails={currentDetails} onToggleDetails={doToggleDetails} loading={!doneConfig} valid={!!config} />
         </li>
         <li className="list-group-item d-flex justify-content-between">
-          <a href={`https://github.com/exercism/${trackId}-analyzer`} className="d-block mr-4">
-            Automated Analysis
-          </a>
-          <AnalyzerIcon trackId={trackId} loading={!done} valid={data['analyzer'] === true} />
+          <RepositoryLink repository={`${trackId}-analyzer`}>Automated Analysis</RepositoryLink>
+          <AnalyzerIcon currentDetails={currentDetails} onToggleDetails={doToggleDetails} trackId={trackId} loading={!done} valid={data['analyzer'] === true} />
         </li>
         <li className="list-group-item d-flex justify-content-between" >
-          <a href={`https://github.com/exercism/${trackId}-test-runner`}  className="d-block mr-4">
-            Test Runner
-          </a>
-          <TestRunnerIcon trackId={trackId} loading={!done} valid={data['testRunner'] === true} />
+          <RepositoryLink repository={`${trackId}-test-runner`}>Test Runner</RepositoryLink>
+          <TestRunnerIcon currentDetails={currentDetails} onToggleDetails={doToggleDetails} trackId={trackId} loading={!done} valid={data['testRunner'] === true} />
         </li>
       </ul>
 
@@ -50,49 +45,66 @@ export function TrackAside({ trackId }: { trackId: TrackIdentifier }) {
   )
 }
 
-function IconWithPopover({ loading, valid, children }: { loading: boolean; valid: boolean; children: React.ReactNode }) {
-  if (loading) {
-    return (
-      <button type="button" style={{ background: 0, border: 0}}>
-        <LoadingIndicator />
-      </button>
-    )
-  }
-
+function RepositoryLink({ children, repository, organisation = 'exercism' }: { children: React.ReactNode; organisation?: string; repository: string }) {
   return (
-    <ContainedPopover align="right" toggle={<CheckOrCross value={valid} />}>
+    <a href={`https://github.com/${organisation}/${repository}`} className="d-block mr-4">
       {children}
-    </ContainedPopover>
+    </a>
   )
 }
 
-function ConfigurationIcon({ loading, valid }: { loading: boolean; valid: boolean }) {
+interface PreconfiguredIconProps {
+  loading: boolean;
+  valid: boolean;
+  currentDetails?: string;
+  onToggleDetails?(next: string): void;
+}
+
+function ConfigurationIcon({ loading, valid, currentDetails, onToggleDetails }: PreconfiguredIconProps) {
+  const active = currentDetails === 'config.json'
+  const doToggle = useCallback(() => onToggleDetails && onToggleDetails('config.json'), [onToggleDetails])
+
   return (
-    <IconWithPopover loading={loading} valid={valid}>
+    <LoadingIconWithPopover active={active}
+      loading={loading}
+      valid={valid}
+      onToggle={doToggle}>
       <p>This check passes if there is a <code>config.json</code> file present at the root of the repository.</p>
       <p className="mb-0">You can find more information about the <code>config.json</code> file <a href="https://github.com/exercism/problem-specifications/blob/master/CONTRIBUTING.md#track-configuration-file">here</a>.</p>
-    </IconWithPopover>
+    </LoadingIconWithPopover>
   )
 }
 
-function AnalyzerIcon({ loading, valid, trackId }: { loading: boolean; valid: boolean; trackId: TrackIdentifier }) {
+function AnalyzerIcon({ loading, valid, currentDetails, onToggleDetails, trackId }: PreconfiguredIconProps & { trackId: TrackIdentifier }) {
+  const active = currentDetails === 'analyzer'
+  const doToggle = useCallback(() => onToggleDetails && onToggleDetails('analyzer'), [onToggleDetails])
+
   return (
-    <IconWithPopover loading={loading} valid={valid}>
+    <LoadingIconWithPopover  active={active}
+      loading={loading}
+      valid={valid}
+      onToggle={doToggle}>
       <p>This check passes if there is a <code>Dockerfile</code> file present in the <code>exercism/{trackId}-analyzer</code> repository.</p>
 
       <p className="mb-0">You can find more information about the <code>Dockerfile</code> file <a href="https://github.com/exercism/automated-analysis/blob/master/docs/docker.md">here</a>,
       or about <a href="https://github.com/exercism/automated-analysis/blob/master/docs/about.md">the automated analysis in general</a>, as well as the steps to <a href="https://github.com/exercism/automated-analysis/blob/master/docs/creating-an-analyzer.md">pass this test</a>.
       </p>
-    </IconWithPopover>
+    </LoadingIconWithPopover>
   )
 }
 
-function TestRunnerIcon({ loading, valid, trackId }: { loading: boolean; valid: boolean; trackId: TrackIdentifier }) {
+function TestRunnerIcon({ loading, valid, currentDetails, onToggleDetails, trackId }: PreconfiguredIconProps & { trackId: TrackIdentifier }) {
+  const active = currentDetails === 'test-runner'
+  const doToggle = useCallback(() => onToggleDetails && onToggleDetails('test-runner'), [onToggleDetails])
+
   return (
-    <IconWithPopover loading={loading} valid={valid}>
+    <LoadingIconWithPopover  active={active}
+      loading={loading}
+      valid={valid}
+      onToggle={doToggle}>
       <p>This check passes if there is a <code>Dockerfile</code> file present in the <code>exercism/{trackId}-test-runner</code> repository.</p>
 
       <p className="mb-0">You can find more information about the <code>Dockerfile</code> file <a href="https://github.com/exercism/automated-tests/blob/master/docs/docker.md">here</a></p>
-    </IconWithPopover>
+    </LoadingIconWithPopover>
   )
 }

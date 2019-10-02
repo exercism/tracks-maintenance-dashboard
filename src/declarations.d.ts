@@ -1,11 +1,14 @@
 // TODO: update to ALL the supported tracks
 type TrackIdentifier = 'csharp' | 'javascript' | 'ruby' | 'typescript'
+type ExerciseIdentifier = string
+
 type Branch = 'master' | 'track-anatomy'
-type View = 'unimplemented' | '' | 'topics'
+type View = 'unimplemented' | '' | 'topics' | 'details'
 
 type SelectedTrackIdentifier = TrackIdentifier | null
 type SelectedBranch = Branch | null
 type SelectedView = View | null
+type SelectedExercise = ExerciseIdentifier | null
 
 interface TrackConfiguration extends Readonly<TrackConfiguration> {
   language: string
@@ -16,7 +19,7 @@ interface TrackConfiguration extends Readonly<TrackConfiguration> {
 }
 
 interface ExerciseConfiguration extends Readonly<ExerciseConfiguration> {
-  slug: string
+  slug: Exercise
   uuid: string
   core: boolean
   unlocked_by: string | null

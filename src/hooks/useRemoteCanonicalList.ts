@@ -2,27 +2,39 @@ import { useReducer, useEffect } from 'react'
 import { useProblemSpecificationBranch } from './useProblemSpecificationBranch'
 
 type Branch = string
-type CanonicalList = ReadonlyArray<string>
+type CanonicalList = ReadonlyArray<ExerciseIdentifier>
+
+type CanonicalLookupValue = Readonly<{
+  slug: ExerciseIdentifier;
+  deprecated: boolean;
+  description: boolean;
+  meta: boolean;
+  tests: boolean;
+}>
+
+type CanonicalLookup = Record<ExerciseIdentifier, CanonicalLookupValue>
+
 type RemoteCanonicalList = {
   done: boolean
   list: CanonicalList | undefined
+  data: CanonicalLookup | undefined
   url: string | undefined
 }
 
-const CACHE = {} as Record<Branch, CanonicalList>
+const CACHE = {} as Record<Branch, CanonicalLookup>
 
-function readCache(branch: Branch): CanonicalList | undefined {
+function readCache(branch: Branch): CanonicalLookup | undefined {
   return CACHE[branch]
 }
 
-function writeCache(branch: Branch, list: CanonicalList) {
-  CACHE[branch] = list
+function writeCache(branch: Branch, data: CanonicalLookup) {
+  CACHE[branch] = data
 }
 
 type FetchAction =
-  | { type: 'list'; list: CanonicalList }
+  | { type: 'list'; list: CanonicalList, data: CanonicalLookup }
   | { type: 'error' }
-  | { type: 'skip'; list: CanonicalList }
+  | { type: 'skip'; list: CanonicalList, data: CanonicalLookup }
 
 type FetchState = { list: CanonicalList | undefined; loading: boolean }
 
@@ -42,6 +54,11 @@ function fetchReducer(state: FetchState, action: FetchAction) {
   }
 }
 
+/**
+ * Fetches the canonical list of known exercises
+ *
+ * @note uses an API call to fetch the contents and an API call to fetch the tree
+ */
 export function useRemoteCanonicalList(): RemoteCanonicalList {
   const problemSpecBranch = useProblemSpecificationBranch()
   const [state, dispatch] = useReducer(fetchReducer, initialState)
@@ -49,7 +66,7 @@ export function useRemoteCanonicalList(): RemoteCanonicalList {
   const contentsUrl = `https://api.github.com/repos/exercism/problem-specifications/contents?ref=${problemSpecBranch}`
 
   const { loading: currentLoading } = state
-  const currentList = readCache(problemSpecBranch)
+  const currentData = readCache(problemSpecBranch)
 
   useEffect(() => {
     if (!contentsUrl) {
@@ -57,10 +74,10 @@ export function useRemoteCanonicalList(): RemoteCanonicalList {
     }
 
     // If we already have a config, mark it as "don't fetch"
-    if (currentList) {
+    if (currentData) {
       if (currentLoading) {
-        writeCache(problemSpecBranch, currentList)
-        dispatch({ type: 'skip', list: currentList })
+        writeCache(problemSpecBranch, currentData)
+        dispatch({ type: 'skip', list: Object.keys(currentData), data: currentData })
       }
       return
     }
@@ -87,7 +104,8 @@ export function useRemoteCanonicalList(): RemoteCanonicalList {
           throw new Error('Expected an entry "exercises"')
         }
 
-        return fetch(item['git_url'])
+        // Fetch the tree, but recursively
+        return fetch(`${item['git_url']}${item['git_url'].indexOf('?') === -1 ? '?' : '&'}recursive=1`)
       })
       .then(async (result) => {
         if (!active || !result) {
@@ -109,29 +127,56 @@ export function useRemoteCanonicalList(): RemoteCanonicalList {
           return undefined
         }
 
-        const sparseItems = await Promise.all(items.map((item) =>
-          fetch(`https://raw.githubusercontent.com/exercism/problem-specifications/master/exercises/${item}/.deprecated`)
-            .then((result) => result.ok, () => false)
-            .then((deprecated) => deprecated ? null : item)
-        ))
+        const lookup = items.reduce((result, item) => {
+          const [slug, prop] = item.split('/')
+          if (!result[slug]) {
+            result[slug] = { slug, deprecated: false, description: false, tests: false, meta: false }
+          }
 
-        const validItems = sparseItems.filter(Boolean) as string[]
+          switch(prop) {
+            case 'metadata.yml': {
+              result[slug].meta = true
+              break
+            }
+            case 'description.md': {
+              result[slug].description = true
+              break;
+            }
+            case 'canonical-data.yml': {
+              result[slug].tests = true
+              break;
+            }
+            case '.deprecated': {
+              result[slug].deprecated = true
+              break;
+            }
+          }
 
-        writeCache(problemSpecBranch, validItems)
-        dispatch({ type: 'list', list: validItems })
+          return result
+        }, {} as Record<ExerciseIdentifier, {
+          slug: ExerciseIdentifier;
+          deprecated: boolean;
+          description: boolean;
+          tests: boolean;
+          meta: boolean;
+        }>)
+
+        writeCache(problemSpecBranch, lookup)
+        dispatch({ type: 'list', list: Object.keys(lookup), data: lookup })
       })
       .catch((err) => {
-        dispatch({ type: 'error' })
+        active && dispatch({ type: 'error' })
       })
 
     return () => {
       active = false
     }
-  }, [contentsUrl, problemSpecBranch, currentLoading, currentList])
+  }, [contentsUrl, problemSpecBranch, currentLoading, currentData])
 
   return {
     done: !currentLoading,
-    list: currentList,
+    list: Object.keys(currentData || []),
+    data: currentData,
     url: contentsUrl,
   }
 }

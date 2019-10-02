@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
 
-type NormalisedBranch = string
+export type NormalisedBranch = string
 
 const DEFAULT_BRANCH: Branch = 'master'
 const ProblemSpecificationBranch = createContext<Branch | undefined>(DEFAULT_BRANCH)

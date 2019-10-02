@@ -1,23 +1,21 @@
 import { useReducer, useEffect } from 'react'
-import { useProblemSpecificationBranch } from '../hooks/useProblemSpecificationBranch'
+import { useProblemSpecificationBranch, NormalisedBranch } from '../hooks/useProblemSpecificationBranch'
 
-type Slug = string
 type Version = string | undefined
-type Branch = string
 type RemoteCanonicalVersion = {
   done: boolean
   version: Version
   url: string | undefined
 }
 
-const CACHE = {} as Record<Slug, Version>
+const CACHE = {} as Record<ExerciseIdentifier, Version>
 
-function readCache(slug: Slug, problemSpecBranch: Branch) {
-  return CACHE[`${slug}-${problemSpecBranch}`]
+function readCache(slug: ExerciseIdentifier, branch: NormalisedBranch) {
+  return CACHE[`${slug}-${branch}`]
 }
 
-function writeCache(slug: Slug, problemSpecBranch: Branch, version: Version) {
-  CACHE[`${slug}-${problemSpecBranch}`] = version
+function writeCache(slug: ExerciseIdentifier, branch: NormalisedBranch, version: Version) {
+  CACHE[`${slug}-${branch}`] = version
 }
 
 type FetchAction =
@@ -53,7 +51,12 @@ function fetchReducer(state: FetchState, action: FetchAction) {
   }
 }
 
-export function useRemoteCanonicalVersion(slug: Slug): RemoteCanonicalVersion {
+/**
+ * Finds the canonical version (the current version of the canonical data)
+ *
+ * @param slug the exercise slug
+ */
+export function useRemoteCanonicalVersion(slug: ExerciseIdentifier): RemoteCanonicalVersion {
   const problemSpecBranch = useProblemSpecificationBranch()
   const [state, dispatch] = useReducer(fetchReducer, initialState)
 

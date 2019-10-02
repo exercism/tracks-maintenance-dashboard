@@ -3,6 +3,7 @@ import React from 'react'
 import { useTrackData } from '../hooks/useTrackData'
 import { useRemoteConfig } from '../hooks/useRemoteConfig'
 import { TrackAside } from './TrackAside'
+import { TrackChecklist } from './TrackChecklist'
 import { TrackDescription } from './TrackDescription'
 import { TrackIcon } from './TrackIcon'
 
@@ -33,6 +34,7 @@ export function TrackTool({
       <div className="d-flex flex-wrap row">
         <div className="col" style={{ maxWidth: '27rem' }}><Header trackId={trackId} /></div>
         <TrackAside trackId={trackId} />
+        <TrackChecklist trackId={trackId} />
       </div>
 
       <TrackView trackId={trackId} view={view || DEFAULT_VIEW} />
