@@ -3,6 +3,7 @@ import { useRemoteConfig } from '../../hooks/useRemoteConfig'
 import { useRemoteCanonicalList } from '../../hooks/useRemoteCanonicalList'
 import { LoadingIndicator } from '../LoadingIndicator'
 import { useProblemSpecificationBranch } from '../../hooks/useProblemSpecificationBranch'
+import { ExerciseIcon } from '../ExerciseIcon'
 
 const NO_EXERCISES = Object.freeze([])
 
@@ -65,31 +66,8 @@ function ExerciseList({
         <li key={exercise} className="col-12 col-sm-6 col-md-4 col-lg-3 mb-2">
           <a href={canonicalUrl} className="d-flex align-items-center">
             <figure className="media mr-2 mb-0">
-              <img className="hover"
-                src={`https://assets.exercism.io/exercises/${exercise}-white.png`}
-                alt={`${exercise} logo`}
-                style={{
-                  background: '#009cab',
-                  border: '1px solid rgba(0,156,171,0.5)',
-                  padding: 6,
-                  width: 56,
-                  borderRadius: 2,
-                  height: 56
-                }}
-                />
-
-              <img className="normal"
-                src={`https://assets.exercism.io/exercises/${exercise}-turquoise.png`}
-                alt={`${exercise} logo hover state`}
-                style={{
-                  background: '#fff',
-                  border: '1px solid rgba(0,156,171,0.5)',
-                  padding: 6,
-                  borderRadius: 2,
-                  width: 56,
-                  height: 56
-                }}
-                />
+              <ExerciseIcon exercise={exercise} size={56}/>
+              <ExerciseIcon exercise={exercise} size={56} hover={true} />
             </figure>
             <span className="media-body">{exercise}</span>
           </a>

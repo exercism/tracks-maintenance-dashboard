@@ -1,5 +1,10 @@
 # Changelog
 
+## master
+
+- Fix padding bottom on `topics` view
+- Add generic `ExerciseIcon` component
+
 ## 0.1.2
 
 - Fix `analyzer` and `test-runner` checks: look for `Dockerfile` instead of `README.md`

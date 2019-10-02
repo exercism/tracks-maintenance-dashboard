@@ -10,7 +10,7 @@ import { useRemoteCanonicalVersion } from '../../hooks/useRemoteCanonicalVersion
 import { CheckOrCross } from './../CheckOrCross'
 import { LoadingIndicator } from '../LoadingIndicator'
 import { ContainedPopover } from '../Popover'
-
+import { ExerciseIcon } from '../ExerciseIcon'
 
 export function TrackVersions({ trackId }: { trackId: TrackIdentifier }): JSX.Element {
 
@@ -151,21 +151,8 @@ function ExerciseNameCell({ exercise }: { exercise: ExerciseConfiguration }) {
 
   return (
     <Cell>
-      <img
-        src={`https://assets.exercism.io/exercises/${exercise.slug}-turquoise.png`}
-        alt={`${exercise} logo hover state`}
-        style={{
-          background: '#fff',
-          border: '1px solid rgba(0,156,171,0.5)',
-          padding: 4,
-          borderRadius: 2,
-          width: 24,
-          height: 24,
-          marginRight: 10,
-          verticalAlign: 'text-top'
-        }}
-      />
-      {exercise.slug}
+      <ExerciseIcon exercise={exercise.slug} size={24} />
+      <span className="ml-2">{exercise.slug}</span>
     </Cell>
   )
 }
