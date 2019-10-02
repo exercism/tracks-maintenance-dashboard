@@ -1,6 +1,6 @@
 # Changelog
 
-## master
+## 0.1.3
 
 - Fix padding bottom on `topics` view
 - Add generic `ExerciseIcon` component
