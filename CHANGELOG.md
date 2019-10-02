@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0
+
+- Add track checklist
+- Add information to unimplemented view
+- Add information to topics view
+- Fix track aside "details" overlapping overlay
+- Fix deprecated fetch using N+1 requests
+
 ## 0.1.3
 
 - Fix padding bottom on `topics` view
