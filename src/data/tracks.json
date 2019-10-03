@@ -5,6 +5,11 @@
     "core_enabled": false
   },
   {
+    "slug": "ballerina",
+    "name": "Ballerina",
+    "core_enabled": true
+  },
+  {
     "slug": "bash",
     "name": "Bash",
     "core_enabled": true,
@@ -73,6 +78,11 @@
     "core_enabled": true
   },
   {
+    "slug": "delphi",
+    "name": "Delphi Pascal",
+    "core_enabled": true
+  },
+  {
     "slug": "elm",
     "name": "Elm",
     "core_enabled": true
@@ -80,6 +90,11 @@
   {
     "slug": "elixir",
     "name": "Elixir",
+    "core_enabled": true
+  },
+  {
+    "slug": "elisp",
+    "name": "Emacs Lisp",
     "core_enabled": true
   },
   {
@@ -161,6 +176,11 @@
     "name": "Kotlin",
     "core_enabled": true,
     "versioning": "exercises/{slug}/.meta/version"
+  },
+    {
+    "slug": "lfe",
+    "name": "Lisp Flavored Erlang",
+    "core_enabled": true
   },
   {
     "slug": "lua",
@@ -252,6 +272,11 @@
     "core_enabled": true
   },
   {
+    "slug": "reasonml",
+    "name": "ReasonML",
+    "core_enabled": true
+  },
+  {
     "slug": "ruby",
     "name": "Ruby",
     "core_enabled": true,
@@ -273,6 +298,11 @@
     "slug": "scheme",
     "name": "Scheme",
     "core_enabled": false
+  },
+  {
+    "slug": "sml",
+    "name": "Standard ML",
+    "core_enabled": true
   },
   {
     "slug": "shen",
@@ -305,6 +335,11 @@
     "slug": "vbnet",
     "name": "VB.Net",
     "core_enabled": false
+  },
+  {
+    "slug": "vimscript",
+    "name": "Vim script",
+    "core_enabled": true
   },
   {
     "slug": "x86-64-assembly",
