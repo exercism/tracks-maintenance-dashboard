@@ -297,7 +297,8 @@
   {
     "slug": "scheme",
     "name": "Scheme",
-    "core_enabled": false
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/.meta/version"
   },
   {
     "slug": "sml",
