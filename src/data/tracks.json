@@ -174,7 +174,8 @@
   {
     "slug": "nim",
     "name": "Nim",
-    "core_enabled": true
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/{exercise_slug}_test.nim"
   },
   {
     "slug": "objective-c",
