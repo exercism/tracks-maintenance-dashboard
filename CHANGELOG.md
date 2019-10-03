@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.4
+
+- Add missing track `ballerina`
+- Add missing track `delphi`
+- Add missing track `elisp`
+- Add missing track `lfe`
+- Add missing track `reasonml`
+- Add missing track `sml`
+- Add missing track `vimscript`
+
 ## 0.2.3
 
 - Add `versioning` fro `go`
