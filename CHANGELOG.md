@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.3
+
+- Add `versioning` fro `go`
+- Add `versioning` for `groovy`
+- Add `versioning` for `nim`
+- Fix the protocol for `homepage` in `package.json` to be `https` (instead of `http`)
+
 ## 0.2.2
 
 - Fix path expansion for cloudfront invalidation
