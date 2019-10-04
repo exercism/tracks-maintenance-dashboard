@@ -212,12 +212,14 @@
   {
     "slug": "perl5",
     "name": "Perl 5",
-    "core_enabled": false
+    "core_enabled": false,
+    "versioning": "exercises/{slug}/{slug}.t"
   },
   {
     "slug": "perl6",
     "name": "Perl 6",
-    "core_enabled": true
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/{slug}.t6"
   },
   {
     "slug": "pharo-smalltalk",
