@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.5
+
+- Add `versioning` for `perl5`
+- Add `versioning` for `perl6`
+- Add `versioning` for `scheme`
+
 ## 0.2.4
 
 - Add missing track `ballerina`
