@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.6
+
+- Change `useRemoteVersion` to make matching simpler and work with `perl` tracks
+
 ## 0.2.5
 
 - Add `versioning` for `perl5`
