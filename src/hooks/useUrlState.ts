@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect } from 'react'
 import TRACKS from '../data/tracks.json'
 
 const DEFAULT_BRANCH: Branch = 'master'
+const DETAULT_VIEW: View = 'versions'
 
 type SupportedState = {
   trackId: TrackIdentifier | null | undefined;
@@ -90,12 +91,12 @@ function sanitizeBranch(anyBranch: string): Branch {
 }
 
 function sanitizeView(anyView: string): View | undefined {
-  const branches: View[] = ['unimplemented', 'topics']
-  return branches.find((branch) => branch === anyView)
+  const views: View[] = ['unimplemented', 'topics', 'details', 'versions']
+  return views.find((views) => views === anyView) || DETAULT_VIEW
 }
 
 function sanititzeExercise(anyExercise: string): ExerciseIdentifier | undefined {
-  return anyExercise ? anyExercise.replace(/( |_|)/, '-') : undefined
+  return anyExercise ? anyExercise.trim().replace(/( |_)/g, '-') : undefined
 }
 
 function getOptionFromUrl<K extends keyof SupportedState>(key: K, sanitize: sanitizeUrlState<K>): SupportedState[K] {
@@ -121,7 +122,7 @@ function getOptionFromUrl<K extends keyof SupportedState>(key: K, sanitize: sani
 }
 
 function getOptionsFromUrl(): Record<string, string> {
-  const [, urlTrackId, urlBranch, urlView, urlExercise] = window.location.pathname.split('/')
+  const [, urlTrackId, urlBranch, urlView, urlExercise] = decodeURIComponent(window.location.pathname || '').split('/')
   return {
     trackId: urlTrackId,
     branch: urlBranch || DEFAULT_BRANCH,
@@ -130,7 +131,7 @@ function getOptionsFromUrl(): Record<string, string> {
   }
 }
 
-function setOptionsInUrl({
+export function setOptionsInUrl({
   trackId: nextTrackId,
   branch: nextBranch,
   view: nextView,
@@ -144,12 +145,13 @@ function setOptionsInUrl({
   const current = getOptionsFromUrl()
   const trackId = nextTrackId || current.trackId
   const branch = nextBranch || current.branch
-  const view = nextView === undefined ? current.view : nextView
+
   const exercise = nextExercise === undefined ? current.exercise : nextExercise
+  const view = nextView === undefined ? (nextExercise ? 'details' : current.view) : nextView
 
   return window.history.pushState(
     { trackId },
     `Exercism: Track ${trackId} maintenance tool (${branch}) - ${view || 'Dashboard'}`,
-    '/' + [trackId, branch, view, exercise].filter(Boolean).join('/')
+    '/' + [trackId, branch, view, view && exercise].filter(Boolean).join('/')
   )
 }

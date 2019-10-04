@@ -18,7 +18,7 @@ function TrackSelectionItem({
   return (
     <li className="list-inline-item mb-2">
       <button
-        className={`btn btn-${track.versioning ? '' : 'outline-'}primary`}
+        className={`btn btn-md btn-${track.versioning ? '' : 'outline-'}primary`}
         onClick={onSelect}
       >
         {track.name}
@@ -45,14 +45,17 @@ export function TrackSelection({ onSelect }: TrackSelectionProps): JSX.Element {
   return (
     <section>
       <header className="mb-4">
-        <h1 className="mb-4">Exercism Version and Config tools</h1>
-        <h2>Select your track</h2>
+        <h1 className="mb-4">Exercism: Track maintenance</h1>
       </header>
       <ol className="list-inline">
         {ENABLED_TRACKS.map(renderTrackSelectionItem)}
       </ol>
       <p className="text-muted">
-        Tracks are highlighted if the track has a defined versioning scheme.
+        Tracks are highlighted if the track has a defined versioning scheme. If a track
+        isn't highlighted, but the track does keep track of the exercise versions, you
+        may <a href="https://github.com/exercism/tracks-maintenance-dashboard/edit/master/src/data/tracks.json">edit this file</a>.
+        Add the <code>versioning</code> key to the right track data. Follow the format
+        of existing values.
       </p>
     </section>
   )
