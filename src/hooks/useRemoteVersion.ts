@@ -141,16 +141,15 @@ export function useRemoteVersion(
           return
         }
 
-        // Looks for the following prefixes:
+        // Looks for the following prefixes (end quote optional [" or '])
         // - Version
         // - version
         // - vsn
         //
-        // Followed by:
-        // - : (white space optional)
-        // - : "
-        // - = "
-        // - , "
+        // Followed by (surrounding whitespace and end quote optional [" or '])
+        // - :
+        // - =
+        // - ,
         // - (single space)
         //
         // Ending with:
@@ -166,7 +165,7 @@ export function useRemoteVersion(
         // different metadata after the version.
         //
         const match = textResult.match(
-          /(?:V|v|vsn)(?:ersion:?)?(?:\s*?| | = "|: "|, ")([0-9]+\.[0-9]+\.[0-9]+)/
+          /(?:(?:V|v)(?:ersion:?)?|vsn)['"]?\s?[,:=]?\s*?['"]?([0-9]+\.[0-9]+\.[0-9]+)/
         )
         const version = match && match[1]
         if (!version) {
