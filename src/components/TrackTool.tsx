@@ -11,7 +11,7 @@ import { ExerciseDetails } from './views/ExerciseDetails'
 import { TrackMissing } from './views/TrackMissing'
 import { TrackTopics } from './views/TrackTopics'
 import { TrackVersions } from './views/TrackVersions'
-import { useView, useExercise } from '../hooks/useUrlState'
+import { useView, useExercise, setOptionsInUrl } from '../hooks/useUrlState'
 import { useToggleState } from '../hooks/useToggleState'
 
 export interface TrackToolProps {
@@ -26,21 +26,23 @@ export function TrackTool({
   onUnselect
 }: TrackToolProps): JSX.Element {
 
-  const [selectedView, onChangeView] = useView()
-  const [selectedExercise, onChangeExercise] = useExercise()
+  const [selectedView] = useView()
+  const [selectedExercise] = useExercise()
+
   const [currentDetails, onToggleDetails] = useToggleState()
 
   const actualView = selectedView || DEFAULT_VIEW
 
   const doHideExercise = useCallback(() => {
-    onChangeView(DEFAULT_VIEW)
-    onChangeExercise('')
-  }, [onChangeView, onChangeExercise])
+    setOptionsInUrl({ view: DEFAULT_VIEW, exercise: '' })
+  }, [setOptionsInUrl])
 
   const doShowExercise = useCallback((exercise: ExerciseIdentifier) => {
-    actualView !== 'details' && onChangeView('details')
-    selectedExercise !== exercise && onChangeExercise(exercise)
-  }, [actualView, onChangeView, onChangeExercise, selectedExercise])
+    setOptionsInUrl({
+      view: 'details',
+      exercise
+    })
+  }, [actualView, setOptionsInUrl, selectedExercise])
 
 
 
@@ -54,7 +56,8 @@ export function TrackTool({
         <TrackChecklist trackId={trackId} currentDetails={currentDetails} onToggleDetails={onToggleDetails}  />
       </div>
 
-      <ViewSelect view={actualView} onChangeView={onChangeView} />
+      <ViewSelect />
+
       <TrackView
         trackId={trackId}
         view={actualView}
@@ -78,7 +81,9 @@ function UnselectTrackButton({ onClick }: { onClick: TrackToolProps['onUnselect'
 
 const noop = () => {}
 
-function ViewSelect({ view, onChangeView }: { view: View; onChangeView: (view: View) => void }) {
+function ViewSelect() {
+  const [view, onChangeView] = useView()
+
   return (
     <div className="btn-group">
       <button

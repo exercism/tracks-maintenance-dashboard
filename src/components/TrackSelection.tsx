@@ -2,11 +2,9 @@ import React, { useCallback } from 'react'
 
 import TRACKS from '../data/tracks.json'
 
-const ENABLED_TRACKS = TRACKS as ReadonlyArray<TrackData>
+import { useTrack } from '../hooks/useUrlState'
 
-export interface TrackSelectionProps {
-  onSelect: (track: TrackIdentifier) => void
-}
+const ENABLED_TRACKS = TRACKS as ReadonlyArray<TrackData>
 
 function TrackSelectionItem({
   track,
@@ -27,10 +25,12 @@ function TrackSelectionItem({
   )
 }
 
-export function TrackSelection({ onSelect }: TrackSelectionProps): JSX.Element {
+export function TrackSelection(): JSX.Element {
+  const [, onSelectTrack] = useTrack()
+
   const renderTrackSelectionItem = useCallback(
     (track: Readonly<TrackData>) => {
-      const doSelectTrack = () => onSelect(track.slug)
+      const doSelectTrack = () => onSelectTrack(track.slug)
       return (
         <TrackSelectionItem
           key={track.slug}
@@ -39,7 +39,7 @@ export function TrackSelection({ onSelect }: TrackSelectionProps): JSX.Element {
         />
       )
     },
-    [onSelect]
+    [onSelectTrack]
   )
 
   return (
