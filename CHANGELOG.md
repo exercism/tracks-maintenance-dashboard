@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.7
+
+- Add `versioning` for `lisp`
+
 ## 0.2.6
 
 - Change `useRemoteVersion` to make matching simpler and work with `perl` tracks
