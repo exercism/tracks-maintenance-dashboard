@@ -1,5 +1,4 @@
-import React, { useCallback, useState } from 'react';
-import { useToggleState } from '../hooks/useToggleState';
+import React, { useState, useCallback } from 'react';
 import { useTrackAsideData } from '../hooks/useTrackData';
 import { LoadingIconWithPopover } from './Popover';
 import { useOutsideClick } from '../hooks/useOutsideClick';
@@ -8,16 +7,16 @@ export const TrackChecklist = ({ trackId }: { trackId: TrackIdentifier }) => {
    const { done, checklist } = useTrackAsideData(trackId);
    //track-blurb
    const [trackBlurbVisible, setTrackBlurbVisible] = useState<boolean>(false);
-   const trackBlurbRef = useOutsideClick(() => setTrackBlurbVisible(false));
+   const trackBlurbRef = useOutsideClick(useCallback(() => setTrackBlurbVisible(false), [trackBlurbVisible]));
    //auto-approve-exercise
    const [approveExerciseVisible, setApproveExerciseVisible] = useState<boolean>(false);
-   const approveExerciseVisibleRef = useOutsideClick(() => setApproveExerciseVisible(false));
+   const approveExerciseVisibleRef = useOutsideClick(useCallback(() => setApproveExerciseVisible(false), [approveExerciseVisible]));
    //exercises-in-core
    const [exercisesInCoreVisible, setExercisesInCoreVisible] = useState<boolean>(false);
-   const exerciseInCoreRef = useOutsideClick(() => setExercisesInCoreVisible(false));
+   const exerciseInCoreRef = useOutsideClick(useCallback(() => setExercisesInCoreVisible(false), [exercisesInCoreVisible]));
    //exercises-with-topics
    const [exercisesWithTopicsVisible, setExercisesWithTopicsVisible] = useState<boolean>(false);
-   const exerciseWithTopicsRef = useOutsideClick(() => setExercisesWithTopicsVisible(false));
+   const exerciseWithTopicsRef = useOutsideClick(useCallback(() => setExercisesWithTopicsVisible(false), [exercisesWithTopicsVisible]));
    return (
       <aside className='mt-md-4 mb-4 col-md'>
          <ul className='list-group' style={{ whiteSpace: 'nowrap' }}>

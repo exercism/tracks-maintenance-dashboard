@@ -1,4 +1,4 @@
-import React, { forwardRef, Ref, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useRemoteConfig } from '../hooks/useRemoteConfig';
 import { useTrackAsideData } from '../hooks/useTrackData';
 import { useOutsideClick } from '../hooks/useOutsideClick';
