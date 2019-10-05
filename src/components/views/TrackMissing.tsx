@@ -42,7 +42,7 @@ export function TrackMissing({ trackId }: { trackId: TrackIdentifier }): JSX.Ele
   return (
     <section>
       <header>
-        <h2>Unimplemented exercises</h2>
+        <h2 id="unimplemented">Unimplemented exercises</h2>
         <p>
           This is the list of exercises as found in the <ProblemSpecLink>problem specifications</ProblemSpecLink> but not
           implemented in the <code>{trackId}</code> track. As maintainer, if you want an exercise to <em>never</em> be implemented, add its <code>slug</code> to

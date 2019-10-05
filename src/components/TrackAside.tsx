@@ -1,14 +1,17 @@
 import React, { useCallback } from 'react'
 import { useRemoteConfig } from '../hooks/useRemoteConfig'
-import { useToggleState } from '../hooks/useToggleState'
 import { useTrackAsideData } from '../hooks/useTrackData'
 import { LoadingIconWithPopover } from './Popover'
 
-export function TrackAside({ trackId }: { trackId: TrackIdentifier }) {
+interface TrackAsideProps {
+  trackId: TrackIdentifier;
+  currentDetails: string | undefined;
+  onToggleDetails(key: string): void;
+}
+
+export function TrackAside({ trackId, currentDetails, onToggleDetails }: TrackAsideProps) {
   const { done: doneConfig, config } = useRemoteConfig(trackId)
   const { done, data } = useTrackAsideData(trackId)
-
-  const [currentDetails, doToggleDetails] = useToggleState()
 
   return (
     <aside className="mt-md-4 mb-4 col-md">
@@ -20,15 +23,15 @@ export function TrackAside({ trackId }: { trackId: TrackIdentifier }) {
           <a href={`https://github.com/exercism/${trackId}/blob/master/config.json`} className="d-block mr-4">
             Normalised Configuration
           </a>
-          <ConfigurationIcon currentDetails={currentDetails} onToggleDetails={doToggleDetails} loading={!doneConfig} valid={!!config} />
+          <ConfigurationIcon currentDetails={currentDetails} onToggleDetails={onToggleDetails} loading={!doneConfig} valid={!!config} />
         </li>
         <li className="list-group-item d-flex justify-content-between">
           <RepositoryLink repository={`${trackId}-analyzer`}>Automated Analysis</RepositoryLink>
-          <AnalyzerIcon currentDetails={currentDetails} onToggleDetails={doToggleDetails} trackId={trackId} loading={!done} valid={data['analyzer'] === true} />
+          <AnalyzerIcon currentDetails={currentDetails} onToggleDetails={onToggleDetails} trackId={trackId} loading={!done} valid={data['analyzer'] === true} />
         </li>
         <li className="list-group-item d-flex justify-content-between" >
           <RepositoryLink repository={`${trackId}-test-runner`}>Test Runner</RepositoryLink>
-          <TestRunnerIcon currentDetails={currentDetails} onToggleDetails={doToggleDetails} trackId={trackId} loading={!done} valid={data['testRunner'] === true} />
+          <TestRunnerIcon currentDetails={currentDetails} onToggleDetails={onToggleDetails} trackId={trackId} loading={!done} valid={data['testRunner'] === true} />
         </li>
       </ul>
 

@@ -1,31 +1,34 @@
 import React, { useCallback } from 'react'
-import { useToggleState } from '../hooks/useToggleState'
 import { useTrackAsideData } from '../hooks/useTrackData'
 import { LoadingIconWithPopover } from './Popover'
 
-export function TrackChecklist({ trackId }: { trackId: TrackIdentifier }) {
-  const { done, checklist } = useTrackAsideData(trackId)
+interface TrackChecklistProps {
+  trackId: TrackIdentifier;
+  currentDetails: string | undefined;
+  onToggleDetails(key: string): void;
+}
 
-  const [currentDetails, doToggleDetails] = useToggleState()
+export function TrackChecklist({ trackId, currentDetails, onToggleDetails }: TrackChecklistProps) {
+  const { done, checklist } = useTrackAsideData(trackId)
 
   return (
     <aside className="mt-md-4 mb-4 col-md">
       <ul className="list-group" style={{ whiteSpace: 'nowrap' }}>
         <li className="list-group-item d-flex justify-content-between">
           Track blurb
-          <BlurbIcon currentDetails={currentDetails} onToggleDetails={doToggleDetails} loading={!done} valid={checklist.hasBlurb} />
+          <BlurbIcon currentDetails={currentDetails} onToggleDetails={onToggleDetails} loading={!done} valid={checklist.hasBlurb} />
         </li>
         <li className="list-group-item d-flex justify-content-between">
           Auto approve exercise
-          <AutoApproveIcon currentDetails={currentDetails} onToggleDetails={doToggleDetails} loading={!done} valid={checklist.hasAutoApprove} />
+          <AutoApproveIcon currentDetails={currentDetails} onToggleDetails={onToggleDetails} loading={!done} valid={checklist.hasAutoApprove} />
         </li>
         <li className="list-group-item d-flex justify-content-between">
           Exercises in core
-          <CoreIcon currentDetails={currentDetails} onToggleDetails={doToggleDetails} loading={!done} valid={checklist.exerciseCoreCount > 0} />
+          <CoreIcon currentDetails={currentDetails} onToggleDetails={onToggleDetails} loading={!done} valid={checklist.exerciseCoreCount > 0} />
         </li>
         <li className="list-group-item d-flex justify-content-between">
           Exercises with topics
-          <TopicsIcon currentDetails={currentDetails} onToggleDetails={doToggleDetails} loading={!done} valid={checklist.exerciseWithTopicsCount > 0} />
+          <TopicsIcon currentDetails={currentDetails} onToggleDetails={onToggleDetails} loading={!done} valid={checklist.exerciseWithTopicsCount > 0} />
         </li>
       </ul>
     </aside>

@@ -8,12 +8,17 @@ import { ContainedPopover } from '../Popover'
 import { CheckOrCross } from '../CheckOrCross'
 import { ExerciseIcon } from '../ExerciseIcon'
 
-export function TrackTopics({ trackId }: { trackId: TrackIdentifier }): JSX.Element {
+interface TrackTopicsProps {
+  trackId: TrackIdentifier;
+  onShowExercise: (exercise: ExerciseIdentifier) => void;
+}
+
+export function TrackTopics({ trackId, onShowExercise }: TrackTopicsProps): JSX.Element {
 
   return (
     <section>
       <header className="mb-4">
-        <h2>Exercise Topics</h2>
+        <h2 id="topics">Exercise Topics</h2>
         <p>
           This is the list of exercises as found in the <code>{trackId}</code> track, without the deprecated or
           foregone exercises. Each exercise should have one or more <strong>topics</strong> which indicate what the
@@ -25,7 +30,11 @@ export function TrackTopics({ trackId }: { trackId: TrackIdentifier }): JSX.Elem
 
       <RemoteConfig trackId={trackId}>
         {({ config }) => (
-          <ExerciseTable trackId={trackId} foregone={config.foregone} exercises={config.exercises} />
+          <ExerciseTable
+            trackId={trackId}
+            config={config}
+            onShowExercise={onShowExercise}
+          />
         )}
       </RemoteConfig>
     </section>
@@ -44,15 +53,17 @@ function TopicsFileLink({ children, edit }: { children: React.ReactNode; edit?: 
 const NO_EXCERCISES: ReadonlyArray<ExerciseConfiguration> = []
 const NO_FOREGONE_EXERCISES: ReadonlyArray<string> = []
 
+interface ExerciseTableProps {
+  trackId: TrackIdentifier;
+  config: TrackConfiguration;
+  onShowExercise(exercise: ExerciseIdentifier): void;
+}
+
 function ExerciseTable({
   trackId,
-  exercises,
-  foregone,
-}: {
-  trackId: TrackIdentifier
-  exercises: ReadonlyArray<ExerciseConfiguration>
-  foregone?: ReadonlyArray<string>
-}) {
+  config: { exercises, foregone },
+  onShowExercise
+}: ExerciseTableProps) {
   const [details, setDetails] = useToggleState()
   const { list, done } = useRemoteTopics()
   const validExercises = useValidExercises(foregone || NO_FOREGONE_EXERCISES, exercises)
@@ -70,13 +81,15 @@ function ExerciseTable({
 
   const renderExercise = useCallback(
     (exercise: ExerciseConfiguration) => {
+      const detailsActive = details === exercise.slug
+
       return (
-        <ExerciseRow
+        <ExerciseRow key={exercise.slug}
           exercise={exercise}
-          key={exercise.slug}
           topics={lookupTopic}
-          detailsActive={details === exercise.slug}
+          detailsActive={detailsActive}
           onToggleDetails={setDetails}
+          onShowExercise={onShowExercise}
         />
       )
     },
@@ -138,9 +151,10 @@ interface ExerciseRowProps {
   topics: Record<string, boolean>;
   detailsActive: boolean;
   onToggleDetails(key: string): void;
+  onShowExercise(exercise: ExerciseIdentifier): void;
 }
 
-function ExerciseRow({ exercise, topics, detailsActive, onToggleDetails }: ExerciseRowProps) {
+function ExerciseRow({ exercise, topics, detailsActive, onToggleDetails, onShowExercise }: ExerciseRowProps) {
 
   const topicsList = useMemo(() => Object.keys(topics), [topics])
   const annotatedTopics = useMemo(() =>
@@ -160,10 +174,11 @@ function ExerciseRow({ exercise, topics, detailsActive, onToggleDetails }: Exerc
   )
 
   const hasSuggestions = Object.keys(suggestions).length > 0
+  const doShowExercise = useCallback(() => onShowExercise(exercise.slug), [exercise, onShowExercise])
 
   return (
     <tr key={exercise.slug}>
-      <ExerciseNameCell exercise={exercise} />
+      <ExerciseNameCell exercise={exercise} onShowDetails={doShowExercise} />
       <td>
         <ul className="list-inline mb-0">
           {annotatedTopics.map((annotated) => (
@@ -217,11 +232,11 @@ function NoSuggestions() {
   return <span>All topics are in <TopicsFileLink><code>TOPICS.txt</code></TopicsFileLink>.</span>
 }
 
-function ExerciseNameCell({ exercise }: { exercise: ExerciseConfiguration }) {
+function ExerciseNameCell({ exercise, onShowDetails }: { exercise: ExerciseConfiguration; onShowDetails(): void }) {
   const Cell = exercise.core ? 'th' : 'td'
 
   return (
-    <Cell>
+    <Cell onClick={onShowDetails}>
       <ExerciseIcon exercise={exercise.slug} size={24} />
       <span className="ml-2">{exercise.slug}</span>
     </Cell>

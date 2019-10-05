@@ -3,7 +3,7 @@ type TrackIdentifier = 'csharp' | 'javascript' | 'ruby' | 'typescript'
 type ExerciseIdentifier = string
 
 type Branch = 'master' | 'track-anatomy'
-type View = 'unimplemented' | '' | 'topics' | 'details'
+type View = 'versions' | 'unimplemented' | 'topics' | 'details'
 
 type SelectedTrackIdentifier = TrackIdentifier | null
 type SelectedBranch = Branch | null
