@@ -1,17 +1,22 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
+import { useLocation } from './useLocation'
 
 import TRACKS from '../data/tracks.json'
 
 const DEFAULT_BRANCH: Branch = 'master'
+const DETAULT_VIEW: View = 'versions'
 
-type SupportedState = {
-  trackId: TrackIdentifier | null | undefined;
-  branch: Branch;
-  view: View | undefined;
-  exercise: ExerciseIdentifier | undefined;
+type UnsetTrackIdentifier = null
+type UnsetStatePartial = undefined
+
+interface SupportedState {
+  trackId: TrackIdentifier | UnsetTrackIdentifier;
+  branch: Branch | UnsetStatePartial;
+  view: View | UnsetStatePartial;
+  exercise: ExerciseIdentifier | UnsetStatePartial;
 }
 
-type sanitizeUrlState<K extends keyof SupportedState> = (input: string) => SupportedState[K]
+type sanitizeUrlState<K extends keyof SupportedState> = (input: string | undefined) => SupportedState[K]
 type UseUrlState<K extends keyof SupportedState> = [SupportedState[K], (value: SupportedState[K]) => void]
 
 /**
@@ -25,31 +30,12 @@ type UseUrlState<K extends keyof SupportedState> = [SupportedState[K], (value: S
  * @param sanitize how to sanititze values
  */
 export function useUrlState<K extends keyof SupportedState>(key: K, sanitize: sanitizeUrlState<K>): UseUrlState<K> {
-  const [,setRefreshCount] = useState(0)
-  const doScheduleRefresh = useCallback(() => setRefreshCount((prev) => prev + 1), [])
+  const location = useLocation()
+
+  const value = getOptionFromLocation(location, key, sanitize)
   const doUpdateValue = useCallback((value: SupportedState[K]) => {
     setOptionsInUrl({ [key]: value })
-    doScheduleRefresh()
-  }, [key, doScheduleRefresh])
-
-  const value = getOptionFromUrl(key, sanitize)
-
-  // Router
-  useEffect(() => {
-    const originalHandler = window.onpopstate
-    window.onpopstate = function(event: PopStateEvent) {
-      const nextValue = getOptionFromUrl(key, sanitize)
-      if (nextValue !== value) {
-        doScheduleRefresh()
-      }
-
-      originalHandler && originalHandler.call(this, event)
-    }
-
-    return () => {
-      window.onpopstate = originalHandler
-    }
-  }, [key, sanitize, value, doScheduleRefresh])
+  }, [key])
 
   return [value, doUpdateValue]
 }
@@ -75,31 +61,34 @@ export function useView() {
   return useUrlState('view', sanitizeView)
 }
 
+/**
+ * Convenience method to get the current exercise from the url
+ */
 export function useExercise() {
   return useUrlState('exercise', sanititzeExercise)
 }
 
-function sanitizeTrack(anyTrack: string): TrackIdentifier | undefined {
+function sanitizeTrack(anyTrack: string | undefined): TrackIdentifier | UnsetTrackIdentifier {
   const track = TRACKS.find((track) => track['slug'] === anyTrack)
-  return track ? anyTrack as TrackIdentifier : undefined
+  return track ? anyTrack as TrackIdentifier : null
 }
 
-function sanitizeBranch(anyBranch: string): Branch {
+function sanitizeBranch(anyBranch: string | undefined): Branch {
   const branches: Branch[] = ['master', 'track-anatomy']
   return branches.find((branch) => branch === anyBranch) || DEFAULT_BRANCH
 }
 
-function sanitizeView(anyView: string): View | undefined {
-  const branches: View[] = ['unimplemented', 'topics']
-  return branches.find((branch) => branch === anyView)
+function sanitizeView(anyView: string | undefined): View {
+  const views: View[] = ['unimplemented', 'topics', 'details', 'versions']
+  return views.find((views) => views === anyView) || DETAULT_VIEW
 }
 
-function sanititzeExercise(anyExercise: string): ExerciseIdentifier | undefined {
-  return anyExercise ? anyExercise.replace(/( |_|)/, '-') : undefined
+function sanititzeExercise(anyExercise: string | undefined): ExerciseIdentifier | UnsetStatePartial {
+  return anyExercise ? anyExercise.trim().replace(/( |_)/g, '-') : undefined
 }
 
-function getOptionFromUrl<K extends keyof SupportedState>(key: K, sanitize: sanitizeUrlState<K>): SupportedState[K] {
-  const { trackId: urlTrackId, branch: urlBranch, view: urlView, exercise: urlExercise } = getOptionsFromUrl()
+function getOptionFromLocation<K extends keyof SupportedState>(location: Location | undefined, key: K, sanitize: sanitizeUrlState<K>): SupportedState[K] {
+  const { trackId: urlTrackId, branch: urlBranch, view: urlView, exercise: urlExercise } = getOptionsFromLocation(location)
 
   switch(key) {
     case 'trackId': {
@@ -120,8 +109,18 @@ function getOptionFromUrl<K extends keyof SupportedState>(key: K, sanitize: sani
   }
 }
 
-function getOptionsFromUrl(): Record<string, string> {
-  const [, urlTrackId, urlBranch, urlView, urlExercise] = window.location.pathname.split('/')
+interface Options {
+  trackId: string | undefined;
+  branch: string;
+  view: string | undefined;
+  exercise: string | undefined
+}
+
+function getOptionsFromLocation(location: Location | undefined): Options {
+  const [, urlTrackId, urlBranch, urlView, urlExercise] = location
+    ? decodeURIComponent(location.pathname || '').split('/')
+    : []
+
   return {
     trackId: urlTrackId,
     branch: urlBranch || DEFAULT_BRANCH,
@@ -130,26 +129,33 @@ function getOptionsFromUrl(): Record<string, string> {
   }
 }
 
-function setOptionsInUrl({
+export function setOptionsInUrl(nextState: Partial<SupportedState>) {
+  return setOptionsWithLocation({ ...nextState, location: window.location })
+}
+
+function setOptionsWithLocation({
+  location,
   trackId: nextTrackId,
   branch: nextBranch,
   view: nextView,
   exercise: nextExercise
-}: Partial<SupportedState>) {
+}: Partial<SupportedState> & { location: Location }) {
+
   // unset track
   if (nextTrackId === null) {
     return window.history.pushState({}, 'Exercism: Track maintenance tool - Select your track', '/')
   }
 
-  const current = getOptionsFromUrl()
+  const current = getOptionsFromLocation(location)
   const trackId = nextTrackId || current.trackId
   const branch = nextBranch || current.branch
-  const view = nextView === undefined ? current.view : nextView
+
   const exercise = nextExercise === undefined ? current.exercise : nextExercise
+  const view = nextView === undefined ? (nextExercise ? 'details' : current.view) : nextView
 
   return window.history.pushState(
     { trackId },
     `Exercism: Track ${trackId} maintenance tool (${branch}) - ${view || 'Dashboard'}`,
-    '/' + [trackId, branch, view, exercise].filter(Boolean).join('/')
+    '/' + [trackId, branch, view, view && exercise].filter(Boolean).join('/')
   )
 }

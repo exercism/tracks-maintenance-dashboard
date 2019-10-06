@@ -30,6 +30,16 @@ export const TrackAside = ({ trackId }: { trackId: TrackIdentifier }) => {
       automatedAnalysisVisible,
     ])
   )
+=======
+interface TrackAsideProps {
+  trackId: TrackIdentifier;
+  currentDetails: string | undefined;
+  onToggleDetails(key: string): void;
+}
+
+export function TrackAside({ trackId, currentDetails, onToggleDetails }: TrackAsideProps) {
+  const { done: doneConfig, config } = useRemoteConfig(trackId)
+  const { done, data } = useTrackAsideData(trackId)
 
   return (
     <aside className="mt-md-4 mb-4 col-md">
@@ -47,6 +57,7 @@ export const TrackAside = ({ trackId }: { trackId: TrackIdentifier }) => {
           >
             Normalized Configuration
           </a>
+
           <ConfigurationIcon
             contentVisible={normalizedConfigVisible}
             onToggleDetails={() => setNormalizedConfigVisible((prev) => !prev)}
@@ -83,6 +94,15 @@ export const TrackAside = ({ trackId }: { trackId: TrackIdentifier }) => {
             loading={!done}
             valid={data['testRunner'] === true}
           />
+          <ConfigurationIcon currentDetails={currentDetails} onToggleDetails={onToggleDetails} loading={!doneConfig} valid={!!config} />
+        </li>
+        <li className="list-group-item d-flex justify-content-between">
+          <RepositoryLink repository={`${trackId}-analyzer`}>Automated Analysis</RepositoryLink>
+          <AnalyzerIcon currentDetails={currentDetails} onToggleDetails={onToggleDetails} trackId={trackId} loading={!done} valid={data['analyzer'] === true} />
+        </li>
+        <li className="list-group-item d-flex justify-content-between" >
+          <RepositoryLink repository={`${trackId}-test-runner`}>Test Runner</RepositoryLink>
+          <TestRunnerIcon currentDetails={currentDetails} onToggleDetails={onToggleDetails} trackId={trackId} loading={!done} valid={data['testRunner'] === true} />
         </li>
       </ul>
 

@@ -12,17 +12,26 @@ import { LoadingIndicator } from '../LoadingIndicator'
 import { ContainedPopover } from '../Popover'
 import { ExerciseIcon } from '../ExerciseIcon'
 
-export function TrackVersions({ trackId }: { trackId: TrackIdentifier }): JSX.Element {
+interface TrackVersionsProps {
+  trackId: TrackIdentifier
+  onShowExercise(exercise: ExerciseIdentifier): void
+}
+
+export function TrackVersions({ trackId, onShowExercise }: TrackVersionsProps): JSX.Element {
 
   return (
     <section>
       <header className="mb-4">
-        <h2>Exercise Versions</h2>
+        <h2 id="#versions">Exercise Versions</h2>
       </header>
 
       <RemoteConfig trackId={trackId}>
         {({ config }) => (
-          <ExerciseTable trackId={trackId} foregone={config.foregone} exercises={config.exercises} />
+          <ExerciseTable
+            trackId={trackId}
+            config={config}
+            onShowExercise={onShowExercise}
+          />
         )}
       </RemoteConfig>
     </section>
@@ -33,33 +42,42 @@ export function TrackVersions({ trackId }: { trackId: TrackIdentifier }): JSX.El
 const NO_EXCERCISES: ReadonlyArray<ExerciseConfiguration> = []
 const NO_FOREGONE_EXERCISES: ReadonlyArray<string> = []
 
+interface ExerciseTableProps {
+  trackId: TrackIdentifier;
+  config: TrackConfiguration;
+  onShowExercise(exercise: ExerciseIdentifier): void;
+}
+
 function ExerciseTable({
   trackId,
-  exercises,
-  foregone,
-}: {
-  trackId: TrackIdentifier
-  exercises: ReadonlyArray<ExerciseConfiguration>
-  foregone?: ReadonlyArray<string>
-}) {
-  const [details, setDetails] = useToggleState()
+  config: { exercises, foregone },
+  onShowExercise
+}: ExerciseTableProps) {
+  const [details, doSetDetails] = useToggleState()
+
   const track = useTrackData(trackId)
   const validExercises = useValidExercises(foregone || NO_FOREGONE_EXERCISES, exercises)
   const { deprecated } = useInvalidExercises(foregone || NO_FOREGONE_EXERCISES, exercises)
 
+  const doShowExercise = useCallback((exercise: ExerciseIdentifier) => {
+    onShowExercise(exercise)
+  }, [onShowExercise])
+
   const renderExercise = useCallback(
     (exercise: ExerciseConfiguration) => {
+      const detailsActive = details === exercise.slug
       return (
         <ExerciseRow
           exercise={exercise}
           key={exercise.slug}
           trackId={trackId}
-          detailsActive={details === exercise.slug}
-          onToggleDetails={setDetails}
+          detailsActive={detailsActive}
+          onToggleDetails={doSetDetails}
+          onShowExercise={doShowExercise}
         />
       )
     },
-    [details, setDetails, trackId]
+    [details, doSetDetails, doShowExercise, trackId]
   )
 
   if (!exercises || exercises.length === 0) {
@@ -114,9 +132,10 @@ interface ExerciseRowProps {
   trackId: TrackIdentifier;
   detailsActive: boolean;
   onToggleDetails(key: string): void;
+  onShowExercise(exercise: ExerciseIdentifier): void
 }
 
-function ExerciseRow({ exercise, trackId, detailsActive, onToggleDetails }: ExerciseRowProps) {
+function ExerciseRow({ exercise, trackId, detailsActive, onToggleDetails, onShowExercise }: ExerciseRowProps) {
   const {
     done: remoteDone,
     version: remoteVersion,
@@ -129,10 +148,11 @@ function ExerciseRow({ exercise, trackId, detailsActive, onToggleDetails }: Exer
   } = useRemoteCanonicalVersion(exercise.slug)
 
   const doToggle = useCallback(() => onToggleDetails(exercise.slug), [exercise, onToggleDetails])
+  const doShowExerciseDetails = useCallback(() => onShowExercise(exercise.slug), [exercise, onShowExercise])
 
   return (
     <tr key={exercise.slug}>
-      <ExerciseNameCell exercise={exercise} />
+      <ExerciseNameCell exercise={exercise} onShowDetails={doShowExerciseDetails} />
       <VersionCell url={remoteUrl} version={remoteVersion} done={remoteDone} />
       <VersionCell url={canonicalUrl} version={canonicalVersion} done={canonicalDone} />
       <DetailsCell
@@ -146,11 +166,11 @@ function ExerciseRow({ exercise, trackId, detailsActive, onToggleDetails }: Exer
   )
 }
 
-function ExerciseNameCell({ exercise }: { exercise: ExerciseConfiguration }) {
+function ExerciseNameCell({ exercise, onShowDetails }: { exercise: ExerciseConfiguration; onShowDetails(): void }) {
   const Cell = exercise.core ? 'th' : 'td'
 
   return (
-    <Cell>
+    <Cell onClick={onShowDetails}>
       <ExerciseIcon exercise={exercise.slug} size={24} />
       <span className="ml-2">{exercise.slug}</span>
     </Cell>

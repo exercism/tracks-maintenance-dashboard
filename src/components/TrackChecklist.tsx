@@ -37,6 +37,16 @@ export const TrackChecklist = ({ trackId }: { trackId: TrackIdentifier }) => {
       exercisesWithTopicsVisible,
     ])
   )
+
+interface TrackChecklistProps {
+  trackId: TrackIdentifier;
+  currentDetails: string | undefined;
+  onToggleDetails(key: string): void;
+}
+
+export function TrackChecklist({ trackId, currentDetails, onToggleDetails }: TrackChecklistProps) {
+  const { done, checklist } = useTrackAsideData(trackId)
+
   return (
     <aside className="mt-md-4 mb-4 col-md">
       <ul className="list-group" style={{ whiteSpace: 'nowrap' }}>
@@ -45,42 +55,55 @@ export const TrackChecklist = ({ trackId }: { trackId: TrackIdentifier }) => {
           ref={trackBlurbRef}
         >
           Track blurb
+          
           <BlurbIcon
             onToggleDetails={() => setTrackBlurbVisible((prev) => !prev)}
             loading={!done}
             valid={checklist.hasBlurb}
             contentVisible={trackBlurbVisible}
           />
+          
+          <BlurbIcon currentDetails={currentDetails} onToggleDetails={onToggleDetails} loading={!done} valid={checklist.hasBlurb} />
+
         </li>
         <li
           className="list-group-item d-flex justify-content-between"
           ref={approveExerciseVisibleRef}
         >
           Auto approve exercise
+
           <AutoApproveIcon
             onToggleDetails={() => setApproveExerciseVisible((prev) => !prev)}
             loading={!done}
             valid={checklist.hasAutoApprove}
             contentVisible={approveExerciseVisible}
           />
+          
+          <AutoApproveIcon currentDetails={currentDetails} onToggleDetails={onToggleDetails} loading={!done} valid={checklist.hasAutoApprove} />
+
         </li>
         <li
           className="list-group-item d-flex justify-content-between"
           ref={exerciseInCoreRef}
         >
           Exercises in core
+
           <CoreIcon
             onToggleDetails={() => setExercisesInCoreVisible((prev) => !prev)}
             loading={!done}
             valid={checklist.exerciseCoreCount > 0}
             contentVisible={exercisesInCoreVisible}
           />
+
+          <CoreIcon currentDetails={currentDetails} onToggleDetails={onToggleDetails} loading={!done} valid={checklist.exerciseCoreCount > 0} />
+
         </li>
         <li
           className="list-group-item d-flex justify-content-between"
           ref={exerciseWithTopicsRef}
         >
           Exercises with topics
+
           <TopicsIcon
             onToggleDetails={() =>
               setExercisesWithTopicsVisible((prev) => !prev)
@@ -89,6 +112,7 @@ export const TrackChecklist = ({ trackId }: { trackId: TrackIdentifier }) => {
             valid={checklist.exerciseWithTopicsCount > 0}
             contentVisible={exercisesWithTopicsVisible}
           />
+          <TopicsIcon currentDetails={currentDetails} onToggleDetails={onToggleDetails} loading={!done} valid={checklist.exerciseWithTopicsCount > 0} />
         </li>
       </ul>
     </aside>
