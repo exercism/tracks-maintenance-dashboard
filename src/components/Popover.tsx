@@ -1,4 +1,4 @@
-import React, { forwardRef, Ref } from 'react';
+import React from 'react';
 import { LoadingIndicator } from './LoadingIndicator';
 import { CheckOrCross } from './CheckOrCross';
 
