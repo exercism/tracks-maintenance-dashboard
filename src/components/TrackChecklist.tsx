@@ -90,78 +90,86 @@ function BlurbIcon({
   )
 }
 
-const AutoApproveIcon = ({
+function AutoApproveIcon({
   loading,
   valid,
   onToggleDetails,
   currentDetails,
-}: PreconfiguredIconProps) => (
-  <LoadingIconWithPopover
-    active={currentDetails === 'auto-approve'}
-    loading={loading}
-    valid={valid}
-    onToggle={onToggleDetails}
-  >
-    <p>
-      This check passes if there is at least one exercise with the{' '}
-      <code>auto_approve</code> flag switched to <code>true</code>. In general,
-      this is the <em>first core</em> exercise of the track, usually{' '}
-      <code>hello-world</code>.
-    </p>
-    <AboutConfigJson />
-  </LoadingIconWithPopover>
-)
+}: PreconfiguredIconProps) {
+  return (
+    <LoadingIconWithPopover
+      active={currentDetails === 'auto-approve'}
+      loading={loading}
+      valid={valid}
+      onToggle={onToggleDetails}
+    >
+      <p>
+        This check passes if there is at least one exercise with the{' '}
+        <code>auto_approve</code> flag switched to <code>true</code>. In
+        general, this is the <em>first core</em> exercise of the track, usually{' '}
+        <code>hello-world</code>.
+      </p>
+      <AboutConfigJson />
+    </LoadingIconWithPopover>
+  )
+}
 
-const CoreIcon = ({
+function CoreIcon({
   loading,
   valid,
   currentDetails,
   onToggleDetails,
-}: PreconfiguredIconProps) => (
-  <LoadingIconWithPopover
-    active={currentDetails === 'core'}
-    loading={loading}
-    valid={valid}
-    onToggle={onToggleDetails}
-  >
-    <p>
-      This check passes if there is at least one <code>core</code> exercise in
-      the <code>config.json</code>. Having a <em>core</em> track is{' '}
-      <strong>required</strong>. Having non-core exercises (side exercises) is
-      optional.
-    </p>
+}: PreconfiguredIconProps) {
+  return (
+    <LoadingIconWithPopover
+      active={currentDetails === 'core'}
+      loading={loading}
+      valid={valid}
+      onToggle={onToggleDetails}
+    >
+      <p>
+        This check passes if there is at least one <code>core</code> exercise in
+        the <code>config.json</code>. Having a <em>core</em> track is{' '}
+        <strong>required</strong>. Having non-core exercises (side exercises) is
+        optional.
+      </p>
 
-    <AboutConfigJson />
-  </LoadingIconWithPopover>
-)
+      <AboutConfigJson />
+    </LoadingIconWithPopover>
+  )
+}
 
-const TopicsIcon = ({
+function TopicsIcon({
   loading,
   valid,
   currentDetails,
   onToggleDetails,
-}: PreconfiguredIconProps) => (
-  <LoadingIconWithPopover
-    active={currentDetails === 'topics'}
-    loading={loading}
-    valid={valid}
-    onToggle={onToggleDetails}
-  >
-    <p>
-      This check passes if there is at least one exercise in the{' '}
-      <code>config.json</code> with 1 or more topics.
+}: PreconfiguredIconProps) {
+  return (
+    <LoadingIconWithPopover
+      active={currentDetails === 'topics'}
+      loading={loading}
+      valid={valid}
+      onToggle={onToggleDetails}
+    >
+      <p>
+        This check passes if there is at least one exercise in the{' '}
+        <code>config.json</code> with 1 or more topics.
+      </p>
+
+      <AboutConfigJson />
+    </LoadingIconWithPopover>
+  )
+}
+
+function AboutConfigJson() {
+  return (
+    <p className="mb-0">
+      You can find more information about the <code>config.json</code> file{' '}
+      <a href="https://github.com/exercism/problem-specifications/blob/master/CONTRIBUTING.md#track-configuration-file">
+        here
+      </a>
+      .
     </p>
-
-    <AboutConfigJson />
-  </LoadingIconWithPopover>
-)
-
-const AboutConfigJson = () => (
-  <p className="mb-0">
-    You can find more information about the <code>config.json</code> file{' '}
-    <a href="https://github.com/exercism/problem-specifications/blob/master/CONTRIBUTING.md#track-configuration-file">
-      here
-    </a>
-    .
-  </p>
-)
+  )
+}

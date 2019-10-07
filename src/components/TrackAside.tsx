@@ -30,6 +30,7 @@ export function TrackAside({ trackId }: { trackId: TrackIdentifier }) {
           >
             Normalized Configuration
           </a>
+
           <ConfigurationIcon
             currentDetails={activeDetailsKey}
             onToggleDetails={() => setActiveDetailsKey('config.json')}
