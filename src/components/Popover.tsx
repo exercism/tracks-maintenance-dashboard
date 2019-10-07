@@ -33,44 +33,46 @@ export function Popover({ children, active, title, align }: PopoverProps) {
   )
 }
 
-export const ContainedPopover = ({
+export function ContainedPopover({
   children,
   title,
   toggle,
   active,
   align,
   onToggle,
-}: PopoverProps & { onToggle?: () => void; toggle: React.ReactNode }) => (
-  <div style={{ position: 'relative', display: 'inline-block' }}>
-    <button
-      type="button"
-      style={{ background: 0, border: 0 }}
-      onClick={onToggle}
-    >
-      {toggle}
-    </button>
-    <Popover active={active} title={title} align={align}>
-      {children}
-    </Popover>
-  </div>
-)
+}: PopoverProps & { onToggle?: () => void; toggle: React.ReactNode }) {
+  return (
+    <div style={{ position: 'relative', display: 'inline-block' }}>
+      <button
+        type="button"
+        style={{ background: 0, border: 0 }}
+        onClick={onToggle}
+      >
+        {toggle}
+      </button>
+      <Popover active={active === true} title={title} align={align}>
+        {children}
+      </Popover>
+    </div>
+  )
+}
 
 interface IconWithPopoverProps {
   loading: boolean
   valid: boolean
   children: React.ReactNode
   active?: boolean
-  onToggle?(): void
+  onToggle?: () => void
 }
 
-export const LoadingIconWithPopover = ({
+export function LoadingIconWithPopover({
   active,
   onToggle,
   loading,
   valid,
   children,
-}: IconWithPopoverProps) =>
-  loading ? (
+}: IconWithPopoverProps) {
+  return loading ? (
     <button type="button" style={{ background: 0, border: 0 }}>
       <LoadingIndicator />
     </button>
@@ -84,3 +86,4 @@ export const LoadingIconWithPopover = ({
       {children}
     </ContainedPopover>
   )
+}

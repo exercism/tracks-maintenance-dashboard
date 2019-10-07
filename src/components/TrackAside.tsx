@@ -1,46 +1,29 @@
 import React, { useState, useCallback } from 'react'
 import { useRemoteConfig } from '../hooks/useRemoteConfig'
 import { useTrackAsideData } from '../hooks/useTrackData'
-import { useOutsideClick } from '../hooks/useOutsideClick'
 import { LoadingIconWithPopover } from './Popover'
+import { useToggleState } from '../hooks/useToggleState'
 
-export const TrackAside = ({ trackId }: { trackId: TrackIdentifier }) => {
+export function TrackAside({ trackId }: { trackId: TrackIdentifier }) {
   const { done: doneConfig, config } = useRemoteConfig(trackId)
   const { done, data } = useTrackAsideData(trackId)
-  //test-runner
-  const [testRunnerVisible, setTestRunnerVisible] = useState<boolean>(false)
-  const testRunnerRef = useOutsideClick(
-    useCallback(() => setTestRunnerVisible(false), [testRunnerVisible])
-  )
-  //normalized-configuration
-  const [normalizedConfigVisible, setNormalizedConfigVisible] = useState<
-    boolean
-  >(false)
-  const normalizedConfigRef = useOutsideClick(
-    useCallback(() => setNormalizedConfigVisible(false), [
-      normalizedConfigVisible,
-    ])
-  )
-  //automated-analysis
-  const [automatedAnalysisVisible, setAutomatedAnalysisVisible] = useState<
-    boolean
-  >(false)
-  const automatedAnalysisRef = useOutsideClick(
-    useCallback(() => setAutomatedAnalysisVisible(false), [
-      automatedAnalysisVisible,
-    ])
-  )
+  const [
+    activeDetailsKey,
+    setActiveDetailsKey,
+    outsideDetailsRef,
+  ] = useToggleState<HTMLUListElement>()
 
   return (
     <aside className="mt-md-4 mb-4 col-md">
-      <ul className="list-group" style={{ whiteSpace: 'nowrap' }}>
+      <ul
+        className="list-group"
+        style={{ whiteSpace: 'nowrap' }}
+        ref={outsideDetailsRef}
+      >
         <li className="list-group-item d-flex justify-content-between">
           <RepositoryLink repository={trackId}>Repository</RepositoryLink>
         </li>
-        <li
-          className="list-group-item d-flex justify-content-between"
-          ref={normalizedConfigRef}
-        >
+        <li className="list-group-item d-flex justify-content-between">
           <a
             href={`https://github.com/exercism/${trackId}/blob/master/config.json`}
             className="d-block mr-4"
@@ -48,37 +31,31 @@ export const TrackAside = ({ trackId }: { trackId: TrackIdentifier }) => {
             Normalized Configuration
           </a>
           <ConfigurationIcon
-            contentVisible={normalizedConfigVisible}
-            onToggleDetails={() => setNormalizedConfigVisible((prev) => !prev)}
+            currentDetails={activeDetailsKey}
+            onToggleDetails={() => setActiveDetailsKey('config.json')}
             loading={!doneConfig}
             valid={!!config}
           />
         </li>
-        <li
-          className="list-group-item d-flex justify-content-between"
-          ref={automatedAnalysisRef}
-        >
+        <li className="list-group-item d-flex justify-content-between">
           <RepositoryLink repository={`${trackId}-analyzer`}>
             Automated Analysis
           </RepositoryLink>
           <AnalyzerIcon
-            onToggleDetails={() => setAutomatedAnalysisVisible((prev) => !prev)}
-            contentVisible={automatedAnalysisVisible}
+            currentDetails={activeDetailsKey}
+            onToggleDetails={() => setActiveDetailsKey('analyzer')}
             trackId={trackId}
             loading={!done}
             valid={data['analyzer'] === true}
           />
         </li>
-        <li
-          className="list-group-item d-flex justify-content-between"
-          ref={testRunnerRef}
-        >
+        <li className="list-group-item d-flex justify-content-between">
           <RepositoryLink repository={`${trackId}-test-runner`}>
             Test Runner
           </RepositoryLink>
           <TestRunnerIcon
-            onToggleDetails={() => setTestRunnerVisible((prev) => !prev)}
-            contentVisible={testRunnerVisible}
+            currentDetails={activeDetailsKey}
+            onToggleDetails={() => setActiveDetailsKey('test-runner')}
             trackId={trackId}
             loading={!done}
             valid={data['testRunner'] === true}
@@ -125,17 +102,17 @@ interface PreconfiguredIconProps {
   loading: boolean
   valid: boolean
   onToggleDetails: () => void
-  contentVisible: boolean
+  currentDetails: string | undefined
 }
 
 const ConfigurationIcon = ({
   loading,
   valid,
-  contentVisible,
+  currentDetails,
   onToggleDetails,
 }: PreconfiguredIconProps) => (
   <LoadingIconWithPopover
-    active={contentVisible}
+    active={currentDetails === 'config.json'}
     loading={loading}
     valid={valid}
     onToggle={onToggleDetails}
@@ -154,65 +131,69 @@ const ConfigurationIcon = ({
   </LoadingIconWithPopover>
 )
 
-const AnalyzerIcon = ({
+function AnalyzerIcon({
   loading,
   valid,
-  contentVisible,
+  currentDetails,
   onToggleDetails,
   trackId,
-}: PreconfiguredIconProps & { trackId: TrackIdentifier }) => (
-  <LoadingIconWithPopover
-    active={contentVisible}
-    loading={loading}
-    valid={valid}
-    onToggle={onToggleDetails}
-  >
-    <p>
-      This check passes if there is a <code>Dockerfile</code> file present in
-      the <code>exercism/{trackId}-analyzer</code> repository.
-    </p>
+}: PreconfiguredIconProps & { trackId: TrackIdentifier }) {
+  return (
+    <LoadingIconWithPopover
+      active={currentDetails === 'analyzer'}
+      loading={loading}
+      valid={valid}
+      onToggle={onToggleDetails}
+    >
+      <p>
+        This check passes if there is a <code>Dockerfile</code> file present in
+        the <code>exercism/{trackId}-analyzer</code> repository.
+      </p>
 
-    <p className="mb-0">
-      You can find more information about the <code>Dockerfile</code> file{' '}
-      <a href="https://github.com/exercism/automated-analysis/blob/master/docs/docker.md">
-        here
-      </a>
-      , or about{' '}
-      <a href="https://github.com/exercism/automated-analysis/blob/master/docs/about.md">
-        the automated analysis in general
-      </a>
-      , as well as the steps to{' '}
-      <a href="https://github.com/exercism/automated-analysis/blob/master/docs/creating-an-analyzer.md">
-        pass this test
-      </a>
-      .
-    </p>
-  </LoadingIconWithPopover>
-)
+      <p className="mb-0">
+        You can find more information about the <code>Dockerfile</code> file{' '}
+        <a href="https://github.com/exercism/automated-analysis/blob/master/docs/docker.md">
+          here
+        </a>
+        , or about{' '}
+        <a href="https://github.com/exercism/automated-analysis/blob/master/docs/about.md">
+          the automated analysis in general
+        </a>
+        , as well as the steps to{' '}
+        <a href="https://github.com/exercism/automated-analysis/blob/master/docs/creating-an-analyzer.md">
+          pass this test
+        </a>
+        .
+      </p>
+    </LoadingIconWithPopover>
+  )
+}
 
-const TestRunnerIcon = ({
+function TestRunnerIcon({
   loading,
   valid,
   onToggleDetails,
   trackId,
-  contentVisible,
-}: PreconfiguredIconProps & { trackId: TrackIdentifier }) => (
-  <LoadingIconWithPopover
-    active={contentVisible}
-    loading={loading}
-    valid={valid}
-    onToggle={onToggleDetails}
-  >
-    <p>
-      This check passes if there is a <code>Dockerfile</code> file present in
-      the <code>exercism/{trackId}-test-runner</code> repository.
-    </p>
+  currentDetails,
+}: PreconfiguredIconProps & { trackId: TrackIdentifier }) {
+  return (
+    <LoadingIconWithPopover
+      active={currentDetails === 'test-runner'}
+      loading={loading}
+      valid={valid}
+      onToggle={onToggleDetails}
+    >
+      <p>
+        This check passes if there is a <code>Dockerfile</code> file present in
+        the <code>exercism/{trackId}-test-runner</code> repository.
+      </p>
 
-    <p className="mb-0">
-      You can find more information about the <code>Dockerfile</code> file{' '}
-      <a href="https://github.com/exercism/automated-tests/blob/master/docs/docker.md">
-        here
-      </a>
-    </p>
-  </LoadingIconWithPopover>
-)
+      <p className="mb-0">
+        You can find more information about the <code>Dockerfile</code> file{' '}
+        <a href="https://github.com/exercism/automated-tests/blob/master/docs/docker.md">
+          here
+        </a>
+      </p>
+    </LoadingIconWithPopover>
+  )
+}

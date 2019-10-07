@@ -1,93 +1,57 @@
 import React, { useState, useCallback } from 'react'
 import { useTrackAsideData } from '../hooks/useTrackData'
 import { LoadingIconWithPopover } from './Popover'
-import { useOutsideClick } from '../hooks/useOutsideClick'
+import { useToggleState } from '../hooks/useToggleState'
 
 export const TrackChecklist = ({ trackId }: { trackId: TrackIdentifier }) => {
   const { done, checklist } = useTrackAsideData(trackId)
-  //track-blurb
-  const [trackBlurbVisible, setTrackBlurbVisible] = useState<boolean>(false)
-  const trackBlurbRef = useOutsideClick(
-    useCallback(() => setTrackBlurbVisible(false), [trackBlurbVisible])
-  )
-  //auto-approve-exercise
-  const [approveExerciseVisible, setApproveExerciseVisible] = useState<boolean>(
-    false
-  )
-  const approveExerciseVisibleRef = useOutsideClick(
-    useCallback(() => setApproveExerciseVisible(false), [
-      approveExerciseVisible,
-    ])
-  )
-  //exercises-in-core
-  const [exercisesInCoreVisible, setExercisesInCoreVisible] = useState<boolean>(
-    false
-  )
-  const exerciseInCoreRef = useOutsideClick(
-    useCallback(() => setExercisesInCoreVisible(false), [
-      exercisesInCoreVisible,
-    ])
-  )
-  //exercises-with-topics
-  const [exercisesWithTopicsVisible, setExercisesWithTopicsVisible] = useState<
-    boolean
-  >(false)
-  const exerciseWithTopicsRef = useOutsideClick(
-    useCallback(() => setExercisesWithTopicsVisible(false), [
-      exercisesWithTopicsVisible,
-    ])
-  )
+  const [
+    activeDetailsKey,
+    setActiveDetailsKey,
+    outsideDetailsRef,
+  ] = useToggleState<HTMLUListElement>()
+
   return (
     <aside className="mt-md-4 mb-4 col-md">
-      <ul className="list-group" style={{ whiteSpace: 'nowrap' }}>
-        <li
-          className="list-group-item d-flex justify-content-between"
-          ref={trackBlurbRef}
-        >
+      <ul
+        className="list-group"
+        style={{ whiteSpace: 'nowrap' }}
+        ref={outsideDetailsRef}
+      >
+        <li className="list-group-item d-flex justify-content-between">
           Track blurb
           <BlurbIcon
-            onToggleDetails={() => setTrackBlurbVisible((prev) => !prev)}
+            currentDetails={activeDetailsKey}
+            onToggleDetails={() => setActiveDetailsKey('blurb')}
             loading={!done}
             valid={checklist.hasBlurb}
-            contentVisible={trackBlurbVisible}
           />
         </li>
-        <li
-          className="list-group-item d-flex justify-content-between"
-          ref={approveExerciseVisibleRef}
-        >
+        <li className="list-group-item d-flex justify-content-between">
           Auto approve exercise
           <AutoApproveIcon
-            onToggleDetails={() => setApproveExerciseVisible((prev) => !prev)}
+            currentDetails={activeDetailsKey}
+            onToggleDetails={() => setActiveDetailsKey('auto-approve')}
             loading={!done}
             valid={checklist.hasAutoApprove}
-            contentVisible={approveExerciseVisible}
           />
         </li>
-        <li
-          className="list-group-item d-flex justify-content-between"
-          ref={exerciseInCoreRef}
-        >
+        <li className="list-group-item d-flex justify-content-between">
           Exercises in core
           <CoreIcon
-            onToggleDetails={() => setExercisesInCoreVisible((prev) => !prev)}
+            currentDetails={activeDetailsKey}
+            onToggleDetails={() => setActiveDetailsKey('core')}
             loading={!done}
             valid={checklist.exerciseCoreCount > 0}
-            contentVisible={exercisesInCoreVisible}
           />
         </li>
-        <li
-          className="list-group-item d-flex justify-content-between"
-          ref={exerciseWithTopicsRef}
-        >
+        <li className="list-group-item d-flex justify-content-between">
           Exercises with topics
           <TopicsIcon
-            onToggleDetails={() =>
-              setExercisesWithTopicsVisible((prev) => !prev)
-            }
+            currentDetails={activeDetailsKey}
+            onToggleDetails={() => setActiveDetailsKey('topics')}
             loading={!done}
             valid={checklist.exerciseWithTopicsCount > 0}
-            contentVisible={exercisesWithTopicsVisible}
           />
         </li>
       </ul>
@@ -99,38 +63,41 @@ interface PreconfiguredIconProps {
   loading: boolean
   valid: boolean
   onToggleDetails: () => void
-  contentVisible: boolean
+  currentDetails: string | undefined
 }
 
-const BlurbIcon = ({
+function BlurbIcon({
   loading,
   valid,
   onToggleDetails,
-  contentVisible,
-}: PreconfiguredIconProps) => (
-  <LoadingIconWithPopover
-    active={contentVisible}
-    loading={loading}
-    valid={valid}
-    onToggle={onToggleDetails}
-  >
-    <p>
-      This check passes if there is a <code>blurb</code> present in the{' '}
-      <code>config.json</code> file, which in turn is located at the root of the
-      repository. The <code>blurb</code> is a <strong>requirement</strong>.
-    </p>
-    <AboutConfigJson />
-  </LoadingIconWithPopover>
-)
+  currentDetails,
+}: PreconfiguredIconProps) {
+  return (
+    <LoadingIconWithPopover
+      active={currentDetails === 'blurb'}
+      loading={loading}
+      valid={valid}
+      onToggle={onToggleDetails}
+    >
+      <p>
+        This check passes if there is a <code>blurb</code> present in the{' '}
+        <code>config.json</code> file, which in turn is located at the root of
+        the repository. The <code>blurb</code> is a <strong>requirement</strong>
+        .
+      </p>
+      <AboutConfigJson />
+    </LoadingIconWithPopover>
+  )
+}
 
 const AutoApproveIcon = ({
   loading,
   valid,
   onToggleDetails,
-  contentVisible,
+  currentDetails,
 }: PreconfiguredIconProps) => (
   <LoadingIconWithPopover
-    active={contentVisible}
+    active={currentDetails === 'auto-approve'}
     loading={loading}
     valid={valid}
     onToggle={onToggleDetails}
@@ -148,11 +115,11 @@ const AutoApproveIcon = ({
 const CoreIcon = ({
   loading,
   valid,
-  contentVisible,
+  currentDetails,
   onToggleDetails,
 }: PreconfiguredIconProps) => (
   <LoadingIconWithPopover
-    active={contentVisible}
+    active={currentDetails === 'core'}
     loading={loading}
     valid={valid}
     onToggle={onToggleDetails}
@@ -171,11 +138,11 @@ const CoreIcon = ({
 const TopicsIcon = ({
   loading,
   valid,
-  contentVisible,
+  currentDetails,
   onToggleDetails,
 }: PreconfiguredIconProps) => (
   <LoadingIconWithPopover
-    active={contentVisible}
+    active={currentDetails === 'topics'}
     loading={loading}
     valid={valid}
     onToggle={onToggleDetails}
