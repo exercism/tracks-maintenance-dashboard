@@ -1,5 +1,10 @@
 # Changelog
 
+## master
+
+- Add `useOutsideClick` to `useToggleState` hook
+- Add closing popovers when click happens outside of "parent group"
+
 ## 0.2.7
 
 - Add `versioning` for `lisp`
