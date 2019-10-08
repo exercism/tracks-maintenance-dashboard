@@ -1,6 +1,6 @@
 # Changelog
 
-## master
+## 0.3.0
 
 - Add `useOutsideClick` to `useToggleState` hook
 - Add closing popovers when click happens outside of "parent group"
