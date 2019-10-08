@@ -1,4 +1,4 @@
-import React, { useCallback, MouseEvent, useMemo } from 'react'
+import React, { useCallback, useState, MouseEvent } from 'react'
 
 import { useTrackData } from '../hooks/useTrackData'
 import { useRemoteConfig } from '../hooks/useRemoteConfig'
@@ -6,7 +6,7 @@ import { TrackAside } from './TrackAside'
 import { TrackChecklist } from './TrackChecklist'
 import { TrackDescription } from './TrackDescription'
 import { TrackIcon } from './TrackIcon'
-
+import { SwitchToggle } from './SwitchToggle'
 import { ExerciseDetails } from './views/ExerciseDetails'
 import { TrackMissing } from './views/TrackMissing'
 import { TrackTopics } from './views/TrackTopics'
@@ -25,7 +25,7 @@ export function TrackTool({
   onUnselect,
 }: TrackToolProps): JSX.Element {
   const [selectedView] = useView()
-
+  const [actionableOnly, setActionableOnly] = useState<boolean>(false)
   const actualView = selectedView || DEFAULT_VIEW
 
   const doHideExercise = useCallback(() => {
@@ -55,16 +55,23 @@ export function TrackTool({
 
   return (
     <section>
-      <UnselectTrackButton onClick={onUnselect} />
+      <div className="d-flex justify-content-start flex-row align-items-center w-50">
+        <UnselectTrackButton onClick={onUnselect} />
+        <SwitchToggle
+          inActiveLabel="All"
+          activeLabel="Actionable"
+          onToggle={() => setActionableOnly((prev) => !prev)}
+          actionableOnly={actionableOnly}
+        />
+      </div>
 
       <div className="d-flex flex-wrap row">
         <div className="col" style={{ maxWidth: '27rem' }}>
           <Header trackId={trackId} />
         </div>
-        <TrackAside trackId={trackId} />
-        <TrackChecklist trackId={trackId} />
+        <TrackAside trackId={trackId} actionableOnly={actionableOnly} />
+        <TrackChecklist trackId={trackId} actionableOnly={actionableOnly} />
       </div>
-
       <ViewSelect />
 
       <TrackView
@@ -134,7 +141,6 @@ function ViewSelectLink({
   return (
     <a
       className={`btn btn-sm btn-outline-primary ${active && 'active'} mb-3`}
-      aria-pressed={active}
       onClick={doChangeView}
       href={href}
     >

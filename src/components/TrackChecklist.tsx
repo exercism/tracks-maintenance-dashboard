@@ -4,7 +4,13 @@ import { LoadingIconWithPopover } from './Popover'
 import { useToggleState } from '../hooks/useToggleState'
 import { useKeyPressListener } from '../hooks/useKeyListener'
 
-export const TrackChecklist = ({ trackId }: { trackId: TrackIdentifier }) => {
+export const TrackChecklist = ({
+  trackId,
+  actionableOnly,
+}: {
+  trackId: TrackIdentifier
+  actionableOnly: boolean
+}) => {
   const { done, checklist } = useTrackAsideData(trackId)
   const [activeDetailsKey, setActiveDetailsKey] = useToggleState(
     undefined,
@@ -14,45 +20,61 @@ export const TrackChecklist = ({ trackId }: { trackId: TrackIdentifier }) => {
 
   useKeyPressListener(['Esc', 'Escape'], setActiveDetailsKey)
 
+  const blurbVisible = (actionableOnly && checklist.hasBlurb) || !actionableOnly
+  const autoApproveVisible =
+    (actionableOnly && checklist.hasAutoApprove) || !actionableOnly
+  const coreVisible =
+    (actionableOnly && checklist.exerciseCoreCount > 0) || !actionableOnly
+  const topicsVisible =
+    (actionableOnly && checklist.exerciseWithTopicsCount > 0) || !actionableOnly
+
   return (
     <aside className="mt-md-4 mb-4 col-md">
       <ul className="list-group" style={{ whiteSpace: 'nowrap' }}>
-        <li className="list-group-item d-flex justify-content-between">
-          Track blurb
-          <BlurbIcon
-            currentDetails={activeDetailsKey}
-            onToggleDetails={() => setActiveDetailsKey('blurb')}
-            loading={!done}
-            valid={checklist.hasBlurb}
-          />
-        </li>
-        <li className="list-group-item d-flex justify-content-between">
-          Auto approve exercise
-          <AutoApproveIcon
-            currentDetails={activeDetailsKey}
-            onToggleDetails={() => setActiveDetailsKey('auto-approve')}
-            loading={!done}
-            valid={checklist.hasAutoApprove}
-          />
-        </li>
-        <li className="list-group-item d-flex justify-content-between">
-          Exercises in core
-          <CoreIcon
-            currentDetails={activeDetailsKey}
-            onToggleDetails={() => setActiveDetailsKey('core')}
-            loading={!done}
-            valid={checklist.exerciseCoreCount > 0}
-          />
-        </li>
-        <li className="list-group-item d-flex justify-content-between">
-          Exercises with topics
-          <TopicsIcon
-            currentDetails={activeDetailsKey}
-            onToggleDetails={() => setActiveDetailsKey('topics')}
-            loading={!done}
-            valid={checklist.exerciseWithTopicsCount > 0}
-          />
-        </li>
+        {blurbVisible && (
+          <li className="list-group-item d-flex justify-content-between">
+            Track blurb
+            <BlurbIcon
+              currentDetails={activeDetailsKey}
+              onToggleDetails={() => setActiveDetailsKey('blurb')}
+              loading={!done}
+              valid={checklist.hasBlurb}
+            />
+          </li>
+        )}
+        {autoApproveVisible && (
+          <li className="list-group-item d-flex justify-content-between">
+            Auto approve exercise
+            <AutoApproveIcon
+              currentDetails={activeDetailsKey}
+              onToggleDetails={() => setActiveDetailsKey('auto-approve')}
+              loading={!done}
+              valid={checklist.hasAutoApprove}
+            />
+          </li>
+        )}
+        {coreVisible && (
+          <li className="list-group-item d-flex justify-content-between">
+            Exercises in core
+            <CoreIcon
+              currentDetails={activeDetailsKey}
+              onToggleDetails={() => setActiveDetailsKey('core')}
+              loading={!done}
+              valid={checklist.exerciseCoreCount > 0}
+            />
+          </li>
+        )}
+        {topicsVisible && (
+          <li className="list-group-item d-flex justify-content-between">
+            Exercises with topics
+            <TopicsIcon
+              currentDetails={activeDetailsKey}
+              onToggleDetails={() => setActiveDetailsKey('topics')}
+              loading={!done}
+              valid={checklist.exerciseWithTopicsCount > 0}
+            />
+          </li>
+        )}
       </ul>
     </aside>
   )

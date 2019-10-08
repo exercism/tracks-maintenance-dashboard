@@ -5,7 +5,13 @@ import { LoadingIconWithPopover } from './Popover'
 import { useToggleState } from '../hooks/useToggleState'
 import { useKeyPressListener } from '../hooks/useKeyListener'
 
-export function TrackAside({ trackId }: { trackId: TrackIdentifier }) {
+export function TrackAside({
+  trackId,
+  actionableOnly,
+}: {
+  trackId: TrackIdentifier
+  actionableOnly: boolean
+}) {
   const { done: doneConfig, config } = useRemoteConfig(trackId)
   const { done, data } = useTrackAsideData(trackId)
   const [activeDetailsKey, setActiveDetailsKey] = useToggleState<
@@ -14,51 +20,63 @@ export function TrackAside({ trackId }: { trackId: TrackIdentifier }) {
 
   useKeyPressListener(['Esc', 'Escape'], setActiveDetailsKey)
 
-  return (
+  const normConfigVisible = !!config !== actionableOnly
+  const automatedAnalysisVisible =
+    (actionableOnly && data['analyzer'] === false) || !actionableOnly
+  const testRunnerVisible =
+    (actionableOnly && data['testRunner'] === false) || !actionableOnly
+
+    return (
     <aside className="mt-md-4 mb-4 col-md">
       <ul className="list-group" style={{ whiteSpace: 'nowrap' }}>
         <li className="list-group-item d-flex justify-content-between">
           <RepositoryLink repository={trackId}>Repository</RepositoryLink>
         </li>
-        <li className="list-group-item d-flex justify-content-between">
-          <a
-            href={`https://github.com/exercism/${trackId}/blob/master/config.json`}
-            className="d-block mr-4"
-          >
-            Normalized Configuration
-          </a>
+        {normConfigVisible && (
+          <li className="list-group-item d-flex justify-content-between">
+            <a
+              href={`https://github.com/exercism/${trackId}/blob/master/config.json`}
+              className="d-block mr-4"
+            >
+              Normalized Configuration
+            </a>
 
-          <ConfigurationIcon
-            currentDetails={activeDetailsKey}
-            onToggleDetails={() => setActiveDetailsKey('config.json')}
-            loading={!doneConfig}
-            valid={!!config}
-          />
-        </li>
-        <li className="list-group-item d-flex justify-content-between">
-          <RepositoryLink repository={`${trackId}-analyzer`}>
-            Automated Analysis
-          </RepositoryLink>
-          <AnalyzerIcon
-            currentDetails={activeDetailsKey}
-            onToggleDetails={() => setActiveDetailsKey('analyzer')}
-            trackId={trackId}
-            loading={!done}
-            valid={data['analyzer'] === true}
-          />
-        </li>
-        <li className="list-group-item d-flex justify-content-between">
-          <RepositoryLink repository={`${trackId}-test-runner`}>
-            Test Runner
-          </RepositoryLink>
-          <TestRunnerIcon
-            currentDetails={activeDetailsKey}
-            onToggleDetails={() => setActiveDetailsKey('test-runner')}
-            trackId={trackId}
-            loading={!done}
-            valid={data['testRunner'] === true}
-          />
-        </li>
+            <ConfigurationIcon
+              currentDetails={activeDetailsKey}
+              onToggleDetails={() => setActiveDetailsKey('config.json')}
+              loading={!doneConfig}
+              valid={!!config}
+            />
+          </li>
+        )}
+        {automatedAnalysisVisible && (
+          <li className="list-group-item d-flex justify-content-between">
+            <RepositoryLink repository={`${trackId}-analyzer`}>
+              Automated Analysis
+            </RepositoryLink>
+            <AnalyzerIcon
+              currentDetails={activeDetailsKey}
+              onToggleDetails={() => setActiveDetailsKey('analyzer')}
+              trackId={trackId}
+              loading={!done}
+              valid={data['analyzer'] === true}
+            />
+          </li>
+        )}
+        {testRunnerVisible && (
+          <li className="list-group-item d-flex justify-content-between">
+            <RepositoryLink repository={`${trackId}-test-runner`}>
+              Test Runner
+            </RepositoryLink>
+            <TestRunnerIcon
+              currentDetails={activeDetailsKey}
+              onToggleDetails={() => setActiveDetailsKey('test-runner')}
+              trackId={trackId}
+              loading={!done}
+              valid={data['testRunner'] === true}
+            />
+          </li>
+        )}
       </ul>
 
       {done && data['analyzer'] === true && (
