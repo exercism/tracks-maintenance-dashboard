@@ -54,7 +54,7 @@ function ExerciseTable({
   config: { exercises, foregone },
   onShowExercise,
 }: ExerciseTableProps) {
-  const [details, doSetDetails] = useToggleState()
+  const [details, doSetDetails] = useToggleState(undefined, 'popover')
 
   const track = useTrackData(trackId)
   const validExercises = useValidExercises(
@@ -139,9 +139,14 @@ function ExerciseTable({
 function VersionInfoButton({ trackData }: { trackData: TrackData }) {
   const { versioning } = trackData
 
+  const [active, setActive] = useToggleState(undefined, 'popover')
+  const doToggle = useCallback(() => setActive('version.help'), [setActive])
+
   return (
     <ContainedPopover
       align="center"
+      active={active === 'version.help'}
+      onToggle={doToggle}
       toggle={
         <span aria-label="more information" role="img">
           ℹ️
