@@ -8,15 +8,13 @@ export const TrackChecklist = ({ trackId }: { trackId: TrackIdentifier }) => {
   const [
     activeDetailsKey,
     setActiveDetailsKey,
-    outsideDetailsRef,
-  ] = useToggleState<HTMLUListElement>()
+  ] = useToggleState(undefined, 'popover')
 
   return (
     <aside className="mt-md-4 mb-4 col-md">
       <ul
         className="list-group"
         style={{ whiteSpace: 'nowrap' }}
-        ref={outsideDetailsRef}
       >
         <li className="list-group-item d-flex justify-content-between">
           Track blurb

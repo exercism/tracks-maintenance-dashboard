@@ -83,7 +83,7 @@ function ExerciseTable({
   config: { exercises, foregone },
   onShowExercise,
 }: ExerciseTableProps) {
-  const [details, setDetails] = useToggleState()
+  const [details, setDetails] = useToggleState(undefined, 'popover')
   const { list, done } = useRemoteTopics()
   const validExercises = useValidExercises(
     foregone || NO_FOREGONE_EXERCISES,

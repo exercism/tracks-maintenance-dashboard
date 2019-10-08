@@ -4,7 +4,6 @@ import {
   MutableRefObject,
   useRef,
   useEffect,
-  MouseEvent,
 } from 'react'
 
 /**
@@ -15,25 +14,41 @@ import {
  * @param onClick
  */
 function useOutsideClick<T extends Element = Element>(
-  onClick: () => void
+  onClick: () => void,
+  containerClass?: string
 ): MutableRefObject<T | null> {
   const ref = useRef<T | null>(null)
 
   useEffect(() => {
-    const handleOutsideClick = (e: MouseEvent<T>): void => {
-      if (ref && ref.current && ref.current.contains(e.target as Node)) {
-        return
+    const handleOutsideClick = (e: Event): void => {
+      if (e.target && e.target instanceof Node) {
+        // Click happened inside the container ref
+        if (ref && ref.current && ref.current.contains(e.target)) {
+          return
+        }
+
+        // Click happened on the container element
+        if (containerClass && e.target instanceof HTMLElement) {
+          if (e.target.classList.contains(containerClass)) {
+            return
+          }
+          if (e.target.closest(`.${containerClass}`) !== null) {
+            return
+          }
+        }
       }
+
       onClick()
     }
-    //@ts-ignore
+
     document.addEventListener('mousedown', handleOutsideClick)
+    document.addEventListener('touchstart', handleOutsideClick)
 
     return () => {
-      //@ts-ignore
       document.removeEventListener('mousedown', handleOutsideClick)
+      document.removeEventListener('touchstart', handleOutsideClick)
     }
-  }, [onClick])
+  }, [onClick, containerClass])
 
   return ref
 }
@@ -47,7 +62,8 @@ function useOutsideClick<T extends Element = Element>(
  * @param initial
  */
 export function useToggleState<T extends Element = Element>(
-  initial?: string
+  initial?: string,
+  containerClass?: string
 ): [string | undefined, (next: string) => void, MutableRefObject<T | null>] {
   const [current, setCurrent] = useState(initial)
   const doToggle = useCallback(
@@ -58,7 +74,7 @@ export function useToggleState<T extends Element = Element>(
   )
 
   const doUntoggle = useCallback(() => setCurrent(undefined), [setCurrent])
-  const ref = useOutsideClick<T>(doUntoggle)
+  const ref = useOutsideClick<T>(doUntoggle, containerClass)
 
   return [current, doToggle, ref]
 }
