@@ -119,7 +119,7 @@ function ExerciseTable({
         />
       )
     },
-    [details, setDetails, lookupTopic]
+    [details, setDetails, lookupTopic, onShowExercise]
   )
 
   if (!done) {

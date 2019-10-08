@@ -11,8 +11,7 @@ import { ExerciseDetails } from './views/ExerciseDetails'
 import { TrackMissing } from './views/TrackMissing'
 import { TrackTopics } from './views/TrackTopics'
 import { TrackVersions } from './views/TrackVersions'
-import { useView, useExercise, setOptionsInUrl } from '../hooks/useUrlState'
-import { useToggleState } from '../hooks/useToggleState'
+import { useView, setOptionsInUrl } from '../hooks/useUrlState'
 
 export interface TrackToolProps {
   trackId: TrackIdentifier
@@ -26,15 +25,12 @@ export function TrackTool({
   onUnselect,
 }: TrackToolProps): JSX.Element {
   const [selectedView] = useView()
-  const [selectedExercise] = useExercise()
-
-  const [currentDetails, onToggleDetails] = useToggleState()
 
   const actualView = selectedView || DEFAULT_VIEW
 
   const doHideExercise = useCallback(() => {
     setOptionsInUrl({ view: DEFAULT_VIEW, exercise: '' })
-  }, [setOptionsInUrl])
+  }, [])
 
   const doShowExercise = useCallback(
     (exercise: ExerciseIdentifier) => {
@@ -43,7 +39,7 @@ export function TrackTool({
         exercise,
       })
     },
-    [actualView, setOptionsInUrl, selectedExercise]
+    []
   )
 
   return (
@@ -54,16 +50,8 @@ export function TrackTool({
         <div className="col" style={{ maxWidth: '27rem' }}>
           <Header trackId={trackId} />
         </div>
-        <TrackAside
-          trackId={trackId}
-          currentDetails={currentDetails}
-          onToggleDetails={onToggleDetails}
-        />
-        <TrackChecklist
-          trackId={trackId}
-          currentDetails={currentDetails}
-          onToggleDetails={onToggleDetails}
-        />
+        <TrackAside trackId={trackId} />
+        <TrackChecklist trackId={trackId} />
       </div>
 
       <ViewSelect />

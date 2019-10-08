@@ -1,6 +1,5 @@
 import React from 'react'
 import { useExercise } from '../../hooks/useUrlState'
-import { useRemoteConfig } from '../../hooks/useRemoteConfig'
 
 interface ExerciseDetailsProps {
   trackId: TrackIdentifier
@@ -12,10 +11,7 @@ export function ExerciseDetails({
   onHide,
 }: ExerciseDetailsProps): JSX.Element {
   const [exercise] = useExercise()
-  const { done, config } = useRemoteConfig(trackId)
 
-  const exerciseData =
-    (config && config.exercises.find((e) => e.slug === exercise)) || undefined
   return (
     <section>
       <header className="mb-4">

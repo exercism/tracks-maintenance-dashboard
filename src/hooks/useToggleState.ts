@@ -6,6 +6,7 @@ import {
   useEffect,
   MouseEvent,
 } from 'react'
+
 /**
  * Listens for outside clicks tied to a specific element
  *
@@ -13,10 +14,10 @@ import {
  *
  * @param onClick
  */
-function useOutsideClick<T extends HTMLElement>(
+function useOutsideClick<T extends Element = Element>(
   onClick: () => void
-): MutableRefObject<T> {
-  const ref = useRef<T>()
+): MutableRefObject<T | null> {
+  const ref = useRef<T | null>(null)
 
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent<T>): void => {
@@ -34,7 +35,7 @@ function useOutsideClick<T extends HTMLElement>(
     }
   }, [onClick])
 
-  return ref as MutableRefObject<T>
+  return ref
 }
 
 /**
@@ -45,9 +46,9 @@ function useOutsideClick<T extends HTMLElement>(
  *
  * @param initial
  */
-export function useToggleState<T extends HTMLElement = HTMLElement>(
+export function useToggleState<T extends Element = Element>(
   initial?: string
-): [string | undefined, (next: string) => void, MutableRefObject<T>] {
+): [string | undefined, (next: string) => void, MutableRefObject<T | null>] {
   const [current, setCurrent] = useState(initial)
   const doToggle = useCallback(
     (next: string) => {
