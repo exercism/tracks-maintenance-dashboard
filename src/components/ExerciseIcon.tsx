@@ -1,9 +1,9 @@
 import React from 'react'
 
-export function ExerciseIcon({ exercise, size = 24, hover }: { exercise: string; size?: number; hover?: boolean }) {
+export function ExerciseIcon({ exercise, size = 24, hover, className }: { className?: string; exercise: string; size?: number; hover?: boolean }) {
   return (
     <img
-      className={hover === true ? 'hover' : 'normal'}
+      className={`${hover === true ? 'hover' : 'normal'} ${className}`}
       src={`https://assets.exercism.io/exercises/${exercise}-${hover === true ? 'white' : 'turquoise'}.png`}
       alt={`${exercise} logo`}
       style={{
