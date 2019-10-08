@@ -11,8 +11,7 @@ import { ExerciseDetails } from './views/ExerciseDetails'
 import { TrackMissing } from './views/TrackMissing'
 import { TrackTopics } from './views/TrackTopics'
 import { TrackVersions } from './views/TrackVersions'
-import { useView, useExercise, setOptionsInUrl } from '../hooks/useUrlState'
-import { useToggleState } from '../hooks/useToggleState'
+import { useView, setOptionsInUrl } from '../hooks/useUrlState'
 
 export interface TrackToolProps {
   trackId: TrackIdentifier
@@ -23,37 +22,36 @@ const DEFAULT_VIEW: View = 'versions'
 
 export function TrackTool({
   trackId,
-  onUnselect
+  onUnselect,
 }: TrackToolProps): JSX.Element {
-
   const [selectedView] = useView()
-  const [selectedExercise] = useExercise()
-
-  const [currentDetails, onToggleDetails] = useToggleState()
 
   const actualView = selectedView || DEFAULT_VIEW
 
   const doHideExercise = useCallback(() => {
     setOptionsInUrl({ view: DEFAULT_VIEW, exercise: '' })
-  }, [setOptionsInUrl])
+  }, [])
 
-  const doShowExercise = useCallback((exercise: ExerciseIdentifier) => {
-    setOptionsInUrl({
-      view: 'details',
-      exercise
-    })
-  }, [actualView, setOptionsInUrl, selectedExercise])
-
-
+  const doShowExercise = useCallback(
+    (exercise: ExerciseIdentifier) => {
+      setOptionsInUrl({
+        view: 'details',
+        exercise,
+      })
+    },
+    []
+  )
 
   return (
     <section>
       <UnselectTrackButton onClick={onUnselect} />
 
       <div className="d-flex flex-wrap row">
-        <div className="col" style={{ maxWidth: '27rem' }}><Header trackId={trackId} /></div>
-        <TrackAside trackId={trackId} currentDetails={currentDetails} onToggleDetails={onToggleDetails} />
-        <TrackChecklist trackId={trackId} currentDetails={currentDetails} onToggleDetails={onToggleDetails}  />
+        <div className="col" style={{ maxWidth: '27rem' }}>
+          <Header trackId={trackId} />
+        </div>
+        <TrackAside trackId={trackId} />
+        <TrackChecklist trackId={trackId} />
       </div>
 
       <ViewSelect />
@@ -68,12 +66,13 @@ export function TrackTool({
   )
 }
 
-function UnselectTrackButton({ onClick }: { onClick: TrackToolProps['onUnselect'] }): JSX.Element {
+function UnselectTrackButton({
+  onClick,
+}: {
+  onClick: TrackToolProps['onUnselect']
+}): JSX.Element {
   return (
-    <button
-      className="btn btn-sm btn-outline-danger mr-3"
-      onClick={onClick}
-    >
+    <button className="btn btn-sm btn-outline-danger mr-3" onClick={onClick}>
       Select different track
     </button>
   )
@@ -87,26 +86,31 @@ function ViewSelect() {
   return (
     <div className="btn-group">
       <button
-        className={`btn btn-sm btn-outline-primary ${view === 'versions' && 'active'} mb-3`}
+        className={`btn btn-sm btn-outline-primary ${view === 'versions' &&
+          'active'} mb-3`}
         aria-pressed={view === 'versions' ? 'true' : 'false'}
         onClick={view === 'versions' ? noop : () => onChangeView('versions')}
-        >
-          Versions
-        </button>
+      >
+        Versions
+      </button>
       <button
-        className={`btn btn-sm btn-outline-primary ${view === 'unimplemented' && 'active'} mb-3`}
+        className={`btn btn-sm btn-outline-primary ${view === 'unimplemented' &&
+          'active'} mb-3`}
         aria-pressed={view === 'unimplemented' ? 'true' : 'false'}
-        onClick={view === 'unimplemented' ? noop : () => onChangeView('unimplemented')}
-        >
-          Unimplemented
-        </button>
+        onClick={
+          view === 'unimplemented' ? noop : () => onChangeView('unimplemented')
+        }
+      >
+        Unimplemented
+      </button>
       <button
-        className={`btn btn-sm btn-outline-primary ${view === 'topics' && 'active'} mb-3`}
+        className={`btn btn-sm btn-outline-primary ${view === 'topics' &&
+          'active'} mb-3`}
         aria-pressed={view === 'topics' ? 'true' : 'false'}
         onClick={view === 'topics' ? noop : () => onChangeView('topics')}
-        >
-          Topics
-        </button>
+      >
+        Topics
+      </button>
     </div>
   )
 }
@@ -116,25 +120,37 @@ function Header({ trackId }: { trackId: TrackIdentifier }): JSX.Element {
   const { config, done } = useRemoteConfig(trackId)
 
   return (
-    <header className="card mt-4 mb-4" style={{ maxWidth: '25rem', width: '100%' }}>
+    <header
+      className="card mt-4 mb-4"
+      style={{ maxWidth: '25rem', width: '100%' }}
+    >
       <figure style={{ maxWidth: 234, padding: '0 10px', margin: '10px auto' }}>
         <TrackIcon className="card-img-top" trackId={trackId} />
       </figure>
       <h1 className="sr-only card-title">{trackData.name}</h1>
-      {done && <div className="card-body"><TrackDescription config={config} /></div>}
+      {done && (
+        <div className="card-body">
+          <TrackDescription config={config} />
+        </div>
+      )}
     </header>
   )
 }
 
 interface TrackViewProps {
-  trackId: TrackIdentifier;
-  view: View;
+  trackId: TrackIdentifier
+  view: View
   onShowExercise: (exercise: ExerciseIdentifier) => void
   onHideExercise: () => void
 }
 
-function TrackView({ trackId, view, onShowExercise, onHideExercise }: TrackViewProps): JSX.Element | null {
-  switch(view) {
+function TrackView({
+  trackId,
+  view,
+  onShowExercise,
+  onHideExercise,
+}: TrackViewProps): JSX.Element | null {
+  switch (view) {
     case 'unimplemented': {
       return <TrackMissing trackId={trackId} />
     }

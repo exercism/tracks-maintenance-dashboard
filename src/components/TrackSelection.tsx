@@ -16,7 +16,9 @@ function TrackSelectionItem({
   return (
     <li className="list-inline-item mb-2">
       <button
-        className={`btn btn-md btn-${track.versioning ? '' : 'outline-'}primary`}
+        className={`btn btn-md btn-${
+          track.versioning ? '' : 'outline-'
+        }primary`}
         onClick={onSelect}
       >
         {track.name}
@@ -51,11 +53,14 @@ export function TrackSelection(): JSX.Element {
         {ENABLED_TRACKS.map(renderTrackSelectionItem)}
       </ol>
       <p className="text-muted">
-        Tracks are highlighted if the track has a defined versioning scheme. If a track
-        isn't highlighted, but the track does keep track of the exercise versions, you
-        may <a href="https://github.com/exercism/tracks-maintenance-dashboard/edit/master/src/data/tracks.json">edit this file</a>.
-        Add the <code>versioning</code> key to the right track data. Follow the format
-        of existing values.
+        Tracks are highlighted if the track has a defined versioning scheme. If
+        a track isn't highlighted, but the track does keep track of the exercise
+        versions, you may{' '}
+        <a href="https://github.com/exercism/tracks-maintenance-dashboard/edit/master/src/data/tracks.json">
+          edit this file
+        </a>
+        . Add the <code>versioning</code> key to the right track data. Follow
+        the format of existing values.
       </p>
     </section>
   )

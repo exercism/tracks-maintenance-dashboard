@@ -20,33 +20,25 @@ export function App() {
   )
 }
 
-
 function AppContainer({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="app container">
-      {children}
-    </div>
-  )
+  return <div className="app container">{children}</div>
 }
 
 function TrackMaintenanceTool() {
   const [selectedTrackId, onSelectTrack] = useTrack()
   const [selectedBranch] = useBranch()
 
-  const doUnselectTrack = useCallback(() => onSelectTrack(null), [onSelectTrack])
+  const doUnselectTrack = useCallback(() => onSelectTrack(null), [
+    onSelectTrack,
+  ])
 
   if (!selectedTrackId) {
-    return (
-      <TrackSelection />
-    )
+    return <TrackSelection />
   }
 
   return (
     <ProvideBranch value={selectedBranch}>
-      <TrackTool
-        trackId={selectedTrackId}
-        onUnselect={doUnselectTrack}
-      />
+      <TrackTool trackId={selectedTrackId} onUnselect={doUnselectTrack} />
     </ProvideBranch>
   )
 }

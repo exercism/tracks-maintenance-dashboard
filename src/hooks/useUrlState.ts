@@ -10,14 +10,19 @@ type UnsetTrackIdentifier = null
 type UnsetStatePartial = undefined
 
 interface SupportedState {
-  trackId: TrackIdentifier | UnsetTrackIdentifier;
-  branch: Branch | UnsetStatePartial;
-  view: View | UnsetStatePartial;
-  exercise: ExerciseIdentifier | UnsetStatePartial;
+  trackId: TrackIdentifier | UnsetTrackIdentifier
+  branch: Branch | UnsetStatePartial
+  view: View | UnsetStatePartial
+  exercise: ExerciseIdentifier | UnsetStatePartial
 }
 
-type sanitizeUrlState<K extends keyof SupportedState> = (input: string | undefined) => SupportedState[K]
-type UseUrlState<K extends keyof SupportedState> = [SupportedState[K], (value: SupportedState[K]) => void]
+type sanitizeUrlState<K extends keyof SupportedState> = (
+  input: string | undefined
+) => SupportedState[K]
+type UseUrlState<K extends keyof SupportedState> = [
+  SupportedState[K],
+  (value: SupportedState[K]) => void
+]
 
 /**
  * Returns a state and updater that fetches and pushes state from and to the URL
@@ -29,13 +34,19 @@ type UseUrlState<K extends keyof SupportedState> = [SupportedState[K], (value: S
  * @param key the state key
  * @param sanitize how to sanititze values
  */
-export function useUrlState<K extends keyof SupportedState>(key: K, sanitize: sanitizeUrlState<K>): UseUrlState<K> {
+export function useUrlState<K extends keyof SupportedState>(
+  key: K,
+  sanitize: sanitizeUrlState<K>
+): UseUrlState<K> {
   const location = useLocation()
 
   const value = getOptionFromLocation(location, key, sanitize)
-  const doUpdateValue = useCallback((value: SupportedState[K]) => {
-    setOptionsInUrl({ [key]: value })
-  }, [key])
+  const doUpdateValue = useCallback(
+    (value: SupportedState[K]) => {
+      setOptionsInUrl({ [key]: value })
+    },
+    [key]
+  )
 
   return [value, doUpdateValue]
 }
@@ -68,9 +79,11 @@ export function useExercise() {
   return useUrlState('exercise', sanititzeExercise)
 }
 
-function sanitizeTrack(anyTrack: string | undefined): TrackIdentifier | UnsetTrackIdentifier {
+function sanitizeTrack(
+  anyTrack: string | undefined
+): TrackIdentifier | UnsetTrackIdentifier {
   const track = TRACKS.find((track) => track['slug'] === anyTrack)
-  return track ? anyTrack as TrackIdentifier : null
+  return track ? (anyTrack as TrackIdentifier) : null
 }
 
 function sanitizeBranch(anyBranch: string | undefined): Branch {
@@ -83,14 +96,25 @@ function sanitizeView(anyView: string | undefined): View {
   return views.find((views) => views === anyView) || DETAULT_VIEW
 }
 
-function sanititzeExercise(anyExercise: string | undefined): ExerciseIdentifier | UnsetStatePartial {
+function sanititzeExercise(
+  anyExercise: string | undefined
+): ExerciseIdentifier | UnsetStatePartial {
   return anyExercise ? anyExercise.trim().replace(/( |_)/g, '-') : undefined
 }
 
-function getOptionFromLocation<K extends keyof SupportedState>(location: Location | undefined, key: K, sanitize: sanitizeUrlState<K>): SupportedState[K] {
-  const { trackId: urlTrackId, branch: urlBranch, view: urlView, exercise: urlExercise } = getOptionsFromLocation(location)
+function getOptionFromLocation<K extends keyof SupportedState>(
+  location: Location | undefined,
+  key: K,
+  sanitize: sanitizeUrlState<K>
+): SupportedState[K] {
+  const {
+    trackId: urlTrackId,
+    branch: urlBranch,
+    view: urlView,
+    exercise: urlExercise,
+  } = getOptionsFromLocation(location)
 
-  switch(key) {
+  switch (key) {
     case 'trackId': {
       return sanitize(urlTrackId)
     }
@@ -110,9 +134,9 @@ function getOptionFromLocation<K extends keyof SupportedState>(location: Locatio
 }
 
 interface Options {
-  trackId: string | undefined;
-  branch: string;
-  view: string | undefined;
+  trackId: string | undefined
+  branch: string
+  view: string | undefined
   exercise: string | undefined
 }
 
@@ -125,7 +149,7 @@ function getOptionsFromLocation(location: Location | undefined): Options {
     trackId: urlTrackId,
     branch: urlBranch || DEFAULT_BRANCH,
     view: urlView,
-    exercise: urlExercise
+    exercise: urlExercise,
   }
 }
 
@@ -138,12 +162,15 @@ function setOptionsWithLocation({
   trackId: nextTrackId,
   branch: nextBranch,
   view: nextView,
-  exercise: nextExercise
+  exercise: nextExercise,
 }: Partial<SupportedState> & { location: Location }) {
-
   // unset track
   if (nextTrackId === null) {
-    return window.history.pushState({}, 'Exercism: Track maintenance tool - Select your track', '/')
+    return window.history.pushState(
+      {},
+      'Exercism: Track maintenance tool - Select your track',
+      '/'
+    )
   }
 
   const current = getOptionsFromLocation(location)
@@ -151,11 +178,17 @@ function setOptionsWithLocation({
   const branch = nextBranch || current.branch
 
   const exercise = nextExercise === undefined ? current.exercise : nextExercise
-  const view = nextView === undefined ? (nextExercise ? 'details' : current.view) : nextView
+  const view =
+    nextView === undefined
+      ? nextExercise
+        ? 'details'
+        : current.view
+      : nextView
 
   return window.history.pushState(
     { trackId },
-    `Exercism: Track ${trackId} maintenance tool (${branch}) - ${view || 'Dashboard'}`,
+    `Exercism: Track ${trackId} maintenance tool (${branch}) - ${view ||
+      'Dashboard'}`,
     '/' + [trackId, branch, view, view && exercise].filter(Boolean).join('/')
   )
 }

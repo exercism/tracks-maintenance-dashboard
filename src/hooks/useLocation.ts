@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useContext, createContext } from 'react'
 
 const LocationContext = createContext<Location | undefined>(undefined)
@@ -9,7 +8,7 @@ const HISTORY_TRIGGERS = [
   'pushState',
   'replaceState',
   'back',
-  'forward'
+  'forward',
 ] as const
 
 export function useProvideBrowserLocation() {
@@ -19,7 +18,7 @@ export function useProvideBrowserLocation() {
     // Track the old popstate so its reversible
     const originalOnPopstate = { current: window.onpopstate }
 
-    window.onpopstate = function (this: WindowEventHandlers, ev: PopStateEvent) {
+    window.onpopstate = function(this: WindowEventHandlers, ev: PopStateEvent) {
       originalOnPopstate.current && originalOnPopstate.current.call(window, ev)
 
       // After the pop state has been execute, set the location
@@ -27,16 +26,21 @@ export function useProvideBrowserLocation() {
     }
 
     // Track the old history trigger functions
-    const originalHistoryTriggers = HISTORY_TRIGGERS.reduce((result, trigger) => {
-      const oldTrigger = result[trigger] = window.history[trigger]
+    const originalHistoryTriggers = HISTORY_TRIGGERS.reduce(
+      (result, trigger) => {
+        const oldTrigger = (result[trigger] = window.history[trigger])
 
-      window.history[trigger] = function (...args: [any, string, (string | null | undefined)]) {
-        oldTrigger.apply(window.history, args)
-        setLocation(() => ({ ...window.location }))
-      } as any // because args matching is meh
+        window.history[trigger] = function(
+          ...args: [any, string, (string | null | undefined)]
+        ) {
+          oldTrigger.apply(window.history, args)
+          setLocation(() => ({ ...window.location }))
+        } as any // because args matching is meh
 
-      return result
-    }, {} as Record<string, any> )
+        return result
+      },
+      {} as Record<string, any>
+    )
 
     // Set initial location
     setLocation({ ...window.location })

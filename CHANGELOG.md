@@ -1,5 +1,12 @@
 # Changelog
 
+## master
+
+- Add `useOutsideClick` to `useToggleState` hook
+- Add closing popovers when click happens outside of "parent group"
+- Add `box-shadow` for popovers
+- Fix issue with `versioning` information in `TrackVersions` table
+
 ## 0.2.7
 
 - Add `versioning` for `lisp`
