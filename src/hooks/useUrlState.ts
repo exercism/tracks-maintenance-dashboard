@@ -167,7 +167,7 @@ function setOptionsWithLocation({
   // unset track
   if (nextTrackId === null) {
     return window.history.pushState(
-      {},
+      { trackId: null, branch: DEFAULT_BRANCH, view: DETAULT_VIEW, exercise: undefined },
       'Exercism: Track maintenance tool - Select your track',
       '/'
     )
@@ -186,7 +186,7 @@ function setOptionsWithLocation({
       : nextView
 
   return window.history.pushState(
-    { trackId },
+    { trackId, branch, view, exercise, previous: { ...current } },
     `Exercism: Track ${trackId} maintenance tool (${branch}) - ${view ||
       'Dashboard'}`,
     '/' + [trackId, branch, view, view && exercise].filter(Boolean).join('/')

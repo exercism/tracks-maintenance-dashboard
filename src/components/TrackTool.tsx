@@ -29,8 +29,17 @@ export function TrackTool({
   const actualView = selectedView || DEFAULT_VIEW
 
   const doHideExercise = useCallback(() => {
+    // Heuristic, if there is a "back" state, go back
+    if (window && window.history && window.history.state && window.history.state.previous) {
+      if (window.history.state.previous.trackId === trackId) {
+        window.history.back()
+        return
+      }
+    }
+
+    // Otherwise, hide by going to the default view
     setOptionsInUrl({ view: DEFAULT_VIEW, exercise: '' })
-  }, [])
+  }, [trackId])
 
   const doShowExercise = useCallback(
     (exercise: ExerciseIdentifier) => {
