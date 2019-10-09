@@ -91,7 +91,8 @@
   {
     "slug": "elixir",
     "name": "Elixir",
-    "core_enabled": true
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/.meta/version"
   },
   {
     "slug": "elisp",
