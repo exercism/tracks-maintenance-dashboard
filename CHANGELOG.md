@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+
+- Add `versioning` for `elixir`
+
 ## 0.3.0
 
 - Add `useOutsideClick` to `useToggleState` hook
