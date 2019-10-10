@@ -5,15 +5,26 @@ export function LoadingIndicator({
 }: {
   children?: React.ReactNode
 }): JSX.Element {
-  return (
-    <div>
-      <div
-        className="spinner-border text-secondary spinner-border-sm mr-2"
-        role="status"
-      >
-        <span className="sr-only">Loading Indicator</span>
+  if (children) {
+    return (
+      <div>
+        <div
+          className="spinner-border text-secondary spinner-border-sm mr-2"
+          role="status"
+        >
+          <span className="sr-only">Loading Indicator</span>
+        </div>
+        {children}
       </div>
-      {children}
+    )
+  }
+
+  return (
+    <div
+      className="spinner-border text-secondary spinner-border-sm"
+      role="status"
+    >
+      <span className="sr-only">Loading Indicator</span>
     </div>
   )
 }
