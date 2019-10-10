@@ -353,7 +353,7 @@ function ForegoneSection({ exercises }: { exercises: ReadonlyArray<string> }) {
     <section className="mb-4">
       <h3>Foregone</h3>
       <p>
-        Exercises listed here have the <code>forgone</code> flag set to{' '}
+        Exercises listed here have the <code>foregone</code> flag set to{' '}
         <code>true</code>. This means that the track has <em>explicitely</em>{' '}
         chosen to forego implementing this exercise.
       </p>
