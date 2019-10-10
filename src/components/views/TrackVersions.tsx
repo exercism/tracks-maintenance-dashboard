@@ -12,6 +12,7 @@ import { LoadingIndicator } from '../LoadingIndicator'
 import { ContainedPopover } from '../Popover'
 import { ExerciseIcon } from '../ExerciseIcon'
 import { useKeyPressListener } from '../../hooks/useKeyListener'
+import { useActionableState } from '../../hooks/useActionableOnly'
 
 interface TrackVersionsProps {
   trackId: TrackIdentifier
@@ -209,6 +210,21 @@ function ExerciseRow({
     () => onShowExercise(exercise.slug),
     [exercise, onShowExercise]
   )
+
+  const [actionableOnly] = useActionableState()
+
+  if (actionableOnly) {
+    // Don't show whilst loading
+    if (!remoteDone || !canonicalDone) {
+      return null
+    }
+
+    // Hide if up-to-date
+    const valid = testVersion(canonicalVersion, remoteVersion)
+    if (valid) {
+      return null
+    }
+  }
 
   return (
     <tr key={exercise.slug}>

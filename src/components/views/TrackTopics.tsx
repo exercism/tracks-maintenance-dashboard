@@ -8,6 +8,7 @@ import { ContainedPopover } from '../Popover'
 import { CheckOrCross } from '../CheckOrCross'
 import { ExerciseIcon } from '../ExerciseIcon'
 import { useKeyPressListener } from '../../hooks/useKeyListener'
+import { useActionableState } from '../../hooks/useActionableOnly'
 
 interface TrackTopicsProps {
   trackId: TrackIdentifier
@@ -229,6 +230,16 @@ function ExerciseRow({
     exercise,
     onShowExercise,
   ])
+
+  const [actionableOnly] = useActionableState()
+
+  if (actionableOnly) {
+    // Hide if all valid
+    const valid = !hasSuggestions
+    if (valid) {
+      return null
+    }
+  }
 
   return (
     <tr key={exercise.slug}>

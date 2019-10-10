@@ -3,6 +3,7 @@ import { useTrackAsideData } from '../hooks/useTrackData'
 import { LoadingIconWithPopover } from './Popover'
 import { useToggleState } from '../hooks/useToggleState'
 import { useKeyPressListener } from '../hooks/useKeyListener'
+import { useActionableState } from '../hooks/useActionableOnly'
 
 export const TrackChecklist = ({ trackId }: { trackId: TrackIdentifier }) => {
   const { done, checklist } = useTrackAsideData(trackId)
@@ -11,13 +12,14 @@ export const TrackChecklist = ({ trackId }: { trackId: TrackIdentifier }) => {
     'popover',
     'popover-toggle'
   )
+  const [actionableOnly] = useActionableState()
 
   useKeyPressListener(['Esc', 'Escape'], setActiveDetailsKey)
 
   return (
     <aside className="mt-md-4 mb-4 col-md">
       <ul className="list-group" style={{ whiteSpace: 'nowrap' }}>
-        <li className="list-group-item d-flex justify-content-between">
+        <ChecklistItem disabled={actionableOnly && checklist.hasBlurb}>
           Track blurb
           <BlurbIcon
             currentDetails={activeDetailsKey}
@@ -25,8 +27,9 @@ export const TrackChecklist = ({ trackId }: { trackId: TrackIdentifier }) => {
             loading={!done}
             valid={checklist.hasBlurb}
           />
-        </li>
-        <li className="list-group-item d-flex justify-content-between">
+        </ChecklistItem>
+
+        <ChecklistItem disabled={actionableOnly && checklist.hasAutoApprove}>
           Auto approve exercise
           <AutoApproveIcon
             currentDetails={activeDetailsKey}
@@ -34,17 +37,23 @@ export const TrackChecklist = ({ trackId }: { trackId: TrackIdentifier }) => {
             loading={!done}
             valid={checklist.hasAutoApprove}
           />
-        </li>
-        <li className="list-group-item d-flex justify-content-between">
-          Exercises in core
+        </ChecklistItem>
+
+        <ChecklistItem
+          disabled={actionableOnly && checklist.exerciseCoreCount > 0}
+        >
+          Exercises in core {done ? `(${checklist.exerciseCoreCount})` : ''}
           <CoreIcon
             currentDetails={activeDetailsKey}
             onToggleDetails={() => setActiveDetailsKey('core')}
             loading={!done}
             valid={checklist.exerciseCoreCount > 0}
           />
-        </li>
-        <li className="list-group-item d-flex justify-content-between">
+        </ChecklistItem>
+
+        <ChecklistItem
+          disabled={actionableOnly && checklist.exerciseWithTopicsCount > 0}
+        >
           Exercises with topics
           <TopicsIcon
             currentDetails={activeDetailsKey}
@@ -52,9 +61,27 @@ export const TrackChecklist = ({ trackId }: { trackId: TrackIdentifier }) => {
             loading={!done}
             valid={checklist.exerciseWithTopicsCount > 0}
           />
-        </li>
+        </ChecklistItem>
       </ul>
     </aside>
+  )
+}
+
+function ChecklistItem({
+  disabled,
+  children,
+}: {
+  disabled?: boolean
+  children: React.ReactNode
+}) {
+  return (
+    <li
+      className={`list-group-item d-flex justify-content-between ${
+        disabled ? 'not-actionable' : ''
+      }`}
+    >
+      {children}
+    </li>
   )
 }
 

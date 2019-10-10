@@ -4,10 +4,17 @@ import { useTrackAsideData } from '../hooks/useTrackData'
 import { LoadingIconWithPopover } from './Popover'
 import { useToggleState } from '../hooks/useToggleState'
 import { useKeyPressListener } from '../hooks/useKeyListener'
+import { useActionableState } from '../hooks/useActionableOnly'
 
-export function TrackAside({ trackId }: { trackId: TrackIdentifier }) {
+export interface TrackAsideProps {
+  trackId: TrackIdentifier
+}
+
+export function TrackAside({ trackId }: TrackAsideProps) {
   const { done: doneConfig, config } = useRemoteConfig(trackId)
   const { done, data } = useTrackAsideData(trackId)
+  const [actionableOnly] = useActionableState()
+
   const [activeDetailsKey, setActiveDetailsKey] = useToggleState<
     HTMLUListElement
   >(undefined, 'popover', 'popover-toggle')
@@ -20,7 +27,7 @@ export function TrackAside({ trackId }: { trackId: TrackIdentifier }) {
         <li className="list-group-item d-flex justify-content-between">
           <RepositoryLink repository={trackId}>Repository</RepositoryLink>
         </li>
-        <li className="list-group-item d-flex justify-content-between">
+        <AsideItem disabled={actionableOnly && !!config}>
           <a
             href={`https://github.com/exercism/${trackId}/blob/master/config.json`}
             className="d-block mr-4"
@@ -34,8 +41,8 @@ export function TrackAside({ trackId }: { trackId: TrackIdentifier }) {
             loading={!doneConfig}
             valid={!!config}
           />
-        </li>
-        <li className="list-group-item d-flex justify-content-between">
+        </AsideItem>
+        <AsideItem disabled={actionableOnly && data['analyzer'] === true}>
           <RepositoryLink repository={`${trackId}-analyzer`}>
             Automated Analysis
           </RepositoryLink>
@@ -46,8 +53,8 @@ export function TrackAside({ trackId }: { trackId: TrackIdentifier }) {
             loading={!done}
             valid={data['analyzer'] === true}
           />
-        </li>
-        <li className="list-group-item d-flex justify-content-between">
+        </AsideItem>
+        <AsideItem disabled={actionableOnly && data['testRunner'] === true}>
           <RepositoryLink repository={`${trackId}-test-runner`}>
             Test Runner
           </RepositoryLink>
@@ -58,7 +65,7 @@ export function TrackAside({ trackId }: { trackId: TrackIdentifier }) {
             loading={!done}
             valid={data['testRunner'] === true}
           />
-        </li>
+        </AsideItem>
       </ul>
 
       {done && data['analyzer'] === true && (
@@ -74,6 +81,24 @@ export function TrackAside({ trackId }: { trackId: TrackIdentifier }) {
         </ul>
       )}
     </aside>
+  )
+}
+
+function AsideItem({
+  disabled,
+  children,
+}: {
+  disabled?: boolean
+  children: React.ReactNode
+}) {
+  return (
+    <li
+      className={`list-group-item d-flex justify-content-between ${
+        disabled ? 'not-actionable' : ''
+      }`}
+    >
+      {children}
+    </li>
   )
 }
 

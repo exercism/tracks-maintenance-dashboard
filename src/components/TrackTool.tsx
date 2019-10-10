@@ -1,4 +1,4 @@
-import React, { useCallback, MouseEvent, useMemo } from 'react'
+import React, { useCallback, useState, MouseEvent } from 'react'
 
 import { useTrackData } from '../hooks/useTrackData'
 import { useRemoteConfig } from '../hooks/useRemoteConfig'
@@ -6,12 +6,17 @@ import { TrackAside } from './TrackAside'
 import { TrackChecklist } from './TrackChecklist'
 import { TrackDescription } from './TrackDescription'
 import { TrackIcon } from './TrackIcon'
-
+import { SwitchToggle } from './SwitchToggle'
 import { ExerciseDetails } from './views/ExerciseDetails'
 import { TrackMissing } from './views/TrackMissing'
 import { TrackTopics } from './views/TrackTopics'
 import { TrackVersions } from './views/TrackVersions'
 import { useView, setOptionsInUrl, useUrl } from '../hooks/useUrlState'
+import {
+  ProvideActionable,
+  useProvideActionableState,
+  useActionableState,
+} from '../hooks/useActionableOnly'
 
 export interface TrackToolProps {
   trackId: TrackIdentifier
@@ -25,7 +30,6 @@ export function TrackTool({
   onUnselect,
 }: TrackToolProps): JSX.Element {
   const [selectedView] = useView()
-
   const actualView = selectedView || DEFAULT_VIEW
 
   const doHideExercise = useCallback(() => {
@@ -54,26 +58,52 @@ export function TrackTool({
   }, [])
 
   return (
-    <section>
-      <UnselectTrackButton onClick={onUnselect} />
-
-      <div className="d-flex flex-wrap row">
-        <div className="col" style={{ maxWidth: '27rem' }}>
-          <Header trackId={trackId} />
+    <ProvideActionable value={useProvideActionableState()}>
+      <section>
+        <div className="d-flex justify-content-start flex-row align-items-center w-50">
+          <UnselectTrackButton onClick={onUnselect} />
         </div>
-        <TrackAside trackId={trackId} />
-        <TrackChecklist trackId={trackId} />
-      </div>
 
-      <ViewSelect />
+        <div className="d-flex flex-wrap row">
+          <div className="col" style={{ maxWidth: '27rem' }}>
+            <Header trackId={trackId} />
+          </div>
+          <TrackAside trackId={trackId} />
+          <TrackChecklist trackId={trackId} />
+        </div>
 
-      <TrackView
-        trackId={trackId}
-        view={actualView}
-        onShowExercise={doShowExercise}
-        onHideExercise={doHideExercise}
-      />
-    </section>
+        <div className="d-flex flex-wrap align-items-center mt-4 mb-4 row">
+          <div className="col-12 col-md-auto mb-2">
+            <ViewSelect />
+          </div>
+          <div className="col mb-2">
+            <SwitchActionableState />
+          </div>
+        </div>
+
+        <TrackView
+          trackId={trackId}
+          view={actualView}
+          onShowExercise={doShowExercise}
+          onHideExercise={doHideExercise}
+        />
+      </section>
+    </ProvideActionable>
+  )
+}
+
+function SwitchActionableState() {
+  const [current, onChange] = useActionableState()
+
+  const doToggle = useCallback(() => onChange((prev) => !prev), [onChange])
+
+  return (
+    <SwitchToggle
+      inActiveLabel="All"
+      activeLabel="Actionable"
+      onToggle={doToggle}
+      actionableOnly={current}
+    />
   )
 }
 
@@ -103,7 +133,7 @@ function UnselectTrackButton({
 
 function ViewSelect() {
   return (
-    <div className="btn-group">
+    <div className="btn-group w-100">
       <ViewSelectLink view="versions">Versions</ViewSelectLink>
       <ViewSelectLink view="unimplemented">Unimplemented</ViewSelectLink>
       <ViewSelectLink view="topics">Topics</ViewSelectLink>
@@ -133,8 +163,7 @@ function ViewSelectLink({
 
   return (
     <a
-      className={`btn btn-sm btn-outline-primary ${active && 'active'} mb-3`}
-      aria-pressed={active}
+      className={`btn btn-sm btn-outline-primary ${active ? 'active' : ''}`}
       onClick={doChangeView}
       href={href}
     >
