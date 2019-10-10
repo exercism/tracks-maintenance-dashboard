@@ -28,7 +28,7 @@ export function useProvideBrowserLocation() {
     // Track the old history trigger functions
     const originalHistoryTriggers = HISTORY_TRIGGERS.reduce(
       (result, trigger) => {
-        const oldTrigger = (result[trigger] = window.history[trigger])
+        const oldTrigger = (result[trigger] = window.history[trigger]) as any
 
         window.history[trigger] = function(
           ...args: [any, string, (string | null | undefined)]
