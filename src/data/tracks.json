@@ -81,7 +81,8 @@
   {
     "slug": "delphi",
     "name": "Delphi Pascal",
-    "core_enabled": true
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/u{ExerciseSlug}Tests.pas"
   },
   {
     "slug": "elm",
