@@ -15,7 +15,8 @@ import {
  */
 function useOutsideClick<T extends Element = Element>(
   onClick: () => void,
-  containerClass?: string
+  containerClass?: string | readonly string[],
+  ignoreClass?: string | readonly string[]
 ): MutableRefObject<T | null> {
   const ref = useRef<T | null>(null)
 
@@ -27,12 +28,26 @@ function useOutsideClick<T extends Element = Element>(
           return
         }
 
-        // Click happened on the container element
-        if (containerClass && e.target instanceof HTMLElement) {
-          if (e.target.classList.contains(containerClass)) {
+        // Click happened on the container element, or on an ignored element
+        if (e.target instanceof HTMLElement) {
+          const classList = e.target.classList
+          const containers =
+            typeof containerClass === 'string'
+              ? [containerClass]
+              : containerClass || []
+          const ignores =
+            typeof ignoreClass === 'string' ? [ignoreClass] : ignoreClass || []
+          const needles = containers.concat(ignores)
+
+          if (needles.some((needle) => classList.contains(needle))) {
             return
           }
-          if (e.target.closest(`.${containerClass}`) !== null) {
+
+          if (
+            e.target.closest(
+              needles.map((needle) => `.${needle}`).join(', ')
+            ) !== null
+          ) {
             return
           }
         }
@@ -41,12 +56,12 @@ function useOutsideClick<T extends Element = Element>(
       onClick()
     }
 
-    document.addEventListener('mousedown', handleOutsideClick)
-    document.addEventListener('touchstart', handleOutsideClick)
+    document.addEventListener('mouseup', handleOutsideClick)
+    document.addEventListener('touchend', handleOutsideClick)
 
     return () => {
-      document.removeEventListener('mousedown', handleOutsideClick)
-      document.removeEventListener('touchstart', handleOutsideClick)
+      document.removeEventListener('mouseup', handleOutsideClick)
+      document.removeEventListener('touchend', handleOutsideClick)
     }
   }, [onClick, containerClass])
 
@@ -63,18 +78,19 @@ function useOutsideClick<T extends Element = Element>(
  */
 export function useToggleState<T extends Element = Element>(
   initial?: string,
-  containerClass?: string
-): [string | undefined, (next: string) => void, MutableRefObject<T | null>] {
+  containerClass?: string | readonly string[],
+  ignoreClass?: string | readonly string[]
+): [string | undefined, (next?: string) => void, MutableRefObject<T | null>] {
   const [current, setCurrent] = useState(initial)
   const doToggle = useCallback(
-    (next: string) => {
+    (next?: string) => {
       setCurrent((prev) => (prev === next ? undefined : next))
     },
     [setCurrent]
   )
 
   const doUntoggle = useCallback(() => setCurrent(undefined), [setCurrent])
-  const ref = useOutsideClick<T>(doUntoggle, containerClass)
+  const ref = useOutsideClick<T>(doUntoggle, containerClass, ignoreClass)
 
   return [current, doToggle, ref]
 }
