@@ -1,10 +1,20 @@
 import React from 'react'
 
-export function ExerciseIcon({ exercise, size = 24, hover }: { exercise: string; size?: number; hover?: boolean }) {
+export function ExerciseIcon({
+  exercise,
+  size = 24,
+  hover,
+}: {
+  exercise: string
+  size?: number
+  hover?: boolean
+}) {
   return (
     <img
       className={hover === true ? 'hover' : 'normal'}
-      src={`https://assets.exercism.io/exercises/${exercise}-${hover === true ? 'white' : 'turquoise'}.png`}
+      src={`https://assets.exercism.io/exercises/${exercise}-${
+        hover === true ? 'white' : 'turquoise'
+      }.png`}
       alt={`${exercise} logo`}
       style={{
         background: hover === true ? '#009cab' : '#fff',
@@ -16,8 +26,9 @@ export function ExerciseIcon({ exercise, size = 24, hover }: { exercise: string;
         maxWidth: size,
         maxHeight: size,
         overflow: 'hidden',
-        verticalAlign: 'text-top'
+        verticalAlign: 'text-top',
+        display: 'inline-block',
       }}
-      />
+    />
   )
 }
