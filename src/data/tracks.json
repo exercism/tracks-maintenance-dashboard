@@ -253,7 +253,8 @@
   {
     "slug": "prolog",
     "name": "Prolog",
-    "core_enabled": true
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/.meta/version"
   },
   {
     "slug": "purescript",
