@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, MouseEvent, useMemo } from 'react'
 
 import { useTrackData } from '../hooks/useTrackData'
 import { useRemoteConfig } from '../hooks/useRemoteConfig'
@@ -11,7 +11,7 @@ import { ExerciseDetails } from './views/ExerciseDetails'
 import { TrackMissing } from './views/TrackMissing'
 import { TrackTopics } from './views/TrackTopics'
 import { TrackVersions } from './views/TrackVersions'
-import { useView, setOptionsInUrl } from '../hooks/useUrlState'
+import { useView, setOptionsInUrl, useUrl } from '../hooks/useUrlState'
 
 export interface TrackToolProps {
   trackId: TrackIdentifier
@@ -30,7 +30,12 @@ export function TrackTool({
 
   const doHideExercise = useCallback(() => {
     // Heuristic, if there is a "back" state, go back
-    if (window && window.history && window.history.state && window.history.state.previous) {
+    if (
+      window &&
+      window.history &&
+      window.history.state &&
+      window.history.state.previous
+    ) {
       if (window.history.state.previous.trackId === trackId) {
         window.history.back()
         return
@@ -41,15 +46,12 @@ export function TrackTool({
     setOptionsInUrl({ view: DEFAULT_VIEW, exercise: '' })
   }, [trackId])
 
-  const doShowExercise = useCallback(
-    (exercise: ExerciseIdentifier) => {
-      setOptionsInUrl({
-        view: 'details',
-        exercise,
-      })
-    },
-    []
-  )
+  const doShowExercise = useCallback((exercise: ExerciseIdentifier) => {
+    setOptionsInUrl({
+      view: 'details',
+      exercise,
+    })
+  }, [])
 
   return (
     <section>
@@ -80,47 +82,64 @@ function UnselectTrackButton({
 }: {
   onClick: TrackToolProps['onUnselect']
 }): JSX.Element {
+  const doClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault()
+      onClick()
+    },
+    [onClick]
+  )
+
   return (
-    <button className="btn btn-sm btn-outline-danger mr-3" onClick={onClick}>
+    <a
+      href="/"
+      className="btn btn-sm btn-outline-danger mr-3"
+      onClick={doClick}
+    >
       Select different track
-    </button>
+    </a>
   )
 }
 
-const noop = () => {}
-
 function ViewSelect() {
-  const [view, onChangeView] = useView()
-
   return (
     <div className="btn-group">
-      <button
-        className={`btn btn-sm btn-outline-primary ${view === 'versions' &&
-          'active'} mb-3`}
-        aria-pressed={view === 'versions' ? 'true' : 'false'}
-        onClick={view === 'versions' ? noop : () => onChangeView('versions')}
-      >
-        Versions
-      </button>
-      <button
-        className={`btn btn-sm btn-outline-primary ${view === 'unimplemented' &&
-          'active'} mb-3`}
-        aria-pressed={view === 'unimplemented' ? 'true' : 'false'}
-        onClick={
-          view === 'unimplemented' ? noop : () => onChangeView('unimplemented')
-        }
-      >
-        Unimplemented
-      </button>
-      <button
-        className={`btn btn-sm btn-outline-primary ${view === 'topics' &&
-          'active'} mb-3`}
-        aria-pressed={view === 'topics' ? 'true' : 'false'}
-        onClick={view === 'topics' ? noop : () => onChangeView('topics')}
-      >
-        Topics
-      </button>
+      <ViewSelectLink view="versions">Versions</ViewSelectLink>
+      <ViewSelectLink view="unimplemented">Unimplemented</ViewSelectLink>
+      <ViewSelectLink view="topics">Topics</ViewSelectLink>
     </div>
+  )
+}
+
+function ViewSelectLink({
+  view,
+  children,
+}: {
+  view: View
+  children: React.ReactNode
+}) {
+  const [actualView, onChangeView] = useView()
+  const { href } = useUrl({ view })
+
+  const doChangeView = useCallback(
+    (e: MouseEvent) => {
+      e.preventDefault()
+      onChangeView(view)
+    },
+    [view, onChangeView]
+  )
+
+  const active = view === actualView
+
+  return (
+    <a
+      className={`btn btn-sm btn-outline-primary ${active && 'active'} mb-3`}
+      aria-pressed={active}
+      onClick={doChangeView}
+      href={href}
+    >
+      {children}
+    </a>
   )
 }
 
