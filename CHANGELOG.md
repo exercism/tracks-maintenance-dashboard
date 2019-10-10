@@ -1,5 +1,16 @@
 # Changelog
 
+## master
+
+- Add `Escape` handler for the popover, as per `tooltip` aria guidlines
+- Add accessiblity note to the `noscript` variant of the website
+- Fix popovers not being "toggled" when same button is pressed again
+- Fix tab order for content inside popovers
+- Fix weird margin on spinner without label
+- Fix browser error because of missing manifest
+- Change buttons for views to be links
+- Change button for select different track to be a link
+
 ## 0.3.1
 
 - Add `versioning` for `elixir`
