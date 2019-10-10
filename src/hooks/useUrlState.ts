@@ -157,7 +157,19 @@ export function setOptionsInUrl(nextState: Partial<SupportedState>) {
   return setOptionsWithLocation({ ...nextState, location: window.location })
 }
 
-function setOptionsWithLocation({
+export function getNextUrl(nextState: Partial<SupportedState>) {
+  return getNextUrlWithLocation({ ...nextState, location: window.location })
+}
+
+export function useUrl(nextState: Partial<SupportedState>) {
+  const location = useLocation()
+  return getNextUrlWithLocation({
+    ...nextState,
+    location: location || window.location,
+  })
+}
+
+function getNextUrlWithLocation({
   location,
   trackId: nextTrackId,
   branch: nextBranch,
@@ -166,11 +178,16 @@ function setOptionsWithLocation({
 }: Partial<SupportedState> & { location: Location }) {
   // unset track
   if (nextTrackId === null) {
-    return window.history.pushState(
-      { trackId: null, branch: DEFAULT_BRANCH, view: DETAULT_VIEW, exercise: undefined },
-      'Exercism: Track maintenance tool - Select your track',
-      '/'
-    )
+    return {
+      state: {
+        trackId: null,
+        branch: DEFAULT_BRANCH,
+        view: DETAULT_VIEW,
+        exercise: undefined,
+      },
+      title: 'Exercism: Track maintenance tool - Select your track',
+      href: '/',
+    }
   }
 
   const current = getOptionsFromLocation(location)
@@ -185,10 +202,19 @@ function setOptionsWithLocation({
         : current.view
       : nextView
 
-  return window.history.pushState(
-    { trackId, branch, view, exercise, previous: { ...current } },
-    `Exercism: Track ${trackId} maintenance tool (${branch}) - ${view ||
+  return {
+    state: { trackId, branch, view, exercise, previous: { ...current } },
+    title: `Exercism: Track ${trackId} maintenance tool (${branch}) - ${view ||
       'Dashboard'}`,
-    '/' + [trackId, branch, view, view && exercise].filter(Boolean).join('/')
-  )
+    href:
+      '/' + [trackId, branch, view, view && exercise].filter(Boolean).join('/'),
+  }
+}
+
+function setOptionsWithLocation(
+  options: Partial<SupportedState> & { location: Location }
+) {
+  const { state, title, href } = getNextUrlWithLocation(options)
+
+  return window.history.pushState(state, title, href)
 }
