@@ -1,4 +1,4 @@
-import React, { useCallback, useState, MouseEvent } from 'react'
+import React, { useCallback, MouseEvent } from 'react'
 
 import { useTrackData } from '../hooks/useTrackData'
 import { useRemoteConfig } from '../hooks/useRemoteConfig'
