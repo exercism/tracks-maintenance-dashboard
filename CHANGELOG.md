@@ -1,9 +1,10 @@
 # Changelog
 
-## master
+## 0.4.0
 
 - Add `Escape` handler for the popover, as per `tooltip` aria guidlines
 - Add accessiblity note to the `noscript` variant of the website
+- Add `actionable` vs `all` items toggle
 - Fix popovers not being "toggled" when same button is pressed again
 - Fix tab order for content inside popovers
 - Fix weird margin on spinner without label
