@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1
+
+- Add `versioning` for `delphi`
+
 ## 0.4.0
 
 - Add `Escape` handler for the popover, as per `tooltip` aria guidlines
