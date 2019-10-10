@@ -3,80 +3,85 @@ import { useTrackAsideData } from '../hooks/useTrackData'
 import { LoadingIconWithPopover } from './Popover'
 import { useToggleState } from '../hooks/useToggleState'
 import { useKeyPressListener } from '../hooks/useKeyListener'
+import { useActionableState } from '../hooks/useActionableOnly'
 
-export const TrackChecklist = ({
-  trackId,
-  actionableOnly,
-}: {
-  trackId: TrackIdentifier
-  actionableOnly: boolean
-}) => {
+export const TrackChecklist = ({ trackId }: { trackId: TrackIdentifier }) => {
   const { done, checklist } = useTrackAsideData(trackId)
   const [activeDetailsKey, setActiveDetailsKey] = useToggleState(
     undefined,
     'popover',
     'popover-toggle'
   )
+  const [actionableOnly] = useActionableState()
 
   useKeyPressListener(['Esc', 'Escape'], setActiveDetailsKey)
-
-  const blurbVisible = (actionableOnly && checklist.hasBlurb) || !actionableOnly
-  const autoApproveVisible =
-    (actionableOnly && checklist.hasAutoApprove) || !actionableOnly
-  const coreVisible =
-    (actionableOnly && checklist.exerciseCoreCount > 0) || !actionableOnly
-  const topicsVisible =
-    (actionableOnly && checklist.exerciseWithTopicsCount > 0) || !actionableOnly
 
   return (
     <aside className="mt-md-4 mb-4 col-md">
       <ul className="list-group" style={{ whiteSpace: 'nowrap' }}>
-        {blurbVisible && (
-          <li className="list-group-item d-flex justify-content-between">
-            Track blurb
-            <BlurbIcon
-              currentDetails={activeDetailsKey}
-              onToggleDetails={() => setActiveDetailsKey('blurb')}
-              loading={!done}
-              valid={checklist.hasBlurb}
-            />
-          </li>
-        )}
-        {autoApproveVisible && (
-          <li className="list-group-item d-flex justify-content-between">
-            Auto approve exercise
-            <AutoApproveIcon
-              currentDetails={activeDetailsKey}
-              onToggleDetails={() => setActiveDetailsKey('auto-approve')}
-              loading={!done}
-              valid={checklist.hasAutoApprove}
-            />
-          </li>
-        )}
-        {coreVisible && (
-          <li className="list-group-item d-flex justify-content-between">
-            Exercises in core
-            <CoreIcon
-              currentDetails={activeDetailsKey}
-              onToggleDetails={() => setActiveDetailsKey('core')}
-              loading={!done}
-              valid={checklist.exerciseCoreCount > 0}
-            />
-          </li>
-        )}
-        {topicsVisible && (
-          <li className="list-group-item d-flex justify-content-between">
-            Exercises with topics
-            <TopicsIcon
-              currentDetails={activeDetailsKey}
-              onToggleDetails={() => setActiveDetailsKey('topics')}
-              loading={!done}
-              valid={checklist.exerciseWithTopicsCount > 0}
-            />
-          </li>
-        )}
+        <ChecklistItem disabled={actionableOnly && checklist.hasBlurb}>
+          Track blurb
+          <BlurbIcon
+            currentDetails={activeDetailsKey}
+            onToggleDetails={() => setActiveDetailsKey('blurb')}
+            loading={!done}
+            valid={checklist.hasBlurb}
+          />
+        </ChecklistItem>
+
+        <ChecklistItem disabled={actionableOnly && checklist.hasAutoApprove}>
+          Auto approve exercise
+          <AutoApproveIcon
+            currentDetails={activeDetailsKey}
+            onToggleDetails={() => setActiveDetailsKey('auto-approve')}
+            loading={!done}
+            valid={checklist.hasAutoApprove}
+          />
+        </ChecklistItem>
+
+        <ChecklistItem
+          disabled={actionableOnly && checklist.exerciseCoreCount > 0}
+        >
+          Exercises in core {done ? `(${checklist.exerciseCoreCount})` : ''}
+          <CoreIcon
+            currentDetails={activeDetailsKey}
+            onToggleDetails={() => setActiveDetailsKey('core')}
+            loading={!done}
+            valid={checklist.exerciseCoreCount > 0}
+          />
+        </ChecklistItem>
+
+        <ChecklistItem
+          disabled={actionableOnly && checklist.exerciseWithTopicsCount > 0}
+        >
+          Exercises with topics
+          <TopicsIcon
+            currentDetails={activeDetailsKey}
+            onToggleDetails={() => setActiveDetailsKey('topics')}
+            loading={!done}
+            valid={checklist.exerciseWithTopicsCount > 0}
+          />
+        </ChecklistItem>
       </ul>
     </aside>
+  )
+}
+
+function ChecklistItem({
+  disabled,
+  children,
+}: {
+  disabled?: boolean
+  children: React.ReactNode
+}) {
+  return (
+    <li
+      className={`list-group-item d-flex justify-content-between ${
+        disabled ? 'not-actionable' : ''
+      }`}
+    >
+      {children}
+    </li>
   )
 }
 
