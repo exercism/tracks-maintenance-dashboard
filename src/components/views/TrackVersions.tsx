@@ -11,6 +11,7 @@ import { CheckOrCross } from './../CheckOrCross'
 import { LoadingIndicator } from '../LoadingIndicator'
 import { ContainedPopover } from '../Popover'
 import { ExerciseIcon } from '../ExerciseIcon'
+import { useKeyPressListener } from '../../hooks/useKeyListener'
 
 interface TrackVersionsProps {
   trackId: TrackIdentifier
@@ -54,7 +55,13 @@ function ExerciseTable({
   config: { exercises, foregone },
   onShowExercise,
 }: ExerciseTableProps) {
-  const [details, doSetDetails] = useToggleState(undefined, 'popover')
+  const [details, doSetDetails] = useToggleState(
+    undefined,
+    'popover',
+    'popover-toggle'
+  )
+
+  useKeyPressListener(['Esc', 'Escape'], doSetDetails)
 
   const track = useTrackData(trackId)
   const validExercises = useValidExercises(
@@ -139,7 +146,11 @@ function ExerciseTable({
 function VersionInfoButton({ trackData }: { trackData: TrackData }) {
   const { versioning } = trackData
 
-  const [active, setActive] = useToggleState(undefined, 'popover')
+  const [active, setActive] = useToggleState(
+    undefined,
+    'popover',
+    'popover-toggle'
+  )
   const doToggle = useCallback(() => setActive('version.help'), [setActive])
 
   return (

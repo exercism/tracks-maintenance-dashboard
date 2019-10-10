@@ -3,21 +3,20 @@ import { useRemoteConfig } from '../hooks/useRemoteConfig'
 import { useTrackAsideData } from '../hooks/useTrackData'
 import { LoadingIconWithPopover } from './Popover'
 import { useToggleState } from '../hooks/useToggleState'
+import { useKeyPressListener } from '../hooks/useKeyListener'
 
 export function TrackAside({ trackId }: { trackId: TrackIdentifier }) {
   const { done: doneConfig, config } = useRemoteConfig(trackId)
   const { done, data } = useTrackAsideData(trackId)
-  const [
-    activeDetailsKey,
-    setActiveDetailsKey,
-  ] = useToggleState<HTMLUListElement>(undefined, 'popover')
+  const [activeDetailsKey, setActiveDetailsKey] = useToggleState<
+    HTMLUListElement
+  >(undefined, 'popover', 'popover-toggle')
+
+  useKeyPressListener(['Esc', 'Escape'], setActiveDetailsKey)
 
   return (
     <aside className="mt-md-4 mb-4 col-md">
-      <ul
-        className="list-group"
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <ul className="list-group" style={{ whiteSpace: 'nowrap' }}>
         <li className="list-group-item d-flex justify-content-between">
           <RepositoryLink repository={trackId}>Repository</RepositoryLink>
         </li>

@@ -7,6 +7,7 @@ import { LoadingIndicator } from '../LoadingIndicator'
 import { ContainedPopover } from '../Popover'
 import { CheckOrCross } from '../CheckOrCross'
 import { ExerciseIcon } from '../ExerciseIcon'
+import { useKeyPressListener } from '../../hooks/useKeyListener'
 
 interface TrackTopicsProps {
   trackId: TrackIdentifier
@@ -83,12 +84,18 @@ function ExerciseTable({
   config: { exercises, foregone },
   onShowExercise,
 }: ExerciseTableProps) {
-  const [details, setDetails] = useToggleState(undefined, 'popover')
+  const [details, doSetDetails] = useToggleState(
+    undefined,
+    'popover',
+    'popover-toggle'
+  )
   const { list, done } = useRemoteTopics()
   const validExercises = useValidExercises(
     foregone || NO_FOREGONE_EXERCISES,
     exercises
   )
+
+  useKeyPressListener(['Esc', 'Escape'], doSetDetails)
 
   const lookupTopic = useMemo(() => {
     if (!list) {
@@ -114,12 +121,12 @@ function ExerciseTable({
           exercise={exercise}
           topics={lookupTopic}
           detailsActive={detailsActive}
-          onToggleDetails={setDetails}
+          onToggleDetails={doSetDetails}
           onShowExercise={onShowExercise}
         />
       )
     },
-    [details, setDetails, lookupTopic, onShowExercise]
+    [details, doSetDetails, lookupTopic, onShowExercise]
   )
 
   if (!done) {

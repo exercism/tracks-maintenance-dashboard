@@ -2,20 +2,21 @@ import React from 'react'
 import { useTrackAsideData } from '../hooks/useTrackData'
 import { LoadingIconWithPopover } from './Popover'
 import { useToggleState } from '../hooks/useToggleState'
+import { useKeyPressListener } from '../hooks/useKeyListener'
 
 export const TrackChecklist = ({ trackId }: { trackId: TrackIdentifier }) => {
   const { done, checklist } = useTrackAsideData(trackId)
-  const [
-    activeDetailsKey,
-    setActiveDetailsKey,
-  ] = useToggleState(undefined, 'popover')
+  const [activeDetailsKey, setActiveDetailsKey] = useToggleState(
+    undefined,
+    'popover',
+    'popover-toggle'
+  )
+
+  useKeyPressListener(['Esc', 'Escape'], setActiveDetailsKey)
 
   return (
     <aside className="mt-md-4 mb-4 col-md">
-      <ul
-        className="list-group"
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <ul className="list-group" style={{ whiteSpace: 'nowrap' }}>
         <li className="list-group-item d-flex justify-content-between">
           Track blurb
           <BlurbIcon
