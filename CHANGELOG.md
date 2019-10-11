@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.2
+
+- Add `versioning` for `prolog`
+
 ## 0.4.1
 
 - Add `versioning` for `delphi`
