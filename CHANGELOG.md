@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.3
+
+- Add `versioning` for `dart`
+
 ## 0.4.2
 
 - Add `versioning` for `prolog`
