@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.0
+
+- Add `unactionable` concept for `versioning`
+- Add `diamond` to `unactionable` for `csharp` and `fsharp`
+
 ## 0.4.3
 
 - Add `versioning` for `dart`
