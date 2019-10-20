@@ -14,6 +14,9 @@ import { ExerciseIcon } from '../ExerciseIcon'
 import { useKeyPressListener } from '../../hooks/useKeyListener'
 import { useActionableState } from '../../hooks/useActionableOnly'
 
+const TRACKS_JSON_GITHUB_URL =
+  'https://github.com/exercism/tracks-maintenance-dashboard/blob/master/src/data/tracks.json'
+
 interface TrackVersionsProps {
   trackId: TrackIdentifier
   onShowExercise(exercise: ExerciseIdentifier): void
@@ -122,7 +125,7 @@ function ExerciseTable({
         <tfoot>
           <tr>
             <td colSpan={4}>
-              <p className="text-muted mb-0">
+              <p className="text-muted">
                 Showing{' '}
                 <span className="badge badge-pill badge-primary">
                   {validExercises.length}
@@ -132,6 +135,14 @@ function ExerciseTable({
                   {exercises.length}
                 </span>{' '}
                 exercises. Deprecated and foregone exercises are hidden.
+              </p>
+              <p className="text-muted mb-0">
+                If exercises are not matching the canonical version for a
+                different reason than being out of date, for example because its
+                canonical updates don't make sense for this track, open a PR to
+                change <a href={TRACKS_JSON_GITHUB_URL}>this file</a> and add
+                those exercise's <code>slug</code> to{' '}
+                <code>unactionable -> versions</code>.
               </p>
             </td>
           </tr>
@@ -191,6 +202,8 @@ function ExerciseRow({
   onToggleDetails,
   onShowExercise,
 }: ExerciseRowProps) {
+  const { unactionable } = useTrackData(trackId)
+
   const {
     done: remoteDone,
     version: remoteVersion,
@@ -212,6 +225,11 @@ function ExerciseRow({
   )
 
   const [actionableOnly] = useActionableState()
+  const markedAsWontAction =
+    (unactionable &&
+      unactionable.versioning &&
+      unactionable.versioning.indexOf(exercise.slug) !== -1) ||
+    false
 
   if (actionableOnly) {
     // Don't show whilst loading
@@ -222,6 +240,11 @@ function ExerciseRow({
     // Hide if up-to-date
     const valid = testVersion(canonicalVersion, remoteVersion)
     if (valid) {
+      return null
+    }
+
+    // Marked as unactionable
+    if (markedAsWontAction) {
       return null
     }
   }
@@ -244,18 +267,21 @@ function ExerciseRow({
         remoteVersion={remoteVersion}
         canonicalVersion={canonicalVersion}
         done={remoteDone && canonicalDone}
+        wontFix={markedAsWontAction}
       />
     </tr>
   )
 }
 
+interface ExerciseNameCellProps {
+  exercise: ExerciseConfiguration
+  onShowDetails(): void
+}
+
 function ExerciseNameCell({
   exercise,
   onShowDetails,
-}: {
-  exercise: ExerciseConfiguration
-  onShowDetails(): void
-}) {
+}: ExerciseNameCellProps): JSX.Element {
   const Cell = exercise.core ? 'th' : 'td'
 
   return (
@@ -266,15 +292,13 @@ function ExerciseNameCell({
   )
 }
 
-function VersionCell({
-  url,
-  version,
-  done,
-}: {
+interface VersionCellProps {
   url: string | undefined
   version: string | undefined
   done: boolean
-}) {
+}
+
+function VersionCell({ url, version, done }: VersionCellProps): JSX.Element {
   return (
     <td>
       <a href={url}>
@@ -284,19 +308,23 @@ function VersionCell({
   )
 }
 
+interface DetailsCellProps {
+  active: boolean
+  onToggle(): void
+  remoteVersion: Version
+  canonicalVersion: Version
+  done: boolean
+  wontFix: boolean
+}
+
 function DetailsCell({
   active,
   onToggle,
   remoteVersion,
   canonicalVersion,
   done,
-}: {
-  active: boolean
-  onToggle(): void
-  remoteVersion: Version
-  canonicalVersion: Version
-  done: boolean
-}) {
+  wontFix,
+}: DetailsCellProps) {
   if (!done) {
     return (
       <td>
@@ -305,6 +333,21 @@ function DetailsCell({
             ⏳
           </span>
         </button>
+      </td>
+    )
+  }
+
+  if (wontFix) {
+    return (
+      <td>
+        <ContainedPopover
+          active={active}
+          onToggle={onToggle}
+          toggle={<WontFixIcon />}
+          align="right"
+        >
+          <WontFixExplanation />
+        </ContainedPopover>
       </td>
     )
   }
@@ -325,7 +368,7 @@ function DetailsCell({
   )
 }
 
-function VersionsMatch() {
+function VersionsMatch(): JSX.Element {
   return (
     <p className="mb-0">
       The exercise is up-to-date with the latest canonical data.
@@ -333,13 +376,33 @@ function VersionsMatch() {
   )
 }
 
-function VersionsDontMatch() {
+function VersionsDontMatch(): JSX.Element {
   return (
     <p className="mb-0">
       The version in the <code>exercism/problem-specifications</code> repository
       is higher than the local version. In order to resolve this, update the
       exercise by re-generating the <code>README.md</code> and updating the
       exericse tests.
+    </p>
+  )
+}
+
+function WontFixIcon(): JSX.Element {
+  return (
+    <span role="img" aria-label="Marked as unactionable">
+      🚫
+    </span>
+  )
+}
+
+function WontFixExplanation(): JSX.Element {
+  return (
+    <p className="mb-0">
+      This exercise has been added to the <code>unactionable -> versions</code>{' '}
+      list in <a href={TRACKS_JSON_GITHUB_URL}>this file</a> , which means it is
+      marked to be never in sync with the canonical data. A common reason is
+      that the canonical updates don't make sense for this track and therefore
+      are not going to be applied.
     </p>
   )
 }

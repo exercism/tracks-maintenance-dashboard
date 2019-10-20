@@ -51,7 +51,6 @@
     "name": "Coq",
     "core_enabled": false
   },
-
   {
     "slug": "cpp",
     "name": "C++",
@@ -66,7 +65,12 @@
     "slug": "csharp",
     "name": "C#",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/{ExerciseSlug}Test.cs"
+    "versioning": "exercises/{slug}/{ExerciseSlug}Test.cs",
+    "unactionable": {
+      "versioning": [
+        "diamond"
+      ]
+    }
   },
   {
     "slug": "d",
@@ -121,7 +125,12 @@
     "slug": "fsharp",
     "name": "F#",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/{ExerciseSlug}Test.fs"
+    "versioning": "exercises/{slug}/{ExerciseSlug}Test.fs",
+    "unactionable": {
+      "versioning": [
+        "diamond"
+      ]
+    }
   },
   {
     "slug": "gnu-apl",
@@ -140,7 +149,6 @@
     "core_enabled": true,
     "versioning": "exercises/{slug}/.meta/version"
   },
-
   {
     "slug": "haskell",
     "name": "Haskell",
@@ -181,7 +189,7 @@
     "core_enabled": true,
     "versioning": "exercises/{slug}/.meta/version"
   },
-    {
+  {
     "slug": "lfe",
     "name": "Lisp Flavored Erlang",
     "core_enabled": true
@@ -230,7 +238,6 @@
     "name": "Pharo Smalltalk",
     "core_enabled": true
   },
-
   {
     "slug": "php",
     "name": "PHP",
