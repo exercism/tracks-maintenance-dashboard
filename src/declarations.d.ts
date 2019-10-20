@@ -35,6 +35,10 @@ interface TrackData extends Readonly<TrackData> {
   name: string
   core_enabled: boolean
   versioning?: string
+  unactionable?: {
+    versioning?: string[]
+    topics?: string[]
+  }
 }
 
 declare module 'js-levenshtein' {
