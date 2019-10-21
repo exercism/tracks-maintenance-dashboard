@@ -1,6 +1,6 @@
 {
   "name": "@exercism/tracks-maintenance-dashboard",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Tool for maintainers and track contributors",
   "license": "MIT",
   "author": "Derk-Jan Karrenbeld <derk-jan+git@karrenbeld.info>",
@@ -8,20 +8,20 @@
   "main": "src/index.tsx",
   "dependencies": {
     "js-levenshtein": "^1.1.6",
-    "react": "~16.10.1",
-    "react-dom": "~16.10.1",
-    "react-scripts": "~3.1.2",
+    "react": "~16.10.2",
+    "react-dom": "~16.10.2",
+    "react-scripts": "~3.2.0",
     "semver": "^6.3.0"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.18",
-    "@types/react": "~16.9.4",
-    "@types/react-dom": "~16.9.1",
+    "@types/jest": "^24.0.19",
+    "@types/react": "~16.9.9",
+    "@types/react-dom": "~16.9.2",
     "@types/semver": "^6.0.2",
-    "husky": "^3.0.8",
+    "husky": "^3.0.9",
     "prettier": "^1.18.2",
-    "pretty-quick": "^1.11.1",
-    "typescript": "~3.6.3"
+    "pretty-quick": "^2.0.0",
+    "typescript": "~3.6.4"
   },
   "scripts": {
     "start": "react-scripts start",
