@@ -8,7 +8,7 @@ import { TrackTool } from './components/TrackTool'
 
 import './styles.css'
 
-export function App() {
+export function App(): JSX.Element {
   const location = useProvideBrowserLocation()
 
   return (
@@ -20,11 +20,15 @@ export function App() {
   )
 }
 
-function AppContainer({ children }: { children: React.ReactNode }) {
+function AppContainer({
+  children,
+}: {
+  children: React.ReactNode
+}): JSX.Element {
   return <div className="app container">{children}</div>
 }
 
-function TrackMaintenanceTool() {
+function TrackMaintenanceTool(): JSX.Element {
   const [selectedTrackId, onSelectTrack] = useTrack()
   const [selectedBranch] = useBranch()
 

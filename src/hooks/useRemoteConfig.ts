@@ -13,7 +13,10 @@ function readCache(trackId: TrackIdentifier): TrackConfiguration | undefined {
   return CACHE[trackId]
 }
 
-function writeCache(trackId: TrackIdentifier, config: TrackConfiguration) {
+function writeCache(
+  trackId: TrackIdentifier,
+  config: TrackConfiguration
+): void {
   CACHE[trackId] = config
 }
 
@@ -26,7 +29,10 @@ type FetchState = { config: TrackConfiguration | undefined; loading: boolean }
 
 const initialState: FetchState = { loading: true, config: undefined }
 
-function fetchReducer(state: FetchState, action: FetchAction) {
+function fetchReducer(
+  state: Readonly<FetchState>,
+  action: FetchAction
+): Readonly<FetchState> {
   switch (action.type) {
     case 'config': {
       return { ...state, loading: false, config: action.config }
@@ -35,7 +41,7 @@ function fetchReducer(state: FetchState, action: FetchAction) {
       return { ...state, loading: false }
     }
     case 'skip': {
-      return { ...state, loading: false, version: action.config }
+      return { ...state, loading: false, config: action.config }
     }
   }
 }
@@ -92,7 +98,7 @@ export function useRemoteConfig(trackId: TrackIdentifier): RemoteConfiguration {
         dispatch({ type: 'error' })
       })
 
-    return () => {
+    return (): void => {
       active = false
     }
   }, [url, trackId, currentLoading, currentConfig])

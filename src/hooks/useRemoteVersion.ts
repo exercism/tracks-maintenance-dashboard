@@ -11,7 +11,10 @@ type RemoteVersion = {
 
 const CACHE = {} as Record<TrackIdentifier, Record<ExerciseIdentifier, Version>>
 
-function readCache(trackId: TrackIdentifier, slug: ExerciseIdentifier) {
+function readCache(
+  trackId: TrackIdentifier,
+  slug: ExerciseIdentifier
+): Version {
   return (CACHE[trackId] || {})[slug]
 }
 
@@ -19,7 +22,7 @@ function writeCache(
   trackId: TrackIdentifier,
   slug: ExerciseIdentifier,
   version: Version
-) {
+): void {
   CACHE[trackId] = CACHE[trackId] || {}
   CACHE[trackId][slug] = version
 }
@@ -33,7 +36,10 @@ type FetchState = { version: Version; loading: boolean }
 
 const initialState: FetchState = { loading: true, version: undefined }
 
-function fetchReducer(state: FetchState, action: FetchAction) {
+function fetchReducer(
+  state: Readonly<FetchState>,
+  action: FetchAction
+): Readonly<FetchState> {
   switch (action.type) {
     case 'version': {
       return { ...state, loading: false, version: action.version }
@@ -189,7 +195,7 @@ export function useRemoteVersion(
         active && dispatch({ type: 'error' })
       })
 
-    return () => {
+    return (): void => {
       active = false
     }
   }, [url, trackId, slug, path, currentLoading, currentVersion])

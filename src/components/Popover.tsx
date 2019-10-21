@@ -9,7 +9,12 @@ interface PopoverProps {
   children: React.ReactNode
 }
 
-export function Popover({ children, active, title, align }: PopoverProps) {
+export function Popover({
+  children,
+  active,
+  title,
+  align,
+}: PopoverProps): JSX.Element {
   const tabableRef = useRef<HTMLDivElement | null>(null)
   const measuredSize = useRef<number | null>(null)
 
@@ -66,7 +71,10 @@ export function ContainedPopover({
   active,
   align,
   onToggle,
-}: PopoverProps & { onToggle?: () => void; toggle: React.ReactNode }) {
+}: PopoverProps & {
+  onToggle?: () => void
+  toggle: React.ReactNode
+}): JSX.Element {
   const doToggle = useCallback(() => {
     onToggle && onToggle()
   }, [onToggle])
@@ -103,7 +111,7 @@ export function LoadingIconWithPopover({
   loading,
   valid,
   children,
-}: IconWithPopoverProps) {
+}: IconWithPopoverProps): JSX.Element {
   return loading ? (
     <div style={{ position: 'relative', display: 'inline-block' }}>
       <button type="button" style={{ background: 0, border: 0 }}>

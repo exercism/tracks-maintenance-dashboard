@@ -15,7 +15,7 @@ function readCache(branch: Branch): TopicsList | undefined {
   return CACHE[branch]
 }
 
-function writeCache(branch: Branch, list: TopicsList) {
+function writeCache(branch: Branch, list: TopicsList): void {
   CACHE[branch] = list
 }
 
@@ -28,7 +28,10 @@ type FetchState = { list: TopicsList | undefined; loading: boolean }
 
 const initialState: FetchState = { loading: true, list: undefined }
 
-function fetchReducer(state: FetchState, action: FetchAction) {
+function fetchReducer(
+  state: Readonly<FetchState>,
+  action: FetchAction
+): Readonly<FetchState> {
   switch (action.type) {
     case 'list': {
       return { ...state, loading: false, list: action.list }
@@ -85,7 +88,11 @@ export function useRemoteTopics(): RemoteTopicsList {
           .split('\n')
           .map((topic) => topic.trim())
           .filter((item, index, self) => {
-            return item && item[0] !== '-' && (!self[index + 1] || self[index + 1][0] !== '-')
+            return (
+              item &&
+              item[0] !== '-' &&
+              (!self[index + 1] || self[index + 1][0] !== '-')
+            )
           })
 
         if (!items) {
@@ -106,7 +113,7 @@ export function useRemoteTopics(): RemoteTopicsList {
         active && dispatch({ type: 'error' })
       })
 
-    return () => {
+    return (): void => {
       active = false
     }
   }, [contentsUrl, problemSpecBranch, currentLoading, currentList])

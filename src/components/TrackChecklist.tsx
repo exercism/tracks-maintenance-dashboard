@@ -5,7 +5,11 @@ import { useToggleState } from '../hooks/useToggleState'
 import { useKeyPressListener } from '../hooks/useKeyListener'
 import { useActionableState } from '../hooks/useActionableOnly'
 
-export const TrackChecklist = ({ trackId }: { trackId: TrackIdentifier }) => {
+export function TrackChecklist({
+  trackId,
+}: {
+  trackId: TrackIdentifier
+}): JSX.Element {
   const { done, checklist } = useTrackAsideData(trackId)
   const [activeDetailsKey, setActiveDetailsKey] = useToggleState(
     undefined,
@@ -23,7 +27,7 @@ export const TrackChecklist = ({ trackId }: { trackId: TrackIdentifier }) => {
           Track blurb
           <BlurbIcon
             currentDetails={activeDetailsKey}
-            onToggleDetails={() => setActiveDetailsKey('blurb')}
+            onToggleDetails={(): void => setActiveDetailsKey('blurb')}
             loading={!done}
             valid={checklist.hasBlurb}
           />
@@ -33,7 +37,7 @@ export const TrackChecklist = ({ trackId }: { trackId: TrackIdentifier }) => {
           Auto approve exercise
           <AutoApproveIcon
             currentDetails={activeDetailsKey}
-            onToggleDetails={() => setActiveDetailsKey('auto-approve')}
+            onToggleDetails={(): void => setActiveDetailsKey('auto-approve')}
             loading={!done}
             valid={checklist.hasAutoApprove}
           />
@@ -45,7 +49,7 @@ export const TrackChecklist = ({ trackId }: { trackId: TrackIdentifier }) => {
           Exercises in core {done ? `(${checklist.exerciseCoreCount})` : ''}
           <CoreIcon
             currentDetails={activeDetailsKey}
-            onToggleDetails={() => setActiveDetailsKey('core')}
+            onToggleDetails={(): void => setActiveDetailsKey('core')}
             loading={!done}
             valid={checklist.exerciseCoreCount > 0}
           />
@@ -57,7 +61,7 @@ export const TrackChecklist = ({ trackId }: { trackId: TrackIdentifier }) => {
           Exercises with topics
           <TopicsIcon
             currentDetails={activeDetailsKey}
-            onToggleDetails={() => setActiveDetailsKey('topics')}
+            onToggleDetails={(): void => setActiveDetailsKey('topics')}
             loading={!done}
             valid={checklist.exerciseWithTopicsCount > 0}
           />
@@ -73,7 +77,7 @@ function ChecklistItem({
 }: {
   disabled?: boolean
   children: React.ReactNode
-}) {
+}): JSX.Element {
   return (
     <li
       className={`list-group-item d-flex justify-content-between ${
@@ -97,7 +101,7 @@ function BlurbIcon({
   valid,
   onToggleDetails,
   currentDetails,
-}: PreconfiguredIconProps) {
+}: PreconfiguredIconProps): JSX.Element {
   return (
     <LoadingIconWithPopover
       active={currentDetails === 'blurb'}
@@ -121,7 +125,7 @@ function AutoApproveIcon({
   valid,
   onToggleDetails,
   currentDetails,
-}: PreconfiguredIconProps) {
+}: PreconfiguredIconProps): JSX.Element {
   return (
     <LoadingIconWithPopover
       active={currentDetails === 'auto-approve'}
@@ -145,7 +149,7 @@ function CoreIcon({
   valid,
   currentDetails,
   onToggleDetails,
-}: PreconfiguredIconProps) {
+}: PreconfiguredIconProps): JSX.Element {
   return (
     <LoadingIconWithPopover
       active={currentDetails === 'core'}
@@ -170,7 +174,7 @@ function TopicsIcon({
   valid,
   currentDetails,
   onToggleDetails,
-}: PreconfiguredIconProps) {
+}: PreconfiguredIconProps): JSX.Element {
   return (
     <LoadingIconWithPopover
       active={currentDetails === 'topics'}
@@ -188,7 +192,7 @@ function TopicsIcon({
   )
 }
 
-function AboutConfigJson() {
+function AboutConfigJson(): JSX.Element {
   return (
     <p className="mb-0">
       You can find more information about the <code>config.json</code> file{' '}

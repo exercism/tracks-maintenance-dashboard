@@ -11,14 +11,17 @@ const HISTORY_TRIGGERS = [
   'forward',
 ] as const
 
-export function useProvideBrowserLocation() {
+export function useProvideBrowserLocation(): Location | undefined {
   const [location, setLocation] = useState<Location>()
 
   useEffect(() => {
     // Track the old popstate so its reversible
     const originalOnPopstate = { current: window.onpopstate }
 
-    window.onpopstate = function(this: WindowEventHandlers, ev: PopStateEvent) {
+    window.onpopstate = function(
+      this: WindowEventHandlers,
+      ev: PopStateEvent
+    ): void {
       originalOnPopstate.current && originalOnPopstate.current.call(window, ev)
 
       // After the pop state has been execute, set the location
@@ -26,6 +29,7 @@ export function useProvideBrowserLocation() {
     }
 
     // Track the old history trigger functions
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     const originalHistoryTriggers = HISTORY_TRIGGERS.reduce(
       (result, trigger) => {
         const oldTrigger = (result[trigger] = window.history[trigger]) as any
@@ -41,12 +45,13 @@ export function useProvideBrowserLocation() {
       },
       {} as Record<string, any>
     )
+    /* eslint-enable @typescript-eslint/no-explicit-any */
 
     // Set initial location
     setLocation({ ...window.location })
 
     // Reverse all modifications when this effect is being removed
-    return () => {
+    return (): void => {
       window.onpopstate = originalOnPopstate.current
       HISTORY_TRIGGERS.forEach((trigger) => {
         window.history[trigger] = originalHistoryTriggers[trigger]

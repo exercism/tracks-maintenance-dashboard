@@ -5,11 +5,11 @@ type Branch = string
 type CanonicalList = ReadonlyArray<ExerciseIdentifier>
 
 type CanonicalLookupValue = Readonly<{
-  slug: ExerciseIdentifier;
-  deprecated: boolean;
-  description: boolean;
-  meta: boolean;
-  tests: boolean;
+  slug: ExerciseIdentifier
+  deprecated: boolean
+  description: boolean
+  meta: boolean
+  tests: boolean
 }>
 
 type CanonicalLookup = Record<ExerciseIdentifier, CanonicalLookupValue>
@@ -27,20 +27,23 @@ function readCache(branch: Branch): CanonicalLookup | undefined {
   return CACHE[branch]
 }
 
-function writeCache(branch: Branch, data: CanonicalLookup) {
+function writeCache(branch: Branch, data: CanonicalLookup): void {
   CACHE[branch] = data
 }
 
 type FetchAction =
-  | { type: 'list'; list: CanonicalList, data: CanonicalLookup }
+  | { type: 'list'; list: CanonicalList; data: CanonicalLookup }
   | { type: 'error' }
-  | { type: 'skip'; list: CanonicalList, data: CanonicalLookup }
+  | { type: 'skip'; list: CanonicalList; data: CanonicalLookup }
 
 type FetchState = { list: CanonicalList | undefined; loading: boolean }
 
 const initialState: FetchState = { loading: true, list: undefined }
 
-function fetchReducer(state: FetchState, action: FetchAction) {
+function fetchReducer(
+  state: Readonly<FetchState>,
+  action: FetchAction
+): Readonly<FetchState> {
   switch (action.type) {
     case 'list': {
       return { ...state, loading: false, list: action.list }
@@ -77,7 +80,11 @@ export function useRemoteCanonicalList(): RemoteCanonicalList {
     if (currentData) {
       if (currentLoading) {
         writeCache(problemSpecBranch, currentData)
-        dispatch({ type: 'skip', list: Object.keys(currentData), data: currentData })
+        dispatch({
+          type: 'skip',
+          list: Object.keys(currentData),
+          data: currentData,
+        })
       }
       return
     }
@@ -105,7 +112,11 @@ export function useRemoteCanonicalList(): RemoteCanonicalList {
         }
 
         // Fetch the tree, but recursively
-        return fetch(`${item['git_url']}${item['git_url'].indexOf('?') === -1 ? '?' : '&'}recursive=1`)
+        return fetch(
+          `${item['git_url']}${
+            item['git_url'].indexOf('?') === -1 ? '?' : '&'
+          }recursive=1`
+        )
       })
       .then(async (result) => {
         if (!active || !result) {
@@ -127,39 +138,51 @@ export function useRemoteCanonicalList(): RemoteCanonicalList {
           return undefined
         }
 
-        const lookup = items.reduce((result, item) => {
-          const [slug, prop] = item.split('/')
-          if (!result[slug]) {
-            result[slug] = { slug, deprecated: false, description: false, tests: false, meta: false }
-          }
+        const lookup = items.reduce(
+          (result, item) => {
+            const [slug, prop] = item.split('/')
+            if (!result[slug]) {
+              result[slug] = {
+                slug,
+                deprecated: false,
+                description: false,
+                tests: false,
+                meta: false,
+              }
+            }
 
-          switch(prop) {
-            case 'metadata.yml': {
-              result[slug].meta = true
-              break
+            switch (prop) {
+              case 'metadata.yml': {
+                result[slug].meta = true
+                break
+              }
+              case 'description.md': {
+                result[slug].description = true
+                break
+              }
+              case 'canonical-data.yml': {
+                result[slug].tests = true
+                break
+              }
+              case '.deprecated': {
+                result[slug].deprecated = true
+                break
+              }
             }
-            case 'description.md': {
-              result[slug].description = true
-              break;
-            }
-            case 'canonical-data.yml': {
-              result[slug].tests = true
-              break;
-            }
-            case '.deprecated': {
-              result[slug].deprecated = true
-              break;
-            }
-          }
 
-          return result
-        }, {} as Record<ExerciseIdentifier, {
-          slug: ExerciseIdentifier;
-          deprecated: boolean;
-          description: boolean;
-          tests: boolean;
-          meta: boolean;
-        }>)
+            return result
+          },
+          {} as Record<
+            ExerciseIdentifier,
+            {
+              slug: ExerciseIdentifier
+              deprecated: boolean
+              description: boolean
+              tests: boolean
+              meta: boolean
+            }
+          >
+        )
 
         writeCache(problemSpecBranch, lookup)
         dispatch({ type: 'list', list: Object.keys(lookup), data: lookup })
@@ -168,7 +191,7 @@ export function useRemoteCanonicalList(): RemoteCanonicalList {
         active && dispatch({ type: 'error' })
       })
 
-    return () => {
+    return (): void => {
       active = false
     }
   }, [contentsUrl, problemSpecBranch, currentLoading, currentData])

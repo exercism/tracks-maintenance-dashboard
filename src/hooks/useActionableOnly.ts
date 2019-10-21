@@ -8,7 +8,10 @@ import {
 
 type ActionableState = [boolean, Dispatch<SetStateAction<boolean>>]
 
-const ActionableContext = createContext<ActionableState>([false, () => {}])
+const ActionableContext = createContext<ActionableState>([
+  false,
+  (): void => {},
+])
 export const ProvideActionable = ActionableContext.Provider
 
 export function useProvideActionableState(): ActionableState {

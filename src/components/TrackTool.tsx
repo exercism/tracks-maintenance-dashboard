@@ -93,7 +93,7 @@ export function TrackTool({
   )
 }
 
-function SwitchActionableState() {
+function SwitchActionableState(): JSX.Element {
   const [current, onChange] = useActionableState()
 
   const doToggle = useCallback(() => onChange((prev) => !prev), [onChange])
@@ -132,7 +132,7 @@ function UnselectTrackButton({
   )
 }
 
-function ViewSelect() {
+function ViewSelect(): JSX.Element {
   return (
     <div className="btn-group w-100">
       <ViewSelectLink view="versions">Versions</ViewSelectLink>
@@ -148,7 +148,7 @@ interface ViewSelectLinkProps {
   children: React.ReactNode
 }
 
-function ViewSelectLink({ view, children }: ViewSelectLinkProps) {
+function ViewSelectLink({ view, children }: ViewSelectLinkProps): JSX.Element {
   const [actualView, onChangeView] = useView()
   const { href } = useUrl({ view })
 
