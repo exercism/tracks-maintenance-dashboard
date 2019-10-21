@@ -1,6 +1,6 @@
 {
   "name": "@exercism/tracks-maintenance-dashboard",
-  "version": "0.4.0",
+  "version": "0.6.0",
   "description": "Tool for maintainers and track contributors",
   "license": "MIT",
   "author": "Derk-Jan Karrenbeld <derk-jan+git@karrenbeld.info>",
@@ -14,9 +14,9 @@
     "semver": "^6.3.0"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.18",
-    "@types/react": "~16.9.5",
-    "@types/react-dom": "~16.9.1",
+    "@types/jest": "^24.0.19",
+    "@types/react": "~16.9.9",
+    "@types/react-dom": "~16.9.2",
     "@types/semver": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^2.4.0",
     "@typescript-eslint/parser": "^2.4.0",

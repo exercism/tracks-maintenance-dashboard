@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.6.0
+
+- Add `stubs` view, showing the stub existance for exercises
+- Add `stub_file` and `test_file` configuration for all `versioning` enabled tracks
+
+## 0.5.0
+
+- Add `unactionable` concept for `versioning`
+- Add `diamond` to `unactionable` for `csharp` and `fsharp`
+
+## 0.4.3
+
+- Add `versioning` for `dart`
+
+## 0.4.2
+
+- Add `versioning` for `prolog`
+
+## 0.4.1
+
+- Add `versioning` for `delphi`
+
 ## 0.4.0
 
 - Add `Escape` handler for the popover, as per `tooltip` aria guidlines

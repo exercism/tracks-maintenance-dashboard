@@ -104,7 +104,14 @@ function sanitizeBranch(anyBranch: string | undefined): Branch {
 }
 
 function sanitizeView(anyView: string | undefined): View {
-  const views: View[] = ['unimplemented', 'topics', 'details', 'versions']
+  // Keep up to date with declarations.d.ts
+  const views: View[] = [
+    'unimplemented',
+    'topics',
+    'details',
+    'versions',
+    'stubs',
+  ]
   return views.find((views) => views === anyView) || DETAULT_VIEW
 }
 

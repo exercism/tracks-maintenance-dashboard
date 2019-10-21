@@ -1,39 +1,34 @@
 import React, { useCallback } from 'react'
-import semver from 'semver'
 
 import { RemoteConfig } from '../../net/RemoteConfig'
 import { useTrackData } from '../../hooks/useTrackData'
-import { useRemoteVersion } from '../../hooks/useRemoteVersion'
+import { useRemoteStub, MINIMUM_STUB_LENGTH } from '../../hooks/useRemoteStub'
 import { useToggleState } from '../../hooks/useToggleState'
-import { useRemoteCanonicalVersion } from '../../hooks/useRemoteCanonicalVersion'
 
-import { CheckOrCross } from './../CheckOrCross'
+import { CheckOrCross } from '../CheckOrCross'
 import { LoadingIndicator } from '../LoadingIndicator'
 import { ContainedPopover } from '../Popover'
 import { ExerciseIcon } from '../ExerciseIcon'
 import { useKeyPressListener } from '../../hooks/useKeyListener'
 import { useActionableState } from '../../hooks/useActionableOnly'
 
-const TRACKS_JSON_GITHUB_URL =
-  'https://github.com/exercism/tracks-maintenance-dashboard/blob/master/src/data/tracks.json'
-
-interface TrackVersionsProps {
+interface TrackStubsProps {
   trackId: TrackIdentifier
   onShowExercise(exercise: ExerciseIdentifier): void
 }
 
-export function TrackVersions({
+export function TrackStubs({
   trackId,
   onShowExercise,
-}: TrackVersionsProps): JSX.Element {
+}: TrackStubsProps): JSX.Element {
   return (
     <section>
       <header className="mb-4">
-        <h2 id="#versions">Exercise Versions</h2>
+        <h2 id="#stubs">Exercise Stubs</h2>
       </header>
 
       <RemoteConfig trackId={trackId}>
-        {({ config }): JSX.Element => (
+        {({ config }) => (
           <ExerciseTable
             trackId={trackId}
             config={config}
@@ -58,7 +53,7 @@ function ExerciseTable({
   trackId,
   config: { exercises, foregone },
   onShowExercise,
-}: ExerciseTableProps): JSX.Element {
+}: ExerciseTableProps) {
   const [details, doSetDetails] = useToggleState(
     undefined,
     'popover',
@@ -115,10 +110,9 @@ function ExerciseTable({
           <tr>
             <th style={{ minWidth: 256 }}>Exercise</th>
             <th style={{ minWidth: 200 }}>
-              {track.name} version <VersionInfoButton trackData={track} />
+              {track.name} stub <StubInfoButton trackData={track} />
             </th>
-            <th style={{ minWidth: 200 }}>Canonical data version</th>
-            <th style={{ minWidth: 64 }} />
+            <th />
           </tr>
         </thead>
         <tbody>{validExercises.map(renderExercise)}</tbody>
@@ -136,14 +130,6 @@ function ExerciseTable({
                 </span>{' '}
                 exercises. Deprecated and foregone exercises are hidden.
               </p>
-              <p className="text-muted mb-0">
-                If exercises are not matching the canonical version for a
-                different reason than being out of date, for example because its
-                canonical updates don't make sense for this track, open a PR to
-                change <a href={TRACKS_JSON_GITHUB_URL}>this file</a> and add
-                those exercise's <code>slug</code> to{' '}
-                <code>unactionable -> versions</code>.
-              </p>
             </td>
           </tr>
         </tfoot>
@@ -155,24 +141,20 @@ function ExerciseTable({
   )
 }
 
-function VersionInfoButton({
-  trackData,
-}: {
-  trackData: TrackData
-}): JSX.Element {
-  const { versioning } = trackData
+function StubInfoButton({ trackData }: { trackData: TrackData }) {
+  const { stub_file: stubFile } = trackData
 
   const [active, setActive] = useToggleState(
     undefined,
     'popover',
     'popover-toggle'
   )
-  const doToggle = useCallback(() => setActive('version.help'), [setActive])
+  const doToggle = useCallback(() => setActive('stub.help'), [setActive])
 
   return (
     <ContainedPopover
       align="center"
-      active={active === 'version.help'}
+      active={active === 'stub.help'}
       onToggle={doToggle}
       toggle={
         <span aria-label="more information" role="img">
@@ -181,8 +163,8 @@ function VersionInfoButton({
       }
     >
       <p>
-        The version information is fetched from the {trackData.name} repository,
-        at <code>{versioning || '<unknown>'}</code>.
+        The stub file is fetched from the {trackData.name} repository, at{' '}
+        <code>{stubFile || '<unknown>'}</code>.
       </p>
       <p className="mb-0">
         The casing of the <code>{'{placeholder}'}</code> is matched.
@@ -205,20 +187,11 @@ function ExerciseRow({
   detailsActive,
   onToggleDetails,
   onShowExercise,
-}: ExerciseRowProps): JSX.Element | null {
-
-  const { unactionable } = useTrackData(trackId)
-
-  const {
-    done: remoteDone,
-    version: remoteVersion,
-    url: remoteUrl,
-  } = useRemoteVersion(trackId, exercise.slug)
-  const {
-    done: canonicalDone,
-    version: canonicalVersion,
-    url: canonicalUrl,
-  } = useRemoteCanonicalVersion(exercise.slug)
+}: ExerciseRowProps) {
+  const { done: remoteDone, stub: remoteStub, url: remoteUrl } = useRemoteStub(
+    trackId,
+    exercise.slug
+  )
 
   const doToggle = useCallback(() => onToggleDetails(exercise.slug), [
     exercise,
@@ -230,26 +203,16 @@ function ExerciseRow({
   )
 
   const [actionableOnly] = useActionableState()
-  const markedAsWontAction =
-    (unactionable &&
-      unactionable.versioning &&
-      unactionable.versioning.indexOf(exercise.slug) !== -1) ||
-    false
 
   if (actionableOnly) {
     // Don't show whilst loading
-    if (!remoteDone || !canonicalDone) {
+    if (!remoteDone) {
       return null
     }
 
     // Hide if up-to-date
-    const valid = testVersion(canonicalVersion, remoteVersion)
+    const valid = remoteStub && remoteStub > MINIMUM_STUB_LENGTH
     if (valid) {
-      return null
-    }
-
-    // Marked as unactionable
-    if (markedAsWontAction) {
       return null
     }
   }
@@ -260,19 +223,12 @@ function ExerciseRow({
         exercise={exercise}
         onShowDetails={doShowExerciseDetails}
       />
-      <VersionCell url={remoteUrl} version={remoteVersion} done={remoteDone} />
-      <VersionCell
-        url={canonicalUrl}
-        version={canonicalVersion}
-        done={canonicalDone}
-      />
+      <StubCell url={remoteUrl} stubLength={remoteStub} done={remoteDone} />
       <DetailsCell
         active={detailsActive}
         onToggle={doToggle}
-        remoteVersion={remoteVersion}
-        canonicalVersion={canonicalVersion}
-        done={remoteDone && canonicalDone}
-        wontFix={markedAsWontAction}
+        stubLength={remoteStub}
+        done={remoteDone}
       />
     </tr>
   )
@@ -297,17 +253,21 @@ function ExerciseNameCell({
   )
 }
 
-interface VersionCellProps {
+interface StubCellProps {
   url: string | undefined
-  version: string | undefined
+  stubLength: number | undefined
   done: boolean
 }
 
-function VersionCell({ url, version, done }: VersionCellProps): JSX.Element {
+function StubCell({ url, stubLength, done }: StubCellProps): JSX.Element {
   return (
     <td>
       <a href={url}>
-        <code>{version || ((done && '<none>') || <LoadingIndicator />)}</code>
+        <code>
+          {stubLength
+            ? `${stubLength} chars`
+            : (done && '<none>') || <LoadingIndicator />}
+        </code>
       </a>
     </td>
   )
@@ -316,25 +276,16 @@ function VersionCell({ url, version, done }: VersionCellProps): JSX.Element {
 interface DetailsCellProps {
   active: boolean
   onToggle(): void
-  remoteVersion: Version
-  canonicalVersion: Version
   done: boolean
-  wontFix: boolean
+  stubLength: number | undefined
 }
 
-function DetailsCell({
-  active,
-  onToggle,
-  remoteVersion,
-  canonicalVersion,
-  done,
-  wontFix,
-}: DetailsCellProps) {
+function DetailsCell({ active, onToggle, stubLength, done }: DetailsCellProps) {
   if (!done) {
     return (
       <td>
         <button type="button" style={{ background: 0, border: 0 }}>
-          <span role="img" aria-label="Fetching versions...">
+          <span role="img" aria-label="Fetching stub...">
             ⏳
           </span>
         </button>
@@ -342,22 +293,7 @@ function DetailsCell({
     )
   }
 
-  if (wontFix) {
-    return (
-      <td>
-        <ContainedPopover
-          active={active}
-          onToggle={onToggle}
-          toggle={<WontFixIcon />}
-          align="right"
-        >
-          <WontFixExplanation />
-        </ContainedPopover>
-      </td>
-    )
-  }
-
-  const valid = testVersion(canonicalVersion, remoteVersion)
+  const valid = stubLength! > MINIMUM_STUB_LENGTH
 
   return (
     <td>
@@ -367,52 +303,26 @@ function DetailsCell({
         toggle={<CheckOrCross value={valid} />}
         align="right"
       >
-        {valid ? <VersionsMatch /> : <VersionsDontMatch />}
+        {valid ? <StubExists /> : <StubDoesNotExist />}
       </ContainedPopover>
     </td>
   )
 }
 
-function VersionsMatch(): JSX.Element {
+function StubExists(): JSX.Element {
+  return <p className="mb-0">The exercise has a stub file.</p>
+}
+
+function StubDoesNotExist(): JSX.Element {
   return (
     <p className="mb-0">
-      The exercise is up-to-date with the latest canonical data.
+      This exercise does not have a stub file or it does not have sufficient
+      content. Add a stub file for this exercise to resolve this issue.
     </p>
   )
 }
 
-function VersionsDontMatch(): JSX.Element {
-  return (
-    <p className="mb-0">
-      The version in the <code>exercism/problem-specifications</code> repository
-      is higher than the local version. In order to resolve this, update the
-      exercise by re-generating the <code>README.md</code> and updating the
-      exericse tests.
-    </p>
-  )
-}
-
-function WontFixIcon(): JSX.Element {
-  return (
-    <span role="img" aria-label="Marked as unactionable">
-      🚫
-    </span>
-  )
-}
-
-function WontFixExplanation(): JSX.Element {
-  return (
-    <p className="mb-0">
-      This exercise has been added to the <code>unactionable -> versions</code>{' '}
-      list in <a href={TRACKS_JSON_GITHUB_URL}>this file</a> , which means it is
-      marked to be never in sync with the canonical data. A common reason is
-      that the canonical updates don't make sense for this track and therefore
-      are not going to be applied.
-    </p>
-  )
-}
-
-function ForegoneSection({ exercises }: { exercises: ReadonlyArray<string> }): JSX.Element | null {
+function ForegoneSection({ exercises }: { exercises: ReadonlyArray<string> }) {
   if (!exercises || exercises.length === 0) {
     return null
   }
@@ -439,7 +349,7 @@ function DeprecatedSection({
   exercises,
 }: {
   exercises: ReadonlyArray<ExerciseConfiguration>
-}): JSX.Element | null {
+}) {
   if (!exercises || exercises.length === 0) {
     return null
   }
@@ -450,7 +360,7 @@ function DeprecatedSection({
       <p>
         Exercises listed here have the <code>deprecated</code> flag set to{' '}
         <code>true</code>. This means that the exercise has been implemented but
-        will no longer be updated, as it&apos;s no longer considered part of the
+        will no longer be updated, as it's no longer considered part of the
         track.
       </p>
 
@@ -464,9 +374,9 @@ function DeprecatedSection({
 }
 
 function useValidExercises(
-  foregone: readonly string[],
-  exercises: readonly ExerciseConfiguration[]
-): readonly ExerciseConfiguration[] {
+  foregone: ReadonlyArray<string>,
+  exercises: ReadonlyArray<ExerciseConfiguration>
+) {
   if (!exercises) {
     return NO_EXCERCISES
   }
@@ -480,12 +390,9 @@ function useValidExercises(
 }
 
 function useInvalidExercises(
-  foregone: readonly string[],
-  exercises: readonly ExerciseConfiguration[]
-): {
-  foregone: readonly string[]
-  deprecated: readonly ExerciseConfiguration[]
-} {
+  foregone: ReadonlyArray<string>,
+  exercises: ReadonlyArray<ExerciseConfiguration>
+) {
   if (!exercises) {
     return { foregone, deprecated: NO_EXCERCISES }
   }
@@ -504,15 +411,4 @@ function useInvalidExercises(
     },
     { foregone: [...foregone], deprecated: [] as ExerciseConfiguration[] }
   )
-}
-
-type Version = string | undefined
-function testVersion(origin: Version, head: Version): boolean {
-  if (head === undefined || origin === undefined) {
-    // Version is fine if there is no canonical one
-    return origin === undefined
-  }
-
-  // Version should be equal OR bigger than canonical
-  return semver.gte(head, origin)
 }

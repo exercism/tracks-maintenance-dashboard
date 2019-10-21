@@ -69,6 +69,8 @@ export function useRemoteVersion(
   const versioning = trackData.versioning
   const path = versioning
     ? versioning
+        .replace(/{stub}|{stub_?file}/gi, trackData['stub_file'] || '{}')
+        .replace(/{test}|{test_?file}/gi, trackData['test_file'] || '{}')
         .replace(/{slug}|{exercise-slug}/g, slug)
         .replace(/{slug_}|{exercise_slug}/g, slug.replace(/-/g, '_'))
         .replace(
@@ -77,6 +79,11 @@ export function useRemoteVersion(
             .split(/-/g)
             .map((p) => p[0].toLocaleUpperCase() + p.slice(1))
             .join('')
+        )
+        .replace(/{exerciseslug}/g, slug.replace(/-/g, ''))
+        .replace(
+          /{Exerciseslug}/g,
+          slug[0].toLocaleUpperCase() + slug.replace(/-/g, '').substring(1)
         )
     : '<nothing>'
 

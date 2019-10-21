@@ -3,7 +3,7 @@ type TrackIdentifier = 'csharp' | 'javascript' | 'ruby' | 'typescript'
 type ExerciseIdentifier = string
 
 type Branch = 'master' | 'track-anatomy'
-type View = 'versions' | 'unimplemented' | 'topics' | 'details'
+type View = 'versions' | 'unimplemented' | 'topics' | 'details' | 'stubs'
 
 type SelectedTrackIdentifier = TrackIdentifier | null
 type SelectedBranch = Branch | null
@@ -35,6 +35,12 @@ interface TrackData extends Readonly<TrackData> {
   name: string
   core_enabled: boolean
   versioning?: string
+  stub_file?: string
+  test_file?: string
+  unactionable?: {
+    versioning?: string[]
+    topics?: string[]
+  }
 }
 
 declare module 'js-levenshtein' {
