@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.0
+
+- Add `stubs` view, showing the stub existance for exercises
+- Add `stub_file` and `test_file` configuration for all `versioning` enabled tracks
+
 ## 0.5.0
 
 - Add `unactionable` concept for `versioning`

@@ -11,6 +11,7 @@ import { ExerciseDetails } from './views/ExerciseDetails'
 import { TrackMissing } from './views/TrackMissing'
 import { TrackTopics } from './views/TrackTopics'
 import { TrackVersions } from './views/TrackVersions'
+import { TrackStubs } from './views/TrackStubs'
 import { useView, setOptionsInUrl, useUrl } from '../hooks/useUrlState'
 import {
   ProvideActionable,
@@ -135,19 +136,19 @@ function ViewSelect() {
   return (
     <div className="btn-group w-100">
       <ViewSelectLink view="versions">Versions</ViewSelectLink>
-      <ViewSelectLink view="unimplemented">Unimplemented</ViewSelectLink>
+      <ViewSelectLink view="stubs">Stubs</ViewSelectLink>
       <ViewSelectLink view="topics">Topics</ViewSelectLink>
+      <ViewSelectLink view="unimplemented">Unimplemented</ViewSelectLink>
     </div>
   )
 }
 
-function ViewSelectLink({
-  view,
-  children,
-}: {
+interface ViewSelectLinkProps {
   view: View
   children: React.ReactNode
-}) {
+}
+
+function ViewSelectLink({ view, children }: ViewSelectLinkProps) {
   const [actualView, onChangeView] = useView()
   const { href } = useUrl({ view })
 
@@ -219,6 +220,9 @@ function TrackView({
     }
     case 'versions': {
       return <TrackVersions trackId={trackId} onShowExercise={onShowExercise} />
+    }
+    case 'stubs': {
+      return <TrackStubs trackId={trackId} onShowExercise={onShowExercise} />
     }
     default: {
       return null
