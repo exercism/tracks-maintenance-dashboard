@@ -3,9 +3,12 @@ import { useEffect } from 'react'
 type Key = KeyboardEvent['key']
 type Keys = readonly Key[]
 
-export function useKeyPressListener(keys: Key | Keys, onPress?: () => void) {
+export function useKeyPressListener(
+  keys: Key | Keys,
+  onPress?: () => void
+): void {
   useEffect(() => {
-    function onKeyPress(this: Document, ev: KeyboardEvent) {
+    function onKeyPress(this: Document, ev: KeyboardEvent): void {
       if (!onPress) {
         return
       }
@@ -24,7 +27,7 @@ export function useKeyPressListener(keys: Key | Keys, onPress?: () => void) {
 
     document.addEventListener('keyup', onKeyPress)
 
-    return () => {
+    return (): void => {
       document.removeEventListener('keyup', onKeyPress)
     }
   }, [keys, onPress])

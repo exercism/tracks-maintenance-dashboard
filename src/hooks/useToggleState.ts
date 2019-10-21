@@ -59,11 +59,11 @@ function useOutsideClick<T extends Element = Element>(
     document.addEventListener('mouseup', handleOutsideClick)
     document.addEventListener('touchend', handleOutsideClick)
 
-    return () => {
+    return (): void => {
       document.removeEventListener('mouseup', handleOutsideClick)
       document.removeEventListener('touchend', handleOutsideClick)
     }
-  }, [onClick, containerClass])
+  }, [onClick, containerClass, ignoreClass])
 
   return ref
 }

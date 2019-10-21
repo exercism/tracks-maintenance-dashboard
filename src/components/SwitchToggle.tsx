@@ -12,9 +12,16 @@ export function SwitchToggle({
   inActiveLabel,
   onToggle,
   actionableOnly,
-}: Props) {
+}: Props): JSX.Element {
   return (
-    <div className="custom-control custom-switch" onClick={onToggle}>
+    <div
+      className="custom-control custom-switch"
+      onClick={onToggle}
+      role="switch"
+      aria-checked={actionableOnly}
+      tabIndex={0}
+      onKeyPress={onToggle}
+    >
       <input
         type="checkbox"
         className="custom-control-input"

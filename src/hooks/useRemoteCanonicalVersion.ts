@@ -1,5 +1,8 @@
 import { useReducer, useEffect } from 'react'
-import { useProblemSpecificationBranch, NormalisedBranch } from '../hooks/useProblemSpecificationBranch'
+import {
+  useProblemSpecificationBranch,
+  NormalisedBranch,
+} from '../hooks/useProblemSpecificationBranch'
 
 type Version = string | undefined
 type RemoteCanonicalVersion = {
@@ -10,11 +13,18 @@ type RemoteCanonicalVersion = {
 
 const CACHE = {} as Record<ExerciseIdentifier, Version>
 
-function readCache(slug: ExerciseIdentifier, branch: NormalisedBranch) {
+function readCache(
+  slug: ExerciseIdentifier,
+  branch: NormalisedBranch
+): Version {
   return CACHE[`${slug}-${branch}`]
 }
 
-function writeCache(slug: ExerciseIdentifier, branch: NormalisedBranch, version: Version) {
+function writeCache(
+  slug: ExerciseIdentifier,
+  branch: NormalisedBranch,
+  version: Version
+): void {
   CACHE[`${slug}-${branch}`] = version
 }
 
@@ -33,7 +43,10 @@ const initialState: FetchState = {
   version: undefined,
 }
 
-function fetchReducer(state: FetchState, action: FetchAction) {
+function fetchReducer(
+  state: Readonly<FetchState>,
+  action: FetchAction
+): Readonly<FetchState> {
   switch (action.type) {
     case 'version': {
       return {
@@ -56,7 +69,9 @@ function fetchReducer(state: FetchState, action: FetchAction) {
  *
  * @param slug the exercise slug
  */
-export function useRemoteCanonicalVersion(slug: ExerciseIdentifier): RemoteCanonicalVersion {
+export function useRemoteCanonicalVersion(
+  slug: ExerciseIdentifier
+): RemoteCanonicalVersion {
   const problemSpecBranch = useProblemSpecificationBranch()
   const [state, dispatch] = useReducer(fetchReducer, initialState)
 
@@ -125,7 +140,7 @@ export function useRemoteCanonicalVersion(slug: ExerciseIdentifier): RemoteCanon
         active && dispatch({ type: 'error' })
       })
 
-    return () => {
+    return (): void => {
       active = false
     }
   }, [url, slug, problemSpecBranch, currentLoading, currentVersion])

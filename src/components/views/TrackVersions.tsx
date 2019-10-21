@@ -30,7 +30,7 @@ export function TrackVersions({
       </header>
 
       <RemoteConfig trackId={trackId}>
-        {({ config }) => (
+        {({ config }): JSX.Element => (
           <ExerciseTable
             trackId={trackId}
             config={config}
@@ -55,7 +55,7 @@ function ExerciseTable({
   trackId,
   config: { exercises, foregone },
   onShowExercise,
-}: ExerciseTableProps) {
+}: ExerciseTableProps): JSX.Element {
   const [details, doSetDetails] = useToggleState(
     undefined,
     'popover',
@@ -144,7 +144,11 @@ function ExerciseTable({
   )
 }
 
-function VersionInfoButton({ trackData }: { trackData: TrackData }) {
+function VersionInfoButton({
+  trackData,
+}: {
+  trackData: TrackData
+}): JSX.Element {
   const { versioning } = trackData
 
   const [active, setActive] = useToggleState(
@@ -190,7 +194,7 @@ function ExerciseRow({
   detailsActive,
   onToggleDetails,
   onShowExercise,
-}: ExerciseRowProps) {
+}: ExerciseRowProps): JSX.Element | null {
   const {
     done: remoteDone,
     version: remoteVersion,
@@ -255,7 +259,7 @@ function ExerciseNameCell({
 }: {
   exercise: ExerciseConfiguration
   onShowDetails(): void
-}) {
+}): JSX.Element {
   const Cell = exercise.core ? 'th' : 'td'
 
   return (
@@ -274,7 +278,7 @@ function VersionCell({
   url: string | undefined
   version: string | undefined
   done: boolean
-}) {
+}): JSX.Element {
   return (
     <td>
       <a href={url}>
@@ -296,7 +300,7 @@ function DetailsCell({
   remoteVersion: Version
   canonicalVersion: Version
   done: boolean
-}) {
+}): JSX.Element {
   if (!done) {
     return (
       <td>
@@ -325,7 +329,7 @@ function DetailsCell({
   )
 }
 
-function VersionsMatch() {
+function VersionsMatch(): JSX.Element {
   return (
     <p className="mb-0">
       The exercise is up-to-date with the latest canonical data.
@@ -333,7 +337,7 @@ function VersionsMatch() {
   )
 }
 
-function VersionsDontMatch() {
+function VersionsDontMatch(): JSX.Element {
   return (
     <p className="mb-0">
       The version in the <code>exercism/problem-specifications</code> repository
@@ -344,7 +348,11 @@ function VersionsDontMatch() {
   )
 }
 
-function ForegoneSection({ exercises }: { exercises: ReadonlyArray<string> }) {
+function ForegoneSection({
+  exercises,
+}: {
+  exercises: ReadonlyArray<string>
+}): JSX.Element | null {
   if (!exercises || exercises.length === 0) {
     return null
   }
@@ -371,7 +379,7 @@ function DeprecatedSection({
   exercises,
 }: {
   exercises: ReadonlyArray<ExerciseConfiguration>
-}) {
+}): JSX.Element | null {
   if (!exercises || exercises.length === 0) {
     return null
   }
@@ -382,7 +390,7 @@ function DeprecatedSection({
       <p>
         Exercises listed here have the <code>deprecated</code> flag set to{' '}
         <code>true</code>. This means that the exercise has been implemented but
-        will no longer be updated, as it's no longer considered part of the
+        will no longer be updated, as it&apos;s no longer considered part of the
         track.
       </p>
 
@@ -396,9 +404,9 @@ function DeprecatedSection({
 }
 
 function useValidExercises(
-  foregone: ReadonlyArray<string>,
-  exercises: ReadonlyArray<ExerciseConfiguration>
-) {
+  foregone: readonly string[],
+  exercises: readonly ExerciseConfiguration[]
+): readonly ExerciseConfiguration[] {
   if (!exercises) {
     return NO_EXCERCISES
   }
@@ -412,9 +420,12 @@ function useValidExercises(
 }
 
 function useInvalidExercises(
-  foregone: ReadonlyArray<string>,
-  exercises: ReadonlyArray<ExerciseConfiguration>
-) {
+  foregone: readonly string[],
+  exercises: readonly ExerciseConfiguration[]
+): {
+  foregone: readonly string[]
+  deprecated: readonly ExerciseConfiguration[]
+} {
   if (!exercises) {
     return { foregone, deprecated: NO_EXCERCISES }
   }

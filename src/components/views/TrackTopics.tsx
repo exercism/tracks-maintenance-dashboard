@@ -41,7 +41,7 @@ export function TrackTopics({
       </header>
 
       <RemoteConfig trackId={trackId}>
-        {({ config }) => (
+        {({ config }): JSX.Element => (
           <ExerciseTable
             trackId={trackId}
             config={config}
@@ -59,7 +59,7 @@ function TopicsFileLink({
 }: {
   children: React.ReactNode
   edit?: boolean
-}) {
+}): JSX.Element {
   return (
     <a
       href={`https://github.com/exercism/problem-specifications/${
@@ -84,7 +84,7 @@ function ExerciseTable({
   trackId,
   config: { exercises, foregone },
   onShowExercise,
-}: ExerciseTableProps) {
+}: ExerciseTableProps): JSX.Element {
   const [details, doSetDetails] = useToggleState(
     undefined,
     'popover',
@@ -174,11 +174,11 @@ function ExerciseTable({
   )
 }
 
-function ValidBadge({ count }: { count: number }) {
+function ValidBadge({ count }: { count: number }): JSX.Element {
   return <span className="badge badge-pill badge-primary">{count}</span>
 }
 
-function TotalBadge({ count }: { count: number }) {
+function TotalBadge({ count }: { count: number }): JSX.Element {
   return <span className="badge badge-pill badge-secondary">{count}</span>
 }
 
@@ -196,7 +196,7 @@ function ExerciseRow({
   detailsActive,
   onToggleDetails,
   onShowExercise,
-}: ExerciseRowProps) {
+}: ExerciseRowProps): JSX.Element | null {
   const topicsList = useMemo(() => Object.keys(topics), [topics])
   const annotatedTopics = useMemo(
     () =>
@@ -264,7 +264,7 @@ function ExerciseRow({
       <td>
         <ContainedPopover
           active={detailsActive}
-          onToggle={() => onToggleDetails(exercise.slug)}
+          onToggle={(): void => onToggleDetails(exercise.slug)}
           toggle={<CheckOrCross value={!hasSuggestions} />}
           align="right"
         >
@@ -283,7 +283,7 @@ function SuggestionsList({
   suggestions,
 }: {
   suggestions: Record<string, ReadonlyArray<string>>
-}) {
+}): JSX.Element {
   return (
     <>
       <ul className="list-unstyled mb-2">
@@ -313,7 +313,7 @@ function SuggestionsList({
   )
 }
 
-function NoSuggestions() {
+function NoSuggestions(): JSX.Element {
   return (
     <span>
       All topics are in{' '}
@@ -331,7 +331,7 @@ function ExerciseNameCell({
 }: {
   exercise: ExerciseConfiguration
   onShowDetails(): void
-}) {
+}): JSX.Element {
   const Cell = exercise.core ? 'th' : 'td'
 
   return (
@@ -345,7 +345,7 @@ function ExerciseNameCell({
 function useValidExercises(
   foregone: ReadonlyArray<string>,
   exercises: ReadonlyArray<ExerciseConfiguration>
-) {
+): readonly ExerciseConfiguration[] {
   if (!exercises) {
     return NO_EXCERCISES
   }

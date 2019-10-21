@@ -32,7 +32,7 @@ export function TrackSelection(): JSX.Element {
 
   const renderTrackSelectionItem = useCallback(
     (track: Readonly<TrackData>) => {
-      const doSelectTrack = () => onSelectTrack(track.slug)
+      const doSelectTrack = (): void => onSelectTrack(track.slug)
       return (
         <TrackSelectionItem
           key={track.slug}
@@ -54,8 +54,8 @@ export function TrackSelection(): JSX.Element {
       </ol>
       <p className="text-muted">
         Tracks are highlighted if the track has a defined versioning scheme. If
-        a track isn't highlighted, but the track does keep track of the exercise
-        versions, you may{' '}
+        a track isn&apos;t highlighted, but the track does keep track of the
+        exercise versions, you may{' '}
         <a href="https://github.com/exercism/tracks-maintenance-dashboard/edit/master/src/data/tracks.json">
           edit this file
         </a>

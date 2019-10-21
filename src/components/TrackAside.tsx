@@ -10,7 +10,7 @@ export interface TrackAsideProps {
   trackId: TrackIdentifier
 }
 
-export function TrackAside({ trackId }: TrackAsideProps) {
+export function TrackAside({ trackId }: TrackAsideProps): JSX.Element {
   const { done: doneConfig, config } = useRemoteConfig(trackId)
   const { done, data } = useTrackAsideData(trackId)
   const [actionableOnly] = useActionableState()
@@ -37,7 +37,7 @@ export function TrackAside({ trackId }: TrackAsideProps) {
 
           <ConfigurationIcon
             currentDetails={activeDetailsKey}
-            onToggleDetails={() => setActiveDetailsKey('config.json')}
+            onToggleDetails={(): void => setActiveDetailsKey('config.json')}
             loading={!doneConfig}
             valid={!!config}
           />
@@ -48,7 +48,7 @@ export function TrackAside({ trackId }: TrackAsideProps) {
           </RepositoryLink>
           <AnalyzerIcon
             currentDetails={activeDetailsKey}
-            onToggleDetails={() => setActiveDetailsKey('analyzer')}
+            onToggleDetails={(): void => setActiveDetailsKey('analyzer')}
             trackId={trackId}
             loading={!done}
             valid={data['analyzer'] === true}
@@ -60,7 +60,7 @@ export function TrackAside({ trackId }: TrackAsideProps) {
           </RepositoryLink>
           <TestRunnerIcon
             currentDetails={activeDetailsKey}
-            onToggleDetails={() => setActiveDetailsKey('test-runner')}
+            onToggleDetails={(): void => setActiveDetailsKey('test-runner')}
             trackId={trackId}
             loading={!done}
             valid={data['testRunner'] === true}
@@ -90,7 +90,7 @@ function AsideItem({
 }: {
   disabled?: boolean
   children: React.ReactNode
-}) {
+}): JSX.Element {
   return (
     <li
       className={`list-group-item d-flex justify-content-between ${
@@ -110,7 +110,7 @@ function RepositoryLink({
   children: React.ReactNode
   organisation?: string
   repository: string
-}) {
+}): JSX.Element {
   return (
     <a
       href={`https://github.com/${organisation}/${repository}`}
@@ -133,7 +133,7 @@ const ConfigurationIcon = ({
   valid,
   currentDetails,
   onToggleDetails,
-}: PreconfiguredIconProps) => (
+}: PreconfiguredIconProps): JSX.Element => (
   <LoadingIconWithPopover
     active={currentDetails === 'config.json'}
     loading={loading}
@@ -160,7 +160,7 @@ function AnalyzerIcon({
   currentDetails,
   onToggleDetails,
   trackId,
-}: PreconfiguredIconProps & { trackId: TrackIdentifier }) {
+}: PreconfiguredIconProps & { trackId: TrackIdentifier }): JSX.Element {
   return (
     <LoadingIconWithPopover
       active={currentDetails === 'analyzer'}
@@ -198,7 +198,7 @@ function TestRunnerIcon({
   onToggleDetails,
   trackId,
   currentDetails,
-}: PreconfiguredIconProps & { trackId: TrackIdentifier }) {
+}: PreconfiguredIconProps & { trackId: TrackIdentifier }): JSX.Element {
   return (
     <LoadingIconWithPopover
       active={currentDetails === 'test-runner'}

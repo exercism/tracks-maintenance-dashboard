@@ -83,7 +83,11 @@ export function TrackMissing({
   )
 }
 
-function ProblemSpecLink({ children }: { children: React.ReactNode }) {
+function ProblemSpecLink({
+  children,
+}: {
+  children: React.ReactNode
+}): JSX.Element {
   return (
     <a href="https://github.com/exercism/problem-specifications/tree/master/exercises">
       {children}
@@ -97,7 +101,7 @@ function MissingExercisesList({
 }: {
   missing: ReadonlyArray<ExerciseIdentifier>
   data: NonNullable<ReturnType<typeof useRemoteCanonicalList>['data']>
-}) {
+}): JSX.Element {
   const renderExercise = useCallback(
     (exercise: ExerciseIdentifier) => {
       // Hide deprecated exercises

@@ -54,28 +54,40 @@ export function useUrlState<K extends keyof SupportedState>(
 /**
  * Convenience method to get the track id from the url
  */
-export function useTrack() {
+export function useTrack(): [
+  TrackIdentifier | null,
+  (next: TrackIdentifier | null) => void
+] {
   return useUrlState('trackId', sanitizeTrack)
 }
 
 /**
  * Convenience method to get the problem spec branch from the url
  */
-export function useBranch() {
+export function useBranch(): [
+  Branch | undefined,
+  (next: Branch | undefined) => void
+] {
   return useUrlState('branch', sanitizeBranch)
 }
 
 /**
  * Convenience method to get the current view from the url
  */
-export function useView() {
+export function useView(): [
+  View | undefined,
+  (next: View | undefined) => void
+] {
   return useUrlState('view', sanitizeView)
 }
 
 /**
  * Convenience method to get the current exercise from the url
  */
-export function useExercise() {
+export function useExercise(): [
+  ExerciseIdentifier | undefined,
+  (next: ExerciseIdentifier | undefined) => void
+] {
   return useUrlState('exercise', sanititzeExercise)
 }
 
@@ -153,20 +165,36 @@ function getOptionsFromLocation(location: Location | undefined): Options {
   }
 }
 
-export function setOptionsInUrl(nextState: Partial<SupportedState>) {
+export function setOptionsInUrl(nextState: Partial<SupportedState>): void {
   return setOptionsWithLocation({ ...nextState, location: window.location })
 }
 
-export function getNextUrl(nextState: Partial<SupportedState>) {
+export function getNextUrl(
+  nextState: Partial<SupportedState>
+): ReturnType<typeof getNextUrlWithLocation> {
   return getNextUrlWithLocation({ ...nextState, location: window.location })
 }
 
-export function useUrl(nextState: Partial<SupportedState>) {
+export function useUrl(
+  nextState: Partial<SupportedState>
+): ReturnType<typeof getNextUrlWithLocation> {
   const location = useLocation()
   return getNextUrlWithLocation({
     ...nextState,
     location: location || window.location,
   })
+}
+
+interface NextUrl {
+  state: {
+    trackId: TrackIdentifier | null
+    branch: Branch
+    view: View
+    exercise: ExerciseIdentifier | undefined
+    previous?: Options
+  }
+  title: string
+  href: string
 }
 
 function getNextUrlWithLocation({
@@ -175,7 +203,7 @@ function getNextUrlWithLocation({
   branch: nextBranch,
   view: nextView,
   exercise: nextExercise,
-}: Partial<SupportedState> & { location: Location }) {
+}: Partial<SupportedState> & { location: Location }): NextUrl {
   // unset track
   if (nextTrackId === null) {
     return {
@@ -191,16 +219,17 @@ function getNextUrlWithLocation({
   }
 
   const current = getOptionsFromLocation(location)
-  const trackId = nextTrackId || current.trackId
-  const branch = nextBranch || current.branch
+  const trackId = sanitizeTrack(nextTrackId || current.trackId)
+  const branch = sanitizeBranch(nextBranch || current.branch)
 
   const exercise = nextExercise === undefined ? current.exercise : nextExercise
-  const view =
+  const view = sanitizeView(
     nextView === undefined
       ? nextExercise
         ? 'details'
         : current.view
       : nextView
+  )
 
   return {
     state: { trackId, branch, view, exercise, previous: { ...current } },
@@ -213,7 +242,7 @@ function getNextUrlWithLocation({
 
 function setOptionsWithLocation(
   options: Partial<SupportedState> & { location: Location }
-) {
+): void {
   const { state, title, href } = getNextUrlWithLocation(options)
 
   return window.history.pushState(state, title, href)

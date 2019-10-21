@@ -8,7 +8,7 @@ export function ExerciseIcon({
   exercise: string
   size?: number
   hover?: boolean
-}) {
+}): JSX.Element {
   return (
     <img
       className={hover === true ? 'hover' : 'normal'}
