@@ -26,6 +26,7 @@ interface TrackAsideData {
   data: {
     analyzer: boolean | undefined
     testRunner: boolean | undefined
+    representer: boolean | undefined
   }
 }
 
@@ -40,7 +41,7 @@ function readCache(
   trackId: TrackIdentifier,
   key?: keyof TrackAsideData['data']
 ): TrackAsideData['data'] | boolean | undefined {
-  const data = CACHE[trackId] || { analyzer: undefined, testRunner: undefined }
+  const data = CACHE[trackId] || { analyzer: undefined, testRunner: undefined, representer: undefined }
   return key === undefined ? data : data[key]
 }
 
@@ -63,7 +64,7 @@ type FetchState = { data: TrackAsideData['data']; loading: boolean }
 
 const initialState: FetchState = {
   loading: true,
-  data: { analyzer: undefined, testRunner: undefined },
+  data: { analyzer: undefined, testRunner: undefined, representer: undefined },
 }
 
 function fetchReducer(
@@ -108,11 +109,13 @@ export function useTrackAsideData(trackId: TrackIdentifier): TrackAsideData {
     // If we already have a version, mark it as "don't fetch"
     if (
       currentData.analyzer !== undefined &&
-      currentData.testRunner !== undefined
+      currentData.testRunner !== undefined &&
+      currentData.representer !== undefined
     ) {
       if (currentLoading) {
         writeCache(trackId, 'analyzer', currentData.analyzer)
         writeCache(trackId, 'testRunner', currentData.testRunner)
+        writeCache(trackId, 'representer', currentData.representer)
 
         dispatch({
           type: 'skip',
@@ -139,9 +142,17 @@ export function useTrackAsideData(trackId: TrackIdentifier): TrackAsideData {
             { method: 'HEAD' }
           ).then((result) => result.ok, () => false)
         : Promise.resolve(currentData.testRunner)
+    const fetchRepresenter =
+      currentData.representer === undefined
+        ? fetch(
+            `https://raw.githubusercontent.com/exercism/${trackId}-representer/master/Dockerfile`,
+            { method: 'HEAD' }
+          ).then((result) => result.ok, () => false)
+        : Promise.resolve(currentData.representer)
     ;(async (): Promise<void> => {
       const nextAnalyzer = await fetchAnalyzer
       const nextTestRunner = await fetchTestRunner
+      const nextRepresenter = await fetchRepresenter
 
       if (!active) {
         return
@@ -149,10 +160,11 @@ export function useTrackAsideData(trackId: TrackIdentifier): TrackAsideData {
 
       writeCache(trackId, 'analyzer', nextAnalyzer)
       writeCache(trackId, 'testRunner', nextTestRunner)
+      writeCache(trackId, 'representer', nextRepresenter)
 
       dispatch({
         type: 'done',
-        data: { analyzer: nextAnalyzer, testRunner: nextTestRunner },
+        data: { analyzer: nextAnalyzer, testRunner: nextTestRunner, representer: nextRepresenter },
       })
     })()
 

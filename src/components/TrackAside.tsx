@@ -66,6 +66,18 @@ export function TrackAside({ trackId }: TrackAsideProps): JSX.Element {
             valid={data['testRunner'] === true}
           />
         </AsideItem>
+        <AsideItem disabled={actionableOnly && data['representer'] === true}>
+          <RepositoryLink repository={`${trackId}-representer`}>
+            Representer
+          </RepositoryLink>
+          <RepresenterIcon
+            currentDetails={activeDetailsKey}
+            onToggleDetails={(): void => setActiveDetailsKey('representer')}
+            trackId={trackId}
+            loading={!done}
+            valid={data['representer'] === true}
+          />
+        </AsideItem>
       </ul>
 
       {done && data['analyzer'] === true && (
@@ -209,6 +221,35 @@ function TestRunnerIcon({
       <p>
         This check passes if there is a <code>Dockerfile</code> file present in
         the <code>exercism/{trackId}-test-runner</code> repository.
+      </p>
+
+      <p className="mb-0">
+        You can find more information about the <code>Dockerfile</code> file{' '}
+        <a href="https://github.com/exercism/automated-tests/blob/master/docs/docker.md">
+          here
+        </a>
+      </p>
+    </LoadingIconWithPopover>
+  )
+}
+
+function RepresenterIcon({
+  loading,
+  valid,
+  onToggleDetails,
+  trackId,
+  currentDetails,
+}: PreconfiguredIconProps & { trackId: TrackIdentifier }): JSX.Element {
+  return (
+    <LoadingIconWithPopover
+      active={currentDetails === 'representer'}
+      loading={loading}
+      valid={valid}
+      onToggle={onToggleDetails}
+    >
+      <p>
+        This check passes if there is a <code>Dockerfile</code> file present in
+        the <code>exercism/{trackId}-representer</code> repository.
       </p>
 
       <p className="mb-0">
