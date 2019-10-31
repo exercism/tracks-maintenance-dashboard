@@ -1,10 +1,10 @@
 # tracks-maintenance-dashboard
 
-A dashboard for maintainers to understand the state of tracks
+A dashboard to help maintainers understand the state of tracks.
 
 ## Track versioning
 
-Edit `src/data/tracks.json` and add `versioning` key. The value is _not_ a
+Add a `versioning` key to `/src/data/tracks.json`. The value is _not_ a
 regular expression or glob pattern, but allows for very specific template
 replacements:
 
@@ -15,11 +15,11 @@ replacements:
 
 ## Stub tracking
 
-Edit `src/data/tracks.json` and add `stub` key. The value is _not_ a
+Add a `versioning` key to `/src/data/tracks.json`. The value is _not_ a
 regular expression or glob pattern, but allows for very specific template
 replacements. Same as Track Versioning.
 
 ## Exercise "unactionable"
 
 In order to remove an exercise from the version table (marked as not in sync),
-add it to the `unactionable -> versions` list in `src/data/tracks.json`.
+add it to the `unactionable -> versioning` list in `src/data/tracks.json`.
