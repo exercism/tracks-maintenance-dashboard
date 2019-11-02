@@ -40,7 +40,7 @@ export function TrackStubs({
   )
 }
 
-const NO_EXCERCISES: ReadonlyArray<ExerciseConfiguration> = []
+const NO_EXERCISES: ReadonlyArray<ExerciseConfiguration> = []
 const NO_FOREGONE_EXERCISES: ReadonlyArray<string> = []
 
 interface ExerciseTableProps {
@@ -378,7 +378,7 @@ function useValidExercises(
   exercises: ReadonlyArray<ExerciseConfiguration>
 ) {
   if (!exercises) {
-    return NO_EXCERCISES
+    return NO_EXERCISES
   }
 
   return exercises.filter(
@@ -394,7 +394,7 @@ function useInvalidExercises(
   exercises: ReadonlyArray<ExerciseConfiguration>
 ) {
   if (!exercises) {
-    return { foregone, deprecated: NO_EXCERCISES }
+    return { foregone, deprecated: NO_EXERCISES }
   }
 
   return exercises.reduce(

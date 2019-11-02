@@ -45,7 +45,7 @@ export function TrackVersions({
   )
 }
 
-const NO_EXCERCISES: ReadonlyArray<ExerciseConfiguration> = []
+const NO_EXERCISES: ReadonlyArray<ExerciseConfiguration> = []
 const NO_FOREGONE_EXERCISES: ReadonlyArray<string> = []
 
 interface ExerciseTableProps {
@@ -141,8 +141,8 @@ function ExerciseTable({
                 different reason than being out of date, for example because its
                 canonical updates don't make sense for this track, open a PR to
                 change <a href={TRACKS_JSON_GITHUB_URL}>this file</a> and add
-                those exercise's <code>slug</code> to{' '}
-                <code>unactionable -> versions</code>.
+                each exercises' <code>slug</code> to{' '}
+                <code>unactionable -> versioning</code>.
               </p>
             </td>
           </tr>
@@ -387,7 +387,7 @@ function VersionsDontMatch(): JSX.Element {
       The version in the <code>exercism/problem-specifications</code> repository
       is higher than the local version. In order to resolve this, update the
       exercise by re-generating the <code>README.md</code> and updating the
-      exericse tests.
+      exercise tests.
     </p>
   )
 }
@@ -403,7 +403,7 @@ function WontFixIcon(): JSX.Element {
 function WontFixExplanation(): JSX.Element {
   return (
     <p className="mb-0">
-      This exercise has been added to the <code>unactionable -> versions</code>{' '}
+      This exercise has been added to the <code>unactionable -> versioning</code>{' '}
       list in <a href={TRACKS_JSON_GITHUB_URL}>this file</a> , which means it is
       marked to be never in sync with the canonical data. A common reason is
       that the canonical updates don't make sense for this track and therefore
@@ -422,7 +422,7 @@ function ForegoneSection({ exercises }: { exercises: ReadonlyArray<string> }): J
       <h3>Foregone</h3>
       <p>
         Exercises listed here have the <code>foregone</code> flag set to{' '}
-        <code>true</code>. This means that the track has <em>explicitely</em>{' '}
+        <code>true</code>. This means that the track has <em>explicitly</em>{' '}
         chosen to forego implementing this exercise.
       </p>
 
@@ -468,7 +468,7 @@ function useValidExercises(
   exercises: readonly ExerciseConfiguration[]
 ): readonly ExerciseConfiguration[] {
   if (!exercises) {
-    return NO_EXCERCISES
+    return NO_EXERCISES
   }
 
   return exercises.filter(
@@ -487,7 +487,7 @@ function useInvalidExercises(
   deprecated: readonly ExerciseConfiguration[]
 } {
   if (!exercises) {
-    return { foregone, deprecated: NO_EXCERCISES }
+    return { foregone, deprecated: NO_EXERCISES }
   }
 
   return exercises.reduce(

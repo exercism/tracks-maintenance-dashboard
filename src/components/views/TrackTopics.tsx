@@ -71,7 +71,7 @@ function TopicsFileLink({
   )
 }
 
-const NO_EXCERCISES: ReadonlyArray<ExerciseConfiguration> = []
+const NO_EXERCISES: ReadonlyArray<ExerciseConfiguration> = []
 const NO_FOREGONE_EXERCISES: ReadonlyArray<string> = []
 
 interface ExerciseTableProps {
@@ -347,7 +347,7 @@ function useValidExercises(
   exercises: ReadonlyArray<ExerciseConfiguration>
 ): readonly ExerciseConfiguration[] {
   if (!exercises) {
-    return NO_EXCERCISES
+    return NO_EXERCISES
   }
 
   return exercises.filter(
