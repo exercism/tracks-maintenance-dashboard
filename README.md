@@ -15,7 +15,7 @@ replacements:
 
 ## Stub tracking
 
-Add a `versioning` key to `/src/data/tracks.json`. The value is _not_ a
+Add a `stub_file` key to `/src/data/tracks.json`. The value is _not_ a
 regular expression or glob pattern, but allows for very specific template
 replacements. Same as Track Versioning.
 
