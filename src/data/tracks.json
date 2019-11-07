@@ -265,7 +265,7 @@
   },
   {
     "slug": "perl6",
-    "name": "Perl 6",
+    "name": "Raku",
     "core_enabled": true,
     "versioning": "exercises/{slug}/{slug}.t6",
     "stub_file": "exercises/{slug}/{ExerciseSlug}.pm6",
