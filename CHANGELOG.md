@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.1
+
+- Rename `perl6` track from **Perl 6** to **Raku**
+
 ## 0.6.0
 
 - Add `stubs` view, showing the stub existance for exercises
