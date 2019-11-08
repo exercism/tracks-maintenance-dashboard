@@ -81,7 +81,10 @@
   {
     "slug": "d",
     "name": "D",
-    "core_enabled": false
+    "core_enabled": false,
+    "versioning": "exercises/{slug}/.meta/version",
+    "stub_file": "exercises/{slug}/source/{exercise_slug}.d",
+    "test_file": "exercises/{slug}/source/{exercise_slug}.d"
   },
   {
     "slug": "dart",
