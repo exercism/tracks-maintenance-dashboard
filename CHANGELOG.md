@@ -1,5 +1,10 @@
 # Changelog
 
+## master
+
+- Add `versioning` for `d`
+- Fix `versioning` for `kotlin`
+
 ## 0.6.1
 
 - Rename `perl6` track from **Perl 6** to **Raku**
