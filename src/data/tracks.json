@@ -219,8 +219,8 @@
     "name": "Kotlin",
     "core_enabled": true,
     "versioning": "exercises/{slug}/.meta/version",
-    "stub_file": "exercises/{slug}/src/main/kotlin/{Exerciseslug}.kt",
-    "test_file": "exercises/{slug}/test/main/kotlin/{Exerciseslug}Test.kt"
+    "stub_file": "exercises/{slug}/src/main/kotlin/{ExerciseSlug}.kt",
+    "test_file": "exercises/{slug}/test/main/kotlin/{ExerciseSlug}Test.kt"
   },
   {
     "slug": "lfe",
