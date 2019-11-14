@@ -2,6 +2,8 @@
 
 ## master
 
+## 0.6.2
+
 - Add `versioning` for `d`
 - Fix `versioning` for `kotlin`
 
