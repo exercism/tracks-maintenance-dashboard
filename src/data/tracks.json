@@ -333,7 +333,10 @@
   {
     "slug": "reasonml",
     "name": "ReasonML",
-    "core_enabled": true
+    "core_enabled": true,
+    "versioning": "exercises/{slug}/package.json",
+    "stub_file": "exercises/{slug}/src/{ExerciseSlug}.re",
+    "test_file": "exercises/{slug}/__tests__/{ExerciseSlug}_test.re"
   },
   {
     "slug": "ruby",
