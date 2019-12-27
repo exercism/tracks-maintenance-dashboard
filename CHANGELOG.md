@@ -2,6 +2,10 @@
 
 ## master
 
+## 0.6.3
+
+- Add `versioning`, `stub_file` & `test_file` for `reasonml`
+
 ## 0.6.2
 
 - Add `versioning` for `d`
