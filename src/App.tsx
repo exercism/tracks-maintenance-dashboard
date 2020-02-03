@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { ProvideBranch } from './hooks/useProblemSpecificationBranch'
+import { ProvideBranch } from './hooks/useLegacyProblemSpecificationBranch'
 import { useProvideBrowserLocation, ProvideLocation } from './hooks/useLocation'
 
 import { useBranch, useTrack } from './hooks/useUrlState'

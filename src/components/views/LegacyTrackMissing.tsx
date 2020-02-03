@@ -1,9 +1,11 @@
 import React, { useMemo, useCallback } from 'react'
-import { useRemoteConfig } from '../../hooks/useRemoteConfig'
-import { useRemoteCanonicalList } from '../../hooks/useRemoteCanonicalList'
+import { useRemoteConfig } from '../../hooks/useLegacyRemoteConfig'
+import { useRemoteCanonicalList } from '../../hooks/useLegacyRemoteCanonicalList'
 import { LoadingIndicator } from '../LoadingIndicator'
-import { useProblemSpecificationBranch } from '../../hooks/useProblemSpecificationBranch'
+import { useProblemSpecificationBranch } from '../../hooks/useLegacyProblemSpecificationBranch'
 import { ExerciseIcon } from '../ExerciseIcon'
+
+type ExerciseConfiguration = Legacy.ExerciseConfiguration
 
 const NO_EXERCISES = Object.freeze([])
 

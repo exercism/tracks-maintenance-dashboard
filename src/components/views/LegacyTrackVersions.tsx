@@ -1,18 +1,21 @@
 import React, { useCallback } from 'react'
 import semver from 'semver'
 
-import { RemoteConfig } from '../../net/RemoteConfig'
-import { useTrackData } from '../../hooks/useTrackData'
-import { useRemoteVersion } from '../../hooks/useRemoteVersion'
+import { RemoteConfig } from '../../net/LegacyRemoteConfig'
+import { useTrackData } from '../../hooks/useLegacyTrackData'
+import { useRemoteVersion } from '../../hooks/useLegacyRemoteVersion'
 import { useToggleState } from '../../hooks/useToggleState'
-import { useRemoteCanonicalVersion } from '../../hooks/useRemoteCanonicalVersion'
+import { useRemoteCanonicalVersion } from '../../hooks/useLegacyRemoteCanonicalVersion'
 
-import { CheckOrCross } from './../CheckOrCross'
+import { CheckOrCross } from '../CheckOrCross'
 import { LoadingIndicator } from '../LoadingIndicator'
 import { ContainedPopover } from '../Popover'
 import { ExerciseIcon } from '../ExerciseIcon'
 import { useKeyPressListener } from '../../hooks/useKeyListener'
 import { useActionableState } from '../../hooks/useActionableOnly'
+
+type ExerciseConfiguration = Legacy.ExerciseConfiguration
+type TrackConfiguration = Legacy.TrackConfiguration
 
 const TRACKS_JSON_GITHUB_URL =
   'https://github.com/exercism/tracks-maintenance-dashboard/blob/master/src/data/tracks.json'
@@ -139,10 +142,10 @@ function ExerciseTable({
               <p className="text-muted mb-0">
                 If exercises are not matching the canonical version for a
                 different reason than being out of date, for example because its
-                canonical updates don't make sense for this track, open a PR to
+                canonical updates don&apos;t make sense for this track, open a PR to
                 change <a href={TRACKS_JSON_GITHUB_URL}>this file</a> and add
-                each exercises' <code>slug</code> to{' '}
-                <code>unactionable -> versioning</code>.
+                each exercises&apos; <code>slug</code> to{' '}
+                <code>unactionable -&gt; versioning</code>.
               </p>
             </td>
           </tr>
@@ -403,10 +406,10 @@ function WontFixIcon(): JSX.Element {
 function WontFixExplanation(): JSX.Element {
   return (
     <p className="mb-0">
-      This exercise has been added to the <code>unactionable -> versioning</code>{' '}
+      This exercise has been added to the <code>unactionable -&gt; versioning</code>{' '}
       list in <a href={TRACKS_JSON_GITHUB_URL}>this file</a> , which means it is
       marked to be never in sync with the canonical data. A common reason is
-      that the canonical updates don't make sense for this track and therefore
+      that the canonical updates don&apos;t make sense for this track and therefore
       are not going to be applied.
     </p>
   )

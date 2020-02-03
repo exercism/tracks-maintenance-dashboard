@@ -1,14 +1,17 @@
 import levenshtein from 'js-levenshtein'
 import React, { useCallback, useMemo } from 'react'
-import { useRemoteTopics } from '../../hooks/useRemoteTopics'
+import { useRemoteTopics } from '../../hooks/useLegacyRemoteTopics'
 import { useToggleState } from '../../hooks/useToggleState'
-import { RemoteConfig } from '../../net/RemoteConfig'
+import { RemoteConfig } from '../../net/LegacyRemoteConfig'
 import { LoadingIndicator } from '../LoadingIndicator'
 import { ContainedPopover } from '../Popover'
 import { CheckOrCross } from '../CheckOrCross'
 import { ExerciseIcon } from '../ExerciseIcon'
 import { useKeyPressListener } from '../../hooks/useKeyListener'
 import { useActionableState } from '../../hooks/useActionableOnly'
+
+type ExerciseConfiguration = Legacy.ExerciseConfiguration
+type TrackConfiguration = Legacy.TrackConfiguration
 
 interface TrackTopicsProps {
   trackId: TrackIdentifier

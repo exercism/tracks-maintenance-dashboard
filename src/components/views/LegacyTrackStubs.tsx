@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react'
 
-import { RemoteConfig } from '../../net/RemoteConfig'
-import { useTrackData } from '../../hooks/useTrackData'
-import { useRemoteStub, MINIMUM_STUB_LENGTH } from '../../hooks/useRemoteStub'
+import { RemoteConfig } from '../../net/LegacyRemoteConfig'
+import { useTrackData } from '../../hooks/useLegacyTrackData'
+import { useRemoteStub, MINIMUM_STUB_LENGTH } from '../../hooks/useLegacyRemoteStub'
 import { useToggleState } from '../../hooks/useToggleState'
 
 import { CheckOrCross } from '../CheckOrCross'
@@ -11,6 +11,9 @@ import { ContainedPopover } from '../Popover'
 import { ExerciseIcon } from '../ExerciseIcon'
 import { useKeyPressListener } from '../../hooks/useKeyListener'
 import { useActionableState } from '../../hooks/useActionableOnly'
+
+type ExerciseConfiguration = Legacy.ExerciseConfiguration
+type TrackConfiguration = Legacy.TrackConfiguration
 
 interface TrackStubsProps {
   trackId: TrackIdentifier
@@ -28,7 +31,7 @@ export function TrackStubs({
       </header>
 
       <RemoteConfig trackId={trackId}>
-        {({ config }) => (
+        {({ config }): JSX.Element => (
           <ExerciseTable
             trackId={trackId}
             config={config}
@@ -53,7 +56,7 @@ function ExerciseTable({
   trackId,
   config: { exercises, foregone },
   onShowExercise,
-}: ExerciseTableProps) {
+}: ExerciseTableProps): JSX.Element {
   const [details, doSetDetails] = useToggleState(
     undefined,
     'popover',
@@ -360,7 +363,7 @@ function DeprecatedSection({
       <p>
         Exercises listed here have the <code>deprecated</code> flag set to{' '}
         <code>true</code>. This means that the exercise has been implemented but
-        will no longer be updated, as it's no longer considered part of the
+        will no longer be updated, as it&apos;s no longer considered part of the
         track.
       </p>
 
@@ -376,7 +379,7 @@ function DeprecatedSection({
 function useValidExercises(
   foregone: ReadonlyArray<string>,
   exercises: ReadonlyArray<ExerciseConfiguration>
-) {
+): ReadonlyArray<ExerciseConfiguration> {
   if (!exercises) {
     return NO_EXERCISES
   }

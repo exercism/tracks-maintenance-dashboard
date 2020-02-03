@@ -1,5 +1,5 @@
 import { useReducer, useEffect } from 'react'
-import { useProblemSpecificationBranch } from './useProblemSpecificationBranch'
+import { useProblemSpecificationBranch } from './useLegacyProblemSpecificationBranch'
 
 type Branch = string
 type TopicsList = ReadonlyArray<string>

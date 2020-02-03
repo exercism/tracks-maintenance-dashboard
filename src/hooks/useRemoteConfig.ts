@@ -1,5 +1,7 @@
 import { useReducer, useEffect } from 'react'
 
+type TrackConfiguration = Version3.TrackConfiguration
+
 type Slug = string
 type RemoteConfiguration = {
   done: boolean
@@ -54,7 +56,7 @@ function fetchReducer(
 export function useRemoteConfig(trackId: TrackIdentifier): RemoteConfiguration {
   const [state, dispatch] = useReducer(fetchReducer, initialState)
 
-  const url = `https://raw.githubusercontent.com/exercism/${trackId}/master/config.json`
+  const url = `https://raw.githubusercontent.com/exercism/v3/master/languages/${trackId}/config.json`
 
   const { loading: currentLoading } = state
   const currentConfig = readCache(trackId)

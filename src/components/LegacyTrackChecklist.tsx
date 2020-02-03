@@ -1,5 +1,5 @@
 import React from 'react'
-import { useTrackAsideData } from '../hooks/useTrackData'
+import { useTrackAsideData } from '../hooks/useLegacyTrackData'
 import { LoadingIconWithPopover } from './Popover'
 import { useToggleState } from '../hooks/useToggleState'
 import { useKeyPressListener } from '../hooks/useKeyListener'

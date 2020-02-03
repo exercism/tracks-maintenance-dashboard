@@ -1,6 +1,6 @@
 import React from 'react'
-import { useRemoteConfig } from '../hooks/useRemoteConfig'
-import { useTrackAsideData } from '../hooks/useTrackData'
+import { useRemoteConfig } from '../hooks/useLegacyRemoteConfig'
+import { useTrackAsideData } from '../hooks/useLegacyTrackData'
 import { LoadingIconWithPopover } from './Popover'
 import { useToggleState } from '../hooks/useToggleState'
 import { useKeyPressListener } from '../hooks/useKeyListener'

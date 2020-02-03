@@ -1,5 +1,5 @@
 import { useReducer, useEffect } from 'react'
-import { useTrackData } from './useTrackData'
+import { useTrackData } from './useLegacyTrackData'
 
 type Stub = number | undefined
 type RemoteStub = {
@@ -12,7 +12,7 @@ type RemoteStub = {
 export const MINIMUM_STUB_LENGTH = 1
 const CACHE = {} as Record<TrackIdentifier, Record<ExerciseIdentifier, Stub>>
 
-function readCache(trackId: TrackIdentifier, slug: ExerciseIdentifier) {
+function readCache(trackId: TrackIdentifier, slug: ExerciseIdentifier): Stub {
   return (CACHE[trackId] || {})[slug]
 }
 
@@ -20,7 +20,7 @@ function writeCache(
   trackId: TrackIdentifier,
   slug: ExerciseIdentifier,
   stub: Stub
-) {
+): void {
   CACHE[trackId] = CACHE[trackId] || {}
   CACHE[trackId][slug] = stub
 }
@@ -34,7 +34,7 @@ type FetchState = { stub: Stub; loading: boolean }
 
 const initialState: FetchState = { loading: true, stub: undefined }
 
-function fetchReducer(state: FetchState, action: FetchAction) {
+function fetchReducer(state: Readonly<FetchState>, action: FetchAction): Readonly<FetchState> {
   switch (action.type) {
     case 'stub': {
       return { ...state, loading: false, stub: action.stub }
@@ -132,7 +132,7 @@ export function useRemoteStub(
         active && dispatch({ type: 'error' })
       })
 
-    return () => {
+    return (): void => {
       active = false
     }
   }, [url, trackId, slug, path, currentLoading, currentStub])

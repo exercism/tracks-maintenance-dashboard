@@ -1,6 +1,6 @@
 import React from 'react'
 
-type TrackConfiguration = Version3.TrackConfiguration
+type TrackConfiguration = Legacy.TrackConfiguration
 
 export function TrackDescription({ config }: { config: TrackConfiguration | undefined }): JSX.Element | null {
   if (!config) {

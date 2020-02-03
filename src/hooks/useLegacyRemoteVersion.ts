@@ -58,12 +58,10 @@ function fetchReducer(
  *
  * @param trackId track identifier (slug)
  * @param slug exercise slug
- * @param type exercise type (concept or practice)
  */
 export function useRemoteVersion(
   trackId: TrackIdentifier,
-  slug: ExerciseIdentifier,
-  type: ExerciseType = 'concept',
+  slug: ExerciseIdentifier
 ): RemoteVersion {
   const trackData = useTrackData(trackId)
   const [state, dispatch] = useReducer(fetchReducer, initialState)
@@ -90,7 +88,7 @@ export function useRemoteVersion(
     : '<nothing>'
 
   const url = versioning
-    ? `https://raw.githubusercontent.com/exercism/v3/languages/${trackId}/${type}/${path}`
+    ? `https://raw.githubusercontent.com/exercism/${trackId}/master/${path}`
     : undefined
 
   const { loading: currentLoading } = state

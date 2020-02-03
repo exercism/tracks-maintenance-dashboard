@@ -99,18 +99,26 @@ function sanitizeTrack(
 }
 
 function sanitizeBranch(anyBranch: string | undefined): Branch {
-  const branches: Branch[] = ['master', 'track-anatomy']
+  const branches: Branch[] = [
+    'master',
+    'track-anatomy',
+    'v3'
+  ]
   return branches.find((branch) => branch === anyBranch) || DEFAULT_BRANCH
 }
 
 function sanitizeView(anyView: string | undefined): View {
   // Keep up to date with declarations.d.ts
   const views: View[] = [
-    'unimplemented',
-    'topics',
+    'concept',
     'details',
-    'versions',
+    'launch',
+    'practice',
     'stubs',
+    'topics',
+    'tree',
+    'unimplemented',
+    'versions'
   ]
   return views.find((views) => views === anyView) || DETAULT_VIEW
 }
