@@ -136,14 +136,6 @@ function Header({ trackId }: { trackId: TrackIdentifier }): JSX.Element {
   )
 }
 
-function TrackChecklist({
-  trackId,
-}: {
-  trackId: TrackIdentifier
-}): JSX.Element {
-  return <ul></ul>
-}
-
 interface TrackViewProps {
   trackId: TrackIdentifier
   view: Version3.View
