@@ -24,9 +24,9 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: s3 cp --recursive --acl public-read --region eu-west-1 ./build/ s3://tracks.exercism.io
+        run: aws s3 cp --recursive --acl public-read --region eu-west-1 ./build/ s3://tracks.exercism.io
       - name: Invalidate Cloudfront
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: cloudfront create-invalidation --distribution-id E3BF7QMLA8G595 --paths '/*'
+        run: aws cloudfront create-invalidation --distribution-id E3BF7QMLA8G595 --paths '/*'
