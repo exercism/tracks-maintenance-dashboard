@@ -1,6 +1,6 @@
 {
   "name": "@exercism/tracks-maintenance-dashboard",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "Tool for maintainers and track contributors",
   "license": "MIT",
   "author": "Derk-Jan Karrenbeld <derk-jan+git@karrenbeld.info>",

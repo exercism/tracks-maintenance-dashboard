@@ -149,7 +149,10 @@ export function useRawGithubFileMatches({
 
     fetch(rawUrl, { method: 'GET' })
       .then(
-        (result) => result.text().then(matcher),
+        (result) =>
+          Promise.resolve(result.ok).then(
+            (ok) => ok && result.text().then(matcher)
+          ),
         () => false
       )
       .then((result) => {
