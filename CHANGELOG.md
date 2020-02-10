@@ -2,6 +2,11 @@
 
 ## master
 
+## 0.7.0
+
+- Add `v3` tool with prep and launch list
+- Change default to `v3/launch`
+
 ## 0.6.3
 
 - Add `versioning`, `stub_file` & `test_file` for `reasonml`
