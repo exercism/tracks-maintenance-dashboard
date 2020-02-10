@@ -2,6 +2,14 @@
 
 ## master
 
+## 0.7.4
+
+- Fix typo
+
+## 0.7.3
+
+- Fix maintainers check if file is missing
+
 ## 0.7.2
 
 - Fix link to track "main" entry (v3/languages/trackid)
