@@ -29,8 +29,13 @@ export function LaunchList({ trackId }: LaunchListProps): JSX.Element {
         </p>
 
         <p>
-          To discuss the overall roadmap, go{' '}
-          <a href="https://github.com/exercism/v3/issues/1">here</a>.
+          Find the {trackId} track in the v3 repository{' '}
+          <a
+            href={`https://github.com/exercism/v3/tree/master/languages/${trackId}`}
+          >
+            here
+          </a>
+          .
         </p>
       </header>
 
@@ -68,7 +73,7 @@ function ReadyForLaunch({
       <h2>Readiness for Launch</h2>
       <ol className="list-group mt-4">
         <li
-          className={`list-group-item d-flex justify-content-between ${(actionableOnly &&
+          className={`list-group-item d-flex justify-content-between flex-column flex-md-row ${(actionableOnly &&
             done &&
             configDone &&
             'not-actionable') ||
@@ -77,9 +82,9 @@ function ReadyForLaunch({
           <a href="https://github.com/exercism/v3/blob/master/docs/maintainers/migrating-your-config-json-files.md">
             Updated <code>config.json</code>
           </a>
-          <ul className="mt-2 d-flex">
+          <ul className="mt-2 d-flex flex-column flex-md-row">
             <li
-              className={`badge badge-pill badge-light d-flex justify-content-between ${(actionableOnly &&
+              className={`ml-auto ml-md-0 badge badge-pill badge-light d-flex justify-content-between ${(actionableOnly &&
                 done &&
                 checklist.hasVersion3 &&
                 'not-actionable') ||
@@ -103,7 +108,7 @@ function ReadyForLaunch({
               </LoadingIconWithPopover>
             </li>
             <li
-              className={`badge badge-pill badge-light ml-2 d-flex justify-content-between ${(actionableOnly &&
+              className={`ml-auto ml-md-0 mt-1 mt-md-0 badge badge-pill badge-light ml-md-2 d-flex justify-content-between ${(actionableOnly &&
                 done &&
                 checklist.hasOnlineEditor &&
                 'not-actionable') ||
@@ -221,7 +226,7 @@ function ReadyForLaunch({
           <LoadingIconWithPopover
             active={activeDetailsKey === 'project_representer'}
             loading={!done}
-            valid={!!data.testRunner}
+            valid={!!data.representer}
             onToggle={(): void => {
               setActiveDetailsKey('project_representer')
             }}
@@ -261,7 +266,7 @@ function ReadyForLaunch({
           <LoadingIconWithPopover
             active={activeDetailsKey === 'project_analyzer'}
             loading={!done}
-            valid={!!data.testRunner}
+            valid={!!data.analyzer}
             onToggle={(): void => {
               setActiveDetailsKey('project_analyzer')
             }}
@@ -374,7 +379,7 @@ function PreparationList({
               new repository structure
             </a>
           </span>
-          <span>
+          <span style={{ whiteSpace: 'nowrap' }}>
             {asyncStructureCheck.done && (
               <a
                 style={{ textDecoration: 'none' }}
@@ -413,7 +418,11 @@ function PreparationList({
             </LoadingIconWithPopover>
           </span>
         </li>
-        <li className="list-group-item d-flex">
+        <li
+          className={`list-group-item d-flex ${(actionableOnly &&
+            'not-actionable') ||
+            ''}`}
+        >
           Have a kick-off discussion between track maintainers
         </li>
         <li
@@ -435,8 +444,7 @@ function PreparationList({
             </code>{' '}
             file.
           </span>
-
-          <span>
+          <span style={{ whiteSpace: 'nowrap' }}>
             {asyncMaintainersFilled.done && (
               <a
                 style={{ textDecoration: 'none' }}
@@ -522,7 +530,7 @@ function PreparationList({
             </a>
           </span>
 
-          <span>
+          <span style={{ whiteSpace: 'nowrap' }}>
             {asyncConceptExerciseGuideCheck.done && (
               <a
                 style={{ textDecoration: 'none' }}
@@ -577,7 +585,7 @@ function PreparationList({
             </a>
           </span>
 
-          <span>
+          <span style={{ whiteSpace: 'nowrap' }}>
             {asyncConceptsReferenceCheck.done && (
               <a
                 style={{ textDecoration: 'none' }}
@@ -625,7 +633,11 @@ function PreparationList({
             </LoadingIconWithPopover>
           </span>
         </li>
-        <li className="list-group-item d-flex">
+        <li
+          className={`list-group-item d-flex ${(actionableOnly &&
+            'not-actionable') ||
+            ''}`}
+        >
           <span>
             <a href="https://github.com/exercism/v3/blob/master/docs/maintainers/writing-a-concept-exercise-github-issue.md">
               Add GitHub issues for 20 Concept Exercises

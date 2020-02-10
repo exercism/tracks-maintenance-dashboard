@@ -2,6 +2,14 @@
 
 ## master
 
+## 0.7.2
+
+- Fix link to track "main" entry (v3/languages/trackid)
+- Fix mobile view for pills in launch list
+- Fix mobile view wrapping for url + check icon items
+- Fix check marks for representer
+- Fix check marks for analyzer
+
 ## 0.7.1
 
 - Fix github action according to [this](https://github.com/aws/aws-cli/issues/4835).
