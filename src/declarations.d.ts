@@ -2,7 +2,8 @@
 type TrackIdentifier = 'csharp' | 'javascript' | 'ruby' | 'typescript'
 type ExerciseIdentifier = string
 
-interface GenericTrackConfiguration extends Readonly<GenericTrackConfiguration> {
+interface GenericTrackConfiguration
+  extends Readonly<GenericTrackConfiguration> {
   language: string
   active: boolean
   blurb: string
@@ -17,7 +18,8 @@ namespace Legacy {
     foregone: ReadonlyArray<string>
   }
 
-  interface ExerciseConfiguration extends Readonly<Legacy.ExerciseConfiguration> {
+  interface ExerciseConfiguration
+    extends Readonly<Legacy.ExerciseConfiguration> {
     slug: Exercise
     uuid: string
     core: boolean
@@ -43,11 +45,12 @@ namespace Version3 {
     }>
     exercises: Readonly<{
       concept: ReadonlyArray<Version3.ExerciseConfiguration>
-      practise: ReadonlyArray<Version3.ExerciseConfiguration>
+      practice: ReadonlyArray<Version3.ExerciseConfiguration>
     }>
   }
 
-  interface ExerciseConfiguration extends Readonly<Version3.ExerciseConfiguration> {
+  interface ExerciseConfiguration
+    extends Readonly<Version3.ExerciseConfiguration> {
     slug: string
     uuid: string
     concepts: ReadonlyArray<string>

@@ -3,8 +3,8 @@ import { useLocation } from './useLocation'
 
 import TRACKS from '../data/tracks.json'
 
-const DEFAULT_BRANCH: Branch = 'master'
-const DETAULT_VIEW: View = 'versions'
+const DEFAULT_BRANCH: Branch = 'v3'
+const DETAULT_VIEW: View = 'launch'
 
 type UnsetTrackIdentifier = null
 type UnsetStatePartial = undefined
@@ -99,11 +99,7 @@ function sanitizeTrack(
 }
 
 function sanitizeBranch(anyBranch: string | undefined): Branch {
-  const branches: Branch[] = [
-    'master',
-    'track-anatomy',
-    'v3'
-  ]
+  const branches: Branch[] = ['master', 'track-anatomy', 'v3']
   return branches.find((branch) => branch === anyBranch) || DEFAULT_BRANCH
 }
 
@@ -118,7 +114,7 @@ function sanitizeView(anyView: string | undefined): View {
     'topics',
     'tree',
     'unimplemented',
-    'versions'
+    'versions',
   ]
   return views.find((views) => views === anyView) || DETAULT_VIEW
 }

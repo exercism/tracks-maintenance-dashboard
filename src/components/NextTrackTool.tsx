@@ -8,9 +8,18 @@ import { useRemoteConfig } from '../hooks/useRemoteConfig'
 import { TrackIcon } from './TrackIcon'
 import { TrackDescription } from './TrackDescription'
 import { ExerciseDetails } from './views/ExerciseDetails'
+import { TrackAside } from './TrackAside'
+import { LaunchList } from './views/LaunchList'
+import { ExerciseTree } from './views/ExerciseTree'
 
 const DEFAULT_VIEW = 'launch'
-const VERSION3_VIEWS: ReadonlyArray<View> = ['concept', 'details', 'launch', 'practice', 'tree'] as const as ReadonlyArray<Version3.View>
+const VERSION3_VIEWS: ReadonlyArray<View> = ([
+  'concept',
+  'details',
+  'launch',
+  'practice',
+  'tree',
+] as const) as ReadonlyArray<Version3.View>
 
 function ensureVersionThreeView(view: View | undefined): Version3.View {
   if (view && VERSION3_VIEWS.indexOf(view) !== -1) {
@@ -20,7 +29,11 @@ function ensureVersionThreeView(view: View | undefined): Version3.View {
   return DEFAULT_VIEW
 }
 
-export function NextTrackTool({ trackId }: { trackId: TrackIdentifier }): JSX.Element {
+export function NextTrackTool({
+  trackId,
+}: {
+  trackId: TrackIdentifier
+}): JSX.Element {
   const [selectedView] = useView()
   const actualView = ensureVersionThreeView(selectedView) || DEFAULT_VIEW
 
@@ -56,7 +69,6 @@ export function NextTrackTool({ trackId }: { trackId: TrackIdentifier }): JSX.El
           <Header trackId={trackId} />
         </div>
         <TrackAside trackId={trackId} />
-        <TrackChecklist trackId={trackId} />
       </div>
 
       <div className="d-flex flex-wrap align-items-center mt-4 mb-4 row">
@@ -124,11 +136,11 @@ function Header({ trackId }: { trackId: TrackIdentifier }): JSX.Element {
   )
 }
 
-function TrackAside({ trackId }: { trackId: TrackIdentifier }): JSX.Element {
-  return <aside>aside</aside>
-}
-
-function TrackChecklist({ trackId }: { trackId: TrackIdentifier }): JSX.Element {
+function TrackChecklist({
+  trackId,
+}: {
+  trackId: TrackIdentifier
+}): JSX.Element {
   return <ul></ul>
 }
 
@@ -150,10 +162,10 @@ function TrackView({
       return <ExerciseDetails trackId={trackId} onHide={onHideExercise} />
     }
     case 'launch': {
-      return <section>Launch</section>
+      return <LaunchList trackId={trackId} />
     }
     case 'tree': {
-      return <section>Tree</section>
+      return <ExerciseTree trackId={trackId} />
     }
     default: {
       return null

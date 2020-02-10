@@ -1,6 +1,6 @@
 import React from 'react'
-import { useRemoteConfig } from '../hooks/useLegacyRemoteConfig'
-import { useTrackAsideData } from '../hooks/useLegacyTrackData'
+import { useRemoteConfig } from '../hooks/useRemoteConfig'
+import { useTrackAsideData } from '../hooks/useTrackData'
 import { LoadingIconWithPopover } from './Popover'
 import { useToggleState } from '../hooks/useToggleState'
 import { useKeyPressListener } from '../hooks/useKeyListener'
@@ -29,29 +29,40 @@ export function TrackAside({ trackId }: TrackAsideProps): JSX.Element {
         </li>
         <AsideItem disabled={actionableOnly && !!config}>
           <a
-            href={`https://github.com/exercism/${trackId}/blob/master/config.json`}
+            href={`https://github.com/exercism/v3/blob/master/languages/${trackId}/config.json`}
             className="d-block mr-4"
           >
-            Normalized Configuration
+            V3 Configuration
           </a>
+
+          <span title="Concept exercises">
+            <span role="img" aria-label="Concept">
+              📓
+            </span>{' '}
+            {doneConfig &&
+              config &&
+              config.exercises &&
+              config.exercises.concept &&
+              config.exercises.concept.length}
+          </span>
+
+          <span title="Practice exercises">
+            <span role="img" aria-label="Practice">
+              🧪
+            </span>{' '}
+            {doneConfig &&
+              config &&
+              config.exercises &&
+              config.exercises.practice &&
+              config.exercises.practice.length}
+          </span>
 
           <ConfigurationIcon
             currentDetails={activeDetailsKey}
             onToggleDetails={(): void => setActiveDetailsKey('config.json')}
+            trackId={trackId}
             loading={!doneConfig}
             valid={!!config}
-          />
-        </AsideItem>
-        <AsideItem disabled={actionableOnly && data['analyzer'] === true}>
-          <RepositoryLink repository={`${trackId}-analyzer`}>
-            Automated Analysis
-          </RepositoryLink>
-          <AnalyzerIcon
-            currentDetails={activeDetailsKey}
-            onToggleDetails={(): void => setActiveDetailsKey('analyzer')}
-            trackId={trackId}
-            loading={!done}
-            valid={data['analyzer'] === true}
           />
         </AsideItem>
         <AsideItem disabled={actionableOnly && data['testRunner'] === true}>
@@ -64,6 +75,30 @@ export function TrackAside({ trackId }: TrackAsideProps): JSX.Element {
             trackId={trackId}
             loading={!done}
             valid={data['testRunner'] === true}
+          />
+        </AsideItem>
+        <AsideItem disabled={actionableOnly && data['representer'] === true}>
+          <RepositoryLink repository={`${trackId}-representer`}>
+            Solution Representer
+          </RepositoryLink>
+          <RepresenterIcon
+            currentDetails={activeDetailsKey}
+            onToggleDetails={(): void => setActiveDetailsKey('representer')}
+            trackId={trackId}
+            loading={!done}
+            valid={data['representer'] === true}
+          />
+        </AsideItem>
+        <AsideItem disabled={actionableOnly && data['analyzer'] === true}>
+          <RepositoryLink repository={`${trackId}-analyzer`}>
+            Solution Automated Analysis
+          </RepositoryLink>
+          <AnalyzerIcon
+            currentDetails={activeDetailsKey}
+            onToggleDetails={(): void => setActiveDetailsKey('analyzer')}
+            trackId={trackId}
+            loading={!done}
+            valid={data['analyzer'] === true}
           />
         </AsideItem>
       </ul>
@@ -133,7 +168,8 @@ const ConfigurationIcon = ({
   valid,
   currentDetails,
   onToggleDetails,
-}: PreconfiguredIconProps): JSX.Element => (
+  trackId,
+}: PreconfiguredIconProps & { trackId: TrackIdentifier }): JSX.Element => (
   <LoadingIconWithPopover
     active={currentDetails === 'config.json'}
     loading={loading}
@@ -142,7 +178,7 @@ const ConfigurationIcon = ({
   >
     <p>
       This check passes if there is a <code>config.json</code> file present at
-      the root of the repository.
+      in the <code>languages/{trackId}</code> folder of the v3 repository.
     </p>
     <p className="mb-0">
       You can find more information about the <code>config.json</code> file{' '}
@@ -183,7 +219,7 @@ function AnalyzerIcon({
           the automated analysis in general
         </a>
         , as well as the steps to{' '}
-        <a href="https://github.com/exercism/automated-analysis/blob/master/docs/creating-an-analyzer.md">
+        <a href="https://github.com/exercism/automated-analysis/blob/master/docs/analyzers/getting-started.md">
           pass this test
         </a>
         .
@@ -216,6 +252,44 @@ function TestRunnerIcon({
         <a href="https://github.com/exercism/automated-tests/blob/master/docs/docker.md">
           here
         </a>
+      </p>
+    </LoadingIconWithPopover>
+  )
+}
+
+function RepresenterIcon({
+  loading,
+  valid,
+  onToggleDetails,
+  trackId,
+  currentDetails,
+}: PreconfiguredIconProps & { trackId: TrackIdentifier }): JSX.Element {
+  return (
+    <LoadingIconWithPopover
+      active={currentDetails === 'representer'}
+      loading={loading}
+      valid={valid}
+      onToggle={onToggleDetails}
+    >
+      <p>
+        This check passes if there is a <code>Dockerfile</code> file present in
+        the <code>exercism/{trackId}-representer</code> repository.
+      </p>
+
+      <p className="mb-0">
+        You can find more information about the <code>Dockerfile</code> file{' '}
+        <a href="https://github.com/exercism/automated-analysis/blob/master/docs/docker.md">
+          here
+        </a>
+        , or about{' '}
+        <a href="https://github.com/exercism/automated-analysis/blob/master/docs/about.md">
+          the automated analysis in general
+        </a>
+        , as well as the steps to{' '}
+        <a href="https://github.com/exercism/automated-analysis/blob/master/docs/representers/getting-started.md">
+          pass this test
+        </a>
+        .
       </p>
     </LoadingIconWithPopover>
   )

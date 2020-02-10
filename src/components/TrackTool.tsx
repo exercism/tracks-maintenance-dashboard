@@ -1,6 +1,9 @@
 import React, { useCallback } from 'react'
 
-import { ProvideActionable, useProvideActionableState } from '../hooks/useActionableOnly'
+import {
+  ProvideActionable,
+  useProvideActionableState,
+} from '../hooks/useActionableOnly'
 import { useBranch } from '../hooks/useUrlState'
 
 import { BranchSelectLink } from './BranchSelectLink'
@@ -12,7 +15,7 @@ export interface TrackToolProps {
   onUnselect: () => void
 }
 
-const DEFAULT_BRANCH: Branch = 'master'
+const DEFAULT_BRANCH: Branch = 'v3'
 
 export function TrackTool({
   trackId,
@@ -36,7 +39,7 @@ function BranchView({ trackId }: { trackId: TrackIdentifier }): JSX.Element {
   const [selectedBranch] = useBranch()
   const actualBranch = selectedBranch || DEFAULT_BRANCH
 
-  switch(actualBranch) {
+  switch (actualBranch) {
     case 'v3': {
       return <NextTrackTool trackId={trackId} />
     }
