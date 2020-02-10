@@ -474,7 +474,7 @@ function PreparationList({
 
               <p className="mb-0">
                 All <code>TODO</code>s should be replaced with actual content.
-                If there are no current maintainers or contributore, you may
+                If there are no current maintainers or contributors, you may
                 choose to replace the <code>TODO</code> with{' '}
                 <em>No one yet.</em> and optionally add a link to the
                 call-for-maintainers issue.
