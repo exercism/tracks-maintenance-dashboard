@@ -9,28 +9,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@master
-    - name: Use Node.js 12.x
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12.x
-    - name: npm install and build
-      run: |
-        npm install
-        npm run build --if-present
-      env:
-        CI: true
-    - name: Publish to S3
-      uses: actions/aws/cli@master
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      with:
-        args: s3 cp --recursive --acl public-read --region eu-west-1 ./build/ s3://tracks.exercism.io
-    - name: Invalidate Cloudfront
-      uses: actions/aws/cli@master
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      with:
-        args: cloudfront create-invalidation --distribution-id E3BF7QMLA8G595 --paths '/*'
+      - uses: actions/checkout@master
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: npm install and build
+        run: |
+          npm install
+          npm run build --if-present
+        env:
+          CI: true
+      - name: Publish to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        with:
+          args: s3 cp --recursive --acl public-read --region eu-west-1 ./build/ s3://tracks.exercism.io
+      - name: Invalidate Cloudfront
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        with:
+          args: cloudfront create-invalidation --distribution-id E3BF7QMLA8G595 --paths '/*'

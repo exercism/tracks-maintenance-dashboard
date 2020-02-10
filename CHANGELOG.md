@@ -2,6 +2,10 @@
 
 ## master
 
+## 0.7.1
+
+- Fix github action according to [this](https://github.com/aws/aws-cli/issues/4835).
+
 ## 0.7.0
 
 - Add `v3` tool with prep and launch list
