@@ -2,6 +2,10 @@
 
 ## master
 
+## 0.7.5
+
+- Fix link to concept exercise guide. Now it points to the reference folder.
+
 ## 0.7.4
 
 - Fix typo

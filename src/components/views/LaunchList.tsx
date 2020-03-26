@@ -352,7 +352,7 @@ function PreparationList({
 
   const asyncConceptExerciseGuideCheck = useRawGithubFileDoesNotContain({
     repository: 'v3',
-    path: `languages/${trackId}/docs/implementing-a-concept-exercise.md`,
+    path: `languages/${trackId}/reference/implementing-a-concept-exercise.md`,
     refute: 'TODO',
   })
 
