@@ -3,8 +3,6 @@ import { useMemo, useReducer, useEffect } from 'react'
 import TRACKS from '../data/tracks.json'
 import { useRemoteConfig } from './useRemoteConfig'
 
-type ExerciseConfiguration = Version3.ExerciseConfiguration
-
 /**
  * Fetches the local track data (like the versioning mapper)
  *

@@ -1,8 +1,7 @@
 import React, { useCallback } from 'react'
-import { ProvideBranch } from './hooks/useLegacyProblemSpecificationBranch'
 import { useProvideBrowserLocation, ProvideLocation } from './hooks/useLocation'
 
-import { useBranch, useTrack } from './hooks/useUrlState'
+import { useTrack } from './hooks/useUrlState'
 import { TrackSelection } from './components/TrackSelection'
 import { TrackTool } from './components/TrackTool'
 
@@ -30,7 +29,6 @@ function AppContainer({
 
 function TrackMaintenanceTool(): JSX.Element {
   const [selectedTrackId, onSelectTrack] = useTrack()
-  const [selectedBranch] = useBranch()
 
   const doUnselectTrack = useCallback(() => onSelectTrack(null), [
     onSelectTrack,
@@ -40,9 +38,5 @@ function TrackMaintenanceTool(): JSX.Element {
     return <TrackSelection />
   }
 
-  return (
-    <ProvideBranch value={selectedBranch}>
-      <TrackTool trackId={selectedTrackId} onUnselect={doUnselectTrack} />
-    </ProvideBranch>
-  )
+  return <TrackTool trackId={selectedTrackId} onUnselect={doUnselectTrack} />
 }

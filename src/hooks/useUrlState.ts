@@ -3,7 +3,6 @@ import { useLocation } from './useLocation'
 
 import TRACKS from '../data/tracks.json'
 
-const DEFAULT_BRANCH: Branch = 'v3'
 const DETAULT_VIEW: View = 'launch'
 
 type UnsetTrackIdentifier = null
@@ -11,7 +10,6 @@ type UnsetStatePartial = undefined
 
 interface SupportedState {
   trackId: TrackIdentifier | UnsetTrackIdentifier
-  branch: Branch | UnsetStatePartial
   view: View | UnsetStatePartial
   exercise: ExerciseIdentifier | UnsetStatePartial
 }
@@ -62,16 +60,6 @@ export function useTrack(): [
 }
 
 /**
- * Convenience method to get the problem spec branch from the url
- */
-export function useBranch(): [
-  Branch | undefined,
-  (next: Branch | undefined) => void
-] {
-  return useUrlState('branch', sanitizeBranch)
-}
-
-/**
  * Convenience method to get the current view from the url
  */
 export function useView(): [
@@ -98,24 +86,9 @@ function sanitizeTrack(
   return track ? (anyTrack as TrackIdentifier) : null
 }
 
-function sanitizeBranch(anyBranch: string | undefined): Branch {
-  const branches: Branch[] = ['master', 'track-anatomy', 'v3']
-  return branches.find((branch) => branch === anyBranch) || DEFAULT_BRANCH
-}
-
 function sanitizeView(anyView: string | undefined): View {
   // Keep up to date with declarations.d.ts
-  const views: View[] = [
-    'concept',
-    'details',
-    'launch',
-    'practice',
-    'stubs',
-    'topics',
-    'tree',
-    'unimplemented',
-    'versions',
-  ]
+  const views: View[] = ['concept', 'details', 'launch', 'practice', 'tree']
   return views.find((views) => views === anyView) || DETAULT_VIEW
 }
 
@@ -132,7 +105,6 @@ function getOptionFromLocation<K extends keyof SupportedState>(
 ): SupportedState[K] {
   const {
     trackId: urlTrackId,
-    branch: urlBranch,
     view: urlView,
     exercise: urlExercise,
   } = getOptionsFromLocation(location)
@@ -140,9 +112,6 @@ function getOptionFromLocation<K extends keyof SupportedState>(
   switch (key) {
     case 'trackId': {
       return sanitize(urlTrackId)
-    }
-    case 'branch': {
-      return sanitize(urlBranch)
     }
     case 'view': {
       return sanitize(urlView)
@@ -158,19 +127,17 @@ function getOptionFromLocation<K extends keyof SupportedState>(
 
 interface Options {
   trackId: string | undefined
-  branch: string
   view: string | undefined
   exercise: string | undefined
 }
 
 function getOptionsFromLocation(location: Location | undefined): Options {
-  const [, urlTrackId, urlBranch, urlView, urlExercise] = location
+  const [, urlTrackId, urlView, urlExercise] = location
     ? decodeURIComponent(location.pathname || '').split('/')
     : []
 
   return {
     trackId: urlTrackId,
-    branch: urlBranch || DEFAULT_BRANCH,
     view: urlView,
     exercise: urlExercise,
   }
@@ -199,7 +166,6 @@ export function useUrl(
 interface NextUrl {
   state: {
     trackId: TrackIdentifier | null
-    branch: Branch
     view: View
     exercise: ExerciseIdentifier | undefined
     previous?: Options
@@ -211,7 +177,6 @@ interface NextUrl {
 function getNextUrlWithLocation({
   location,
   trackId: nextTrackId,
-  branch: nextBranch,
   view: nextView,
   exercise: nextExercise,
 }: Partial<SupportedState> & { location: Location }): NextUrl {
@@ -220,7 +185,6 @@ function getNextUrlWithLocation({
     return {
       state: {
         trackId: null,
-        branch: DEFAULT_BRANCH,
         view: DETAULT_VIEW,
         exercise: undefined,
       },
@@ -231,7 +195,6 @@ function getNextUrlWithLocation({
 
   const current = getOptionsFromLocation(location)
   const trackId = sanitizeTrack(nextTrackId || current.trackId)
-  const branch = sanitizeBranch(nextBranch || current.branch)
 
   const exercise = nextExercise === undefined ? current.exercise : nextExercise
   const view = sanitizeView(
@@ -243,11 +206,10 @@ function getNextUrlWithLocation({
   )
 
   return {
-    state: { trackId, branch, view, exercise, previous: { ...current } },
-    title: `Exercism: Track ${trackId} maintenance tool (${branch}) - ${view ||
+    state: { trackId, view, exercise, previous: { ...current } },
+    title: `Exercism: Track ${trackId} maintenance tool (${view ||
       'Dashboard'}`,
-    href:
-      '/' + [trackId, branch, view, view && exercise].filter(Boolean).join('/'),
+    href: '/' + [trackId, view, view && exercise].filter(Boolean).join('/'),
   }
 }
 

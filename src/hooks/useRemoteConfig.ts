@@ -1,8 +1,5 @@
 import { useReducer, useEffect } from 'react'
 
-type TrackConfiguration = Version3.TrackConfiguration
-
-type Slug = string
 type RemoteConfiguration = {
   done: boolean
   config: TrackConfiguration | undefined
