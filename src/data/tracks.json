@@ -237,7 +237,7 @@
     "slug": "nim",
     "name": "Nim",
     "core_enabled": true,
-    "versioning": "exercises/practice/{slug}/{exercise_slug}_test.nim",
+    "versioning": "exercises/practice/{slug}/test_{exercise_slug}.nim",
     "stub_file": "exercises/practice/{slug}/{exercise_slug}.nim",
     "test_file": "{versioning}"
   },

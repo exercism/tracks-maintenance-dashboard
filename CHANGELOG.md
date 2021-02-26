@@ -2,6 +2,10 @@
 
 ## main
 
+## 0.8.1
+
+- Update test pattern for Nim
+
 ## 0.8.0
 
 - Work with post-boom track configs
