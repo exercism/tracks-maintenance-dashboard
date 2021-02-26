@@ -2,7 +2,10 @@ import React, { useCallback } from 'react'
 
 import { RemoteConfig } from '../../net/LegacyRemoteConfig'
 import { useTrackData } from '../../hooks/useLegacyTrackData'
-import { useRemoteStub, MINIMUM_STUB_LENGTH } from '../../hooks/useLegacyRemoteStub'
+import {
+  useRemoteStub,
+  MINIMUM_STUB_LENGTH,
+} from '../../hooks/useLegacyRemoteStub'
 import { useToggleState } from '../../hooks/useToggleState'
 
 import { CheckOrCross } from '../CheckOrCross'
@@ -11,6 +14,12 @@ import { ContainedPopover } from '../Popover'
 import { ExerciseIcon } from '../ExerciseIcon'
 import { useKeyPressListener } from '../../hooks/useKeyListener'
 import { useActionableState } from '../../hooks/useActionableOnly'
+import {
+  ExerciseIdentifier,
+  Legacy,
+  TrackData,
+  TrackIdentifier,
+} from '../../types'
 
 type ExerciseConfiguration = Legacy.ExerciseConfiguration
 type TrackConfiguration = Legacy.TrackConfiguration
@@ -66,13 +75,16 @@ function ExerciseTable({
   useKeyPressListener(['Esc', 'Escape'], doSetDetails)
 
   const track = useTrackData(trackId)
+  const practiceExercises = Array.isArray(exercises)
+    ? (exercises as readonly Legacy.ExerciseConfiguration[])
+    : exercises.practice
   const validExercises = useValidExercises(
     foregone || NO_FOREGONE_EXERCISES,
-    exercises
+    practiceExercises
   )
   const { deprecated } = useInvalidExercises(
     foregone || NO_FOREGONE_EXERCISES,
-    exercises
+    practiceExercises
   )
 
   const doShowExercise = useCallback(
@@ -99,7 +111,7 @@ function ExerciseTable({
     [details, doSetDetails, doShowExercise, trackId]
   )
 
-  if (!exercises || exercises.length === 0) {
+  if (!exercises || practiceExercises.length === 0) {
     return <div>No exercises found</div>
   }
 
@@ -129,7 +141,7 @@ function ExerciseTable({
                 </span>{' '}
                 out of{' '}
                 <span className="badge badge-pill badge-secondary">
-                  {exercises.length}
+                  {practiceExercises.length}
                 </span>{' '}
                 exercises. Deprecated and foregone exercises are hidden.
               </p>
@@ -144,7 +156,7 @@ function ExerciseTable({
   )
 }
 
-function StubInfoButton({ trackData }: { trackData: TrackData }) {
+function StubInfoButton({ trackData }: { trackData: TrackData }): JSX.Element {
   const { stub_file: stubFile } = trackData
 
   const [active, setActive] = useToggleState(
@@ -190,7 +202,7 @@ function ExerciseRow({
   detailsActive,
   onToggleDetails,
   onShowExercise,
-}: ExerciseRowProps) {
+}: ExerciseRowProps): JSX.Element | null {
   const { done: remoteDone, stub: remoteStub, url: remoteUrl } = useRemoteStub(
     trackId,
     exercise.slug
@@ -283,7 +295,12 @@ interface DetailsCellProps {
   stubLength: number | undefined
 }
 
-function DetailsCell({ active, onToggle, stubLength, done }: DetailsCellProps) {
+function DetailsCell({
+  active,
+  onToggle,
+  stubLength,
+  done,
+}: DetailsCellProps): JSX.Element | null {
   if (!done) {
     return (
       <td>
@@ -325,7 +342,11 @@ function StubDoesNotExist(): JSX.Element {
   )
 }
 
-function ForegoneSection({ exercises }: { exercises: ReadonlyArray<string> }) {
+function ForegoneSection({
+  exercises,
+}: {
+  exercises: ReadonlyArray<string>
+}): JSX.Element | null {
   if (!exercises || exercises.length === 0) {
     return null
   }
@@ -352,7 +373,7 @@ function DeprecatedSection({
   exercises,
 }: {
   exercises: ReadonlyArray<ExerciseConfiguration>
-}) {
+}): JSX.Element | null {
   if (!exercises || exercises.length === 0) {
     return null
   }
@@ -395,7 +416,10 @@ function useValidExercises(
 function useInvalidExercises(
   foregone: ReadonlyArray<string>,
   exercises: ReadonlyArray<ExerciseConfiguration>
-) {
+): {
+  foregone: readonly string[]
+  deprecated: readonly ExerciseConfiguration[]
+} {
   if (!exercises) {
     return { foregone, deprecated: NO_EXERCISES }
   }

@@ -1,6 +1,10 @@
 # Changelog
 
-## master
+## main
+
+## 0.8.0
+
+- Work with post-boom track configs
 
 ## 0.7.5
 

@@ -1,4 +1,5 @@
 import { useReducer, useEffect } from 'react'
+import type { ExerciseIdentifier, TrackIdentifier } from '../types'
 import { useTrackData } from './useLegacyTrackData'
 
 type Version = string | undefined
@@ -88,7 +89,7 @@ export function useRemoteVersion(
     : '<nothing>'
 
   const url = versioning
-    ? `https://raw.githubusercontent.com/exercism/${trackId}/master/${path}`
+    ? `https://raw.githubusercontent.com/exercism/${trackId}/main/${path}`
     : undefined
 
   const { loading: currentLoading } = state

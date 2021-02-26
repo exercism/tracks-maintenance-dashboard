@@ -9,6 +9,7 @@ import { CheckOrCross } from '../CheckOrCross'
 import { ExerciseIcon } from '../ExerciseIcon'
 import { useKeyPressListener } from '../../hooks/useKeyListener'
 import { useActionableState } from '../../hooks/useActionableOnly'
+import { ExerciseIdentifier, Legacy, TrackIdentifier } from '../../types'
 
 type ExerciseConfiguration = Legacy.ExerciseConfiguration
 type TrackConfiguration = Legacy.TrackConfiguration
@@ -67,7 +68,7 @@ function TopicsFileLink({
     <a
       href={`https://github.com/exercism/problem-specifications/${
         edit === true ? 'edit' : 'blob'
-      }/master/TOPICS.txt`}
+      }/main/TOPICS.txt`}
     >
       {children}
     </a>
@@ -93,10 +94,14 @@ function ExerciseTable({
     'popover',
     'popover-toggle'
   )
+
+  const practiceExercises = Array.isArray(exercises)
+    ? (exercises as readonly Legacy.ExerciseConfiguration[])
+    : exercises.practice
   const { list, done } = useRemoteTopics()
   const validExercises = useValidExercises(
     foregone || NO_FOREGONE_EXERCISES,
-    exercises
+    practiceExercises
   )
 
   useKeyPressListener(['Esc', 'Escape'], doSetDetails)
@@ -106,13 +111,10 @@ function ExerciseTable({
       return {}
     }
 
-    return list.reduce(
-      (result, item) => {
-        result[item] = true
-        return result
-      },
-      {} as Record<string, true>
-    )
+    return list.reduce((result, item) => {
+      result[item] = true
+      return result
+    }, {} as Record<string, true>)
   }, [list])
 
   const renderExercise = useCallback(
@@ -143,7 +145,7 @@ function ExerciseTable({
     )
   }
 
-  if (!exercises || exercises.length === 0) {
+  if (!exercises || practiceExercises.length === 0) {
     return <div>No exercises found</div>
   }
 
@@ -166,8 +168,8 @@ function ExerciseTable({
             <td colSpan={3}>
               <p className="text-muted mb-0">
                 Showing <ValidBadge count={validExercises.length} /> out of{' '}
-                <TotalBadge count={exercises.length} /> exercises. Deprecated
-                and foregone exercises are hidden.
+                <TotalBadge count={practiceExercises.length} /> exercises.
+                Deprecated and foregone exercises are hidden.
               </p>
             </td>
           </tr>
@@ -211,20 +213,17 @@ function ExerciseRow({
   )
   const suggestions = useMemo(
     () =>
-      annotatedTopics.reduce(
-        (suggestions, annotated) => {
-          if (annotated.valid) {
-            return suggestions
-          }
-
-          suggestions[annotated.topic] = findNearbyTopics(
-            annotated.topic,
-            topicsList
-          )
+      annotatedTopics.reduce((suggestions, annotated) => {
+        if (annotated.valid) {
           return suggestions
-        },
-        {} as Record<string, ReadonlyArray<string>>
-      ),
+        }
+
+        suggestions[annotated.topic] = findNearbyTopics(
+          annotated.topic,
+          topicsList
+        )
+        return suggestions
+      }, {} as Record<string, ReadonlyArray<string>>),
     [annotatedTopics, topicsList]
   )
 

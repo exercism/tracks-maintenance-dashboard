@@ -1,6 +1,7 @@
 import { useMemo, useReducer, useEffect } from 'react'
 
 import TRACKS from '../data/tracks.json'
+import { Legacy, TrackData, TrackIdentifier } from '../types'
 import { useRemoteConfig } from './useLegacyRemoteConfig'
 
 type ExerciseConfiguration = Legacy.ExerciseConfiguration
@@ -129,17 +130,23 @@ export function useTrackAsideData(trackId: TrackIdentifier): TrackAsideData {
     const fetchAnalyzer =
       currentData.analyzer === undefined
         ? fetch(
-            `https://raw.githubusercontent.com/exercism/${trackId}-analyzer/master/Dockerfile`,
+            `https://raw.githubusercontent.com/exercism/${trackId}-analyzer/main/Dockerfile`,
             { method: 'HEAD' }
-          ).then((result) => result.ok, () => false)
+          ).then(
+            (result) => result.ok,
+            () => false
+          )
         : Promise.resolve(currentData.analyzer)
 
     const fetchTestRunner =
       currentData.testRunner === undefined
         ? fetch(
-            `https://raw.githubusercontent.com/exercism/${trackId}-test-runner/master/Dockerfile`,
+            `https://raw.githubusercontent.com/exercism/${trackId}-test-runner/main/Dockerfile`,
             { method: 'HEAD' }
-          ).then((result) => result.ok, () => false)
+          ).then(
+            (result) => result.ok,
+            () => false
+          )
         : Promise.resolve(currentData.testRunner)
     ;(async (): Promise<void> => {
       const nextAnalyzer = await fetchAnalyzer
@@ -164,21 +171,26 @@ export function useTrackAsideData(trackId: TrackIdentifier): TrackAsideData {
   }, [trackId, currentLoading, currentData])
 
   const remoteExercises =
-    (remoteTrackDone && remoteTrackData && remoteTrackData.exercises) ||
-    NO_EXERCISES
+    remoteTrackDone && remoteTrackData && remoteTrackData.exercises
+  const remotePracticeExercises =
+    (typeof remoteExercises === 'object'
+      ? (remoteExercises as { practice: typeof NO_EXERCISES }).practice
+      : remoteExercises) || NO_EXERCISES
+
   const remoteFlags = useMemo(
     () => ({
       hasBlurb: !!(remoteTrackData && remoteTrackData.blurb),
-      hasAutoApprove: !!remoteExercises.some(
+      hasAutoApprove: !!remotePracticeExercises.some(
         (exercise) => exercise.auto_approve
       ),
-      exerciseCoreCount: remoteExercises.filter((exercise) => exercise.core)
-        .length,
-      exerciseWithTopicsCount: remoteExercises.filter(
+      exerciseCoreCount: remotePracticeExercises.filter(
+        (exercise) => exercise.core
+      ).length,
+      exerciseWithTopicsCount: remotePracticeExercises.filter(
         (exercise) => exercise.topics && exercise.topics.length !== 0
       ).length,
     }),
-    [remoteTrackData, remoteExercises]
+    [remoteTrackData, remotePracticeExercises]
   )
 
   return {

@@ -27,7 +27,7 @@ function fetchReducer(
   }
 }
 
-const DEFAULT_BRANCH = 'master'
+const DEFAULT_BRANCH = 'main'
 
 export function useRawGithubFileExists({
   repository,
@@ -49,10 +49,12 @@ export function useRawGithubFileExists({
     result: CACHE[key],
   })
 
-  const url = `https://github.com/exercism/${repository}/blob/${branch ||
-    DEFAULT_BRANCH}/${path}`
-  const rawUrl = `https://raw.githubusercontent.com/exercism/${repository}/${branch ||
-    DEFAULT_BRANCH}/${path}`
+  const url = `https://github.com/exercism/${repository}/blob/${
+    branch || DEFAULT_BRANCH
+  }/${path}`
+  const rawUrl = `https://raw.githubusercontent.com/exercism/${repository}/${
+    branch || DEFAULT_BRANCH
+  }/${path}`
 
   useEffect(() => {
     if (state.result !== undefined) {
@@ -135,10 +137,12 @@ export function useRawGithubFileMatches({
     result: CACHE[key],
   })
 
-  const url = `https://github.com/exercism/${repository}/blob/${branch ||
-    DEFAULT_BRANCH}/${path}`
-  const rawUrl = `https://raw.githubusercontent.com/exercism/${repository}/${branch ||
-    DEFAULT_BRANCH}/${path}`
+  const url = `https://github.com/exercism/${repository}/blob/${
+    branch || DEFAULT_BRANCH
+  }/${path}`
+  const rawUrl = `https://raw.githubusercontent.com/exercism/${repository}/${
+    branch || DEFAULT_BRANCH
+  }/${path}`
 
   useEffect(() => {
     if (state.result !== undefined) {

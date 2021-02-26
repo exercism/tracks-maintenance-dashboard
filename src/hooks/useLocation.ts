@@ -18,7 +18,7 @@ export function useProvideBrowserLocation(): Location | undefined {
     // Track the old popstate so its reversible
     const originalOnPopstate = { current: window.onpopstate }
 
-    window.onpopstate = function(
+    window.onpopstate = function (
       this: WindowEventHandlers,
       ev: PopStateEvent
     ): void {
@@ -34,8 +34,8 @@ export function useProvideBrowserLocation(): Location | undefined {
       (result, trigger) => {
         const oldTrigger = (result[trigger] = window.history[trigger]) as any
 
-        window.history[trigger] = function(
-          ...args: [any, string, (string | null | undefined)]
+        window.history[trigger] = function (
+          ...args: [any, string, string | null | undefined]
         ) {
           oldTrigger.apply(window.history, args)
           setLocation(() => ({ ...window.location }))

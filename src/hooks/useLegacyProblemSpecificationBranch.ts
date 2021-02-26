@@ -1,9 +1,12 @@
 import { createContext, useContext } from 'react'
+import type { Branch } from '../types'
 
 export type NormalisedBranch = Exclude<Branch, 'track-anatomy'> | 'trackanatomy'
 
-const DEFAULT_BRANCH: 'master' = 'master'
-const ProblemSpecificationBranch = createContext<Branch | undefined>(DEFAULT_BRANCH)
+const DEFAULT_BRANCH = 'main' as const
+const ProblemSpecificationBranch = createContext<Branch | undefined>(
+  DEFAULT_BRANCH
+)
 
 export const ProvideBranch = ProblemSpecificationBranch.Provider
 

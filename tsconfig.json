@@ -1,13 +1,8 @@
 {
-  "include": [
-    "./src/*"
-  ],
+  "include": ["./src/*"],
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "es2015"
-    ],
-    "jsx": "react",
+    "lib": ["dom", "es2015"],
+    "jsx": "react-jsx",
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "resolveJsonModule": true,
@@ -19,6 +14,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "isolatedModules": true,
-    "noEmit": true
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": true
   }
 }

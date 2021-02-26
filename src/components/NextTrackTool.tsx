@@ -1,16 +1,22 @@
-import React, { useCallback, Fragment } from 'react'
-import { useView, setOptionsInUrl } from '../hooks/useUrlState'
+import React, { Fragment, useCallback } from 'react'
 import { useActionableState } from '../hooks/useActionableOnly'
-import { SwitchToggle } from './SwitchToggle'
-import { ViewSelectLink } from './ViewSelectLink'
 import { useTrackData } from '../hooks/useLegacyTrackData'
 import { useRemoteConfig } from '../hooks/useRemoteConfig'
-import { TrackIcon } from './TrackIcon'
-import { TrackDescription } from './TrackDescription'
-import { ExerciseDetails } from './views/ExerciseDetails'
+import { setOptionsInUrl, useView } from '../hooks/useUrlState'
+import type {
+  ExerciseIdentifier,
+  TrackIdentifier,
+  Version3,
+  View,
+} from '../types'
+import { SwitchToggle } from './SwitchToggle'
 import { TrackAside } from './TrackAside'
-import { LaunchList } from './views/LaunchList'
+import { TrackDescription } from './TrackDescription'
+import { TrackIcon } from './TrackIcon'
+import { ExerciseDetails } from './views/ExerciseDetails'
 import { ExerciseTree } from './views/ExerciseTree'
+import { LaunchList } from './views/LaunchList'
+import { ViewSelectLink } from './ViewSelectLink'
 
 const DEFAULT_VIEW = 'launch'
 const VERSION3_VIEWS: ReadonlyArray<View> = ([

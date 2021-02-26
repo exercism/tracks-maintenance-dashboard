@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { useLocation } from './useLocation'
 
 import TRACKS from '../data/tracks.json'
+import { Branch, ExerciseIdentifier, TrackIdentifier, View } from '../types'
 
 const DEFAULT_BRANCH: Branch = 'v3'
 const DETAULT_VIEW: View = 'launch'
@@ -99,7 +100,7 @@ function sanitizeTrack(
 }
 
 function sanitizeBranch(anyBranch: string | undefined): Branch {
-  const branches: Branch[] = ['master', 'track-anatomy', 'v3']
+  const branches: Branch[] = ['main', 'track-anatomy', 'v3']
   return branches.find((branch) => branch === anyBranch) || DEFAULT_BRANCH
 }
 
@@ -244,8 +245,9 @@ function getNextUrlWithLocation({
 
   return {
     state: { trackId, branch, view, exercise, previous: { ...current } },
-    title: `Exercism: Track ${trackId} maintenance tool (${branch}) - ${view ||
-      'Dashboard'}`,
+    title: `Exercism: Track ${trackId} maintenance tool (${branch}) - ${
+      view || 'Dashboard'
+    }`,
     href:
       '/' + [trackId, branch, view, view && exercise].filter(Boolean).join('/'),
   }

@@ -1,4 +1,5 @@
-import { useReducer, useEffect } from 'react'
+import { useEffect, useReducer } from 'react'
+import type { Legacy, TrackIdentifier } from '../types'
 
 type TrackConfiguration = Legacy.TrackConfiguration
 
@@ -56,7 +57,7 @@ function fetchReducer(
 export function useRemoteConfig(trackId: TrackIdentifier): RemoteConfiguration {
   const [state, dispatch] = useReducer(fetchReducer, initialState)
 
-  const url = `https://raw.githubusercontent.com/exercism/${trackId}/master/config.json`
+  const url = `https://raw.githubusercontent.com/exercism/${trackId}/main/config.json`
 
   const { loading: currentLoading } = state
   const currentConfig = readCache(trackId)

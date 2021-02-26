@@ -1,5 +1,6 @@
 import React from 'react'
 import { useExercise } from '../../hooks/useUrlState'
+import { TrackIdentifier } from '../../types'
 
 interface ExerciseDetailsProps {
   trackId: TrackIdentifier
