@@ -198,10 +198,13 @@ export function useTrackAsideData(trackId: TrackIdentifier): TrackAsideData {
     }
   }, [trackId, currentLoading, currentData])
 
-  const remoteExercises = {
-    ...NO_EXERCISES,
-    ...(remoteTrackDone && remoteTrackData && remoteTrackData.exercises),
-  }
+  const remoteExercises = useMemo(
+    () => ({
+      ...NO_EXERCISES,
+      ...(remoteTrackDone && remoteTrackData && remoteTrackData.exercises),
+    }),
+    [remoteTrackDone, remoteTrackData]
+  )
 
   const hasBlurb = !!(remoteTrackData && remoteTrackData.blurb)
   const hasVersion3 = !!(

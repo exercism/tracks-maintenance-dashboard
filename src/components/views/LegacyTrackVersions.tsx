@@ -340,7 +340,7 @@ function DetailsCell({
   canonicalVersion,
   done,
   wontFix,
-}: DetailsCellProps) {
+}: DetailsCellProps): JSX.Element {
   if (!done) {
     return (
       <td>

@@ -156,7 +156,7 @@ function ExerciseTable({
   )
 }
 
-function StubInfoButton({ trackData }: { trackData: TrackData }) {
+function StubInfoButton({ trackData }: { trackData: TrackData }): JSX.Element {
   const { stub_file: stubFile } = trackData
 
   const [active, setActive] = useToggleState(
@@ -202,7 +202,7 @@ function ExerciseRow({
   detailsActive,
   onToggleDetails,
   onShowExercise,
-}: ExerciseRowProps) {
+}: ExerciseRowProps): JSX.Element | null {
   const { done: remoteDone, stub: remoteStub, url: remoteUrl } = useRemoteStub(
     trackId,
     exercise.slug
@@ -295,7 +295,12 @@ interface DetailsCellProps {
   stubLength: number | undefined
 }
 
-function DetailsCell({ active, onToggle, stubLength, done }: DetailsCellProps) {
+function DetailsCell({
+  active,
+  onToggle,
+  stubLength,
+  done,
+}: DetailsCellProps): JSX.Element | null {
   if (!done) {
     return (
       <td>
@@ -337,7 +342,11 @@ function StubDoesNotExist(): JSX.Element {
   )
 }
 
-function ForegoneSection({ exercises }: { exercises: ReadonlyArray<string> }) {
+function ForegoneSection({
+  exercises,
+}: {
+  exercises: ReadonlyArray<string>
+}): JSX.Element | null {
   if (!exercises || exercises.length === 0) {
     return null
   }
@@ -364,7 +373,7 @@ function DeprecatedSection({
   exercises,
 }: {
   exercises: ReadonlyArray<ExerciseConfiguration>
-}) {
+}): JSX.Element | null {
   if (!exercises || exercises.length === 0) {
     return null
   }
@@ -407,7 +416,10 @@ function useValidExercises(
 function useInvalidExercises(
   foregone: ReadonlyArray<string>,
   exercises: ReadonlyArray<ExerciseConfiguration>
-) {
+): {
+  foregone: readonly string[]
+  deprecated: readonly ExerciseConfiguration[]
+} {
   if (!exercises) {
     return { foregone, deprecated: NO_EXERCISES }
   }

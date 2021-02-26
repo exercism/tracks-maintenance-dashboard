@@ -87,6 +87,6 @@
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "react/react-in-jsx-scope": 0,
-    "no-debugger": 0
+    "@typescript-eslint/no-explicit-any": 0
   }
 }
