@@ -1,4 +1,5 @@
 import React from 'react'
+import { TrackIdentifier } from '../types'
 
 export interface TrackIconProps {
   trackId: TrackIdentifier

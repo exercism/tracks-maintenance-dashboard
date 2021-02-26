@@ -1,4 +1,5 @@
-import { useReducer, useEffect } from 'react'
+import { useEffect, useReducer } from 'react'
+import type { ExerciseIdentifier, TrackIdentifier } from '../types'
 import { useTrackData } from './useLegacyTrackData'
 
 type Stub = number | undefined
@@ -34,7 +35,10 @@ type FetchState = { stub: Stub; loading: boolean }
 
 const initialState: FetchState = { loading: true, stub: undefined }
 
-function fetchReducer(state: Readonly<FetchState>, action: FetchAction): Readonly<FetchState> {
+function fetchReducer(
+  state: Readonly<FetchState>,
+  action: FetchAction
+): Readonly<FetchState> {
   switch (action.type) {
     case 'stub': {
       return { ...state, loading: false, stub: action.stub }
@@ -83,7 +87,7 @@ export function useRemoteStub(
     : '<nothing>'
 
   const url = stubPattern
-    ? `https://raw.githubusercontent.com/exercism/${trackId}/master/${path}`
+    ? `https://raw.githubusercontent.com/exercism/${trackId}/main/${path}`
     : undefined
 
   const { loading: currentLoading } = state

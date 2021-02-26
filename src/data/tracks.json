@@ -13,9 +13,9 @@
     "slug": "bash",
     "name": "Bash",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/.meta/version",
-    "stub_file": "exercises/{slug}/{exercise_slug}.sh",
-    "test_file": "exercises/{slug}/{exercise_slug}_test.sh"
+    "versioning": "exercises/practice/{slug}/.meta/version",
+    "stub_file": "exercises/practice/{slug}/{exercise_slug}.sh",
+    "test_file": "exercises/practice/{slug}/{exercise_slug}_test.sh"
   },
   {
     "slug": "c",
@@ -46,8 +46,8 @@
     "slug": "common-lisp",
     "name": "Common Lisp",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/{exercise-slug}-test.lisp",
-    "stub_file": "exercises/{slug}/{exercise-slug}.lisp",
+    "versioning": "exercises/practice/{slug}/{exercise-slug}-test.lisp",
+    "stub_file": "exercises/practice/{slug}/{exercise-slug}.lisp",
     "test_file": "{versioning}"
   },
   {
@@ -69,38 +69,36 @@
     "slug": "csharp",
     "name": "C#",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/{ExerciseSlug}Test.cs",
-    "stub_file": "exercises/{slug}/{ExerciseSlug}.cs",
+    "versioning": "exercises/practice/{slug}/{ExerciseSlug}Test.cs",
+    "stub_file": "exercises/practice/{slug}/{ExerciseSlug}.cs",
     "test_file": "{versioning}",
     "unactionable": {
-      "versioning": [
-        "diamond"
-      ]
+      "versioning": ["diamond"]
     }
   },
   {
     "slug": "d",
     "name": "D",
     "core_enabled": false,
-    "versioning": "exercises/{slug}/.meta/version",
-    "stub_file": "exercises/{slug}/source/{exercise_slug}.d",
-    "test_file": "exercises/{slug}/source/{exercise_slug}.d"
+    "versioning": "exercises/practice/{slug}/.meta/version",
+    "stub_file": "exercises/practice/{slug}/source/{exercise_slug}.d",
+    "test_file": "exercises/practice/{slug}/source/{exercise_slug}.d"
   },
   {
     "slug": "dart",
     "name": "Dart",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/pubspec.yaml",
-    "stub_file": "exercises/{slug}/lib/{exercise_slug}.dart",
-    "test_file": "exercises/{slug}/test/{exercise_slug}_test.dart"
+    "versioning": "exercises/practice/{slug}/pubspec.yaml",
+    "stub_file": "exercises/practice/{slug}/lib/{exercise_slug}.dart",
+    "test_file": "exercises/practice/{slug}/test/{exercise_slug}_test.dart"
   },
   {
     "slug": "delphi",
     "name": "Delphi Pascal",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/u{ExerciseSlug}Tests.pas",
-    "stub_file": "exercises/{slug}u{exerciseslug}.pas",
-    "test_file": "exercises/{slug}/u{ExerciseSlug}Tests.pas"
+    "versioning": "exercises/practice/{slug}/u{ExerciseSlug}Tests.pas",
+    "stub_file": "exercises/practice/{slug}u{exerciseslug}.pas",
+    "test_file": "exercises/practice/{slug}/u{ExerciseSlug}Tests.pas"
   },
   {
     "slug": "elm",
@@ -111,9 +109,9 @@
     "slug": "elixir",
     "name": "Elixir",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/.meta/version",
-    "stub_file": "exercises/{slug}/lib/{exercise_slug}.ex",
-    "test_file": "exercises/{slug}/test/{exercise_slug}_test.exs"
+    "versioning": "exercises/practice/{slug}/.meta/version",
+    "stub_file": "exercises/practice/{slug}/lib/{exercise_slug}.ex",
+    "test_file": "exercises/practice/{slug}/test/{exercise_slug}_test.exs"
   },
   {
     "slug": "elisp",
@@ -124,9 +122,9 @@
     "slug": "erlang",
     "name": "Erlang",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/src/{exercise_slug}.app.src",
-    "stub_file": "exercises/{slug}/src/{exercise_slug}.erl",
-    "test_file": "exercises/{slug}/test/{exercise_slug}_tests.erl"
+    "versioning": "exercises/practice/{slug}/src/{exercise_slug}.app.src",
+    "stub_file": "exercises/practice/{slug}/src/{exercise_slug}.erl",
+    "test_file": "exercises/practice/{slug}/test/{exercise_slug}_tests.erl"
   },
   {
     "slug": "factor",
@@ -142,13 +140,11 @@
     "slug": "fsharp",
     "name": "F#",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/{ExerciseSlug}Test.fs",
-    "stub_file": "exercises/{slug}/{ExerciseSlug}.fs",
+    "versioning": "exercises/practice/{slug}/{ExerciseSlug}Test.fs",
+    "stub_file": "exercises/practice/{slug}/{ExerciseSlug}.fs",
     "test_file": "{versioning}",
     "unactionable": {
-      "versioning": [
-        "diamond"
-      ]
+      "versioning": ["diamond"]
     }
   },
   {
@@ -160,25 +156,25 @@
     "slug": "go",
     "name": "Go",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/cases_test.go",
-    "stub_file": "exercises/{slug}/{exercise_slug}.go",
-    "test_file": "exercises/{slug}/{exercise_slug}_test.go"
+    "versioning": "exercises/practice/{slug}/cases_test.go",
+    "stub_file": "exercises/practice/{slug}/{exercise_slug}.go",
+    "test_file": "exercises/practice/{slug}/{exercise_slug}_test.go"
   },
   {
     "slug": "groovy",
     "name": "Groovy",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/.meta/version",
-    "stub_file": "exercises/{slug}/src/main/groovy/{ExerciseSlug}.groovy",
-    "test_file": "exercises/{slug}/src/test/groovy/{ExerciseSlug}Spec.groovy"
+    "versioning": "exercises/practice/{slug}/.meta/version",
+    "stub_file": "exercises/practice/{slug}/src/main/groovy/{ExerciseSlug}.groovy",
+    "test_file": "exercises/practice/{slug}/src/test/groovy/{ExerciseSlug}Spec.groovy"
   },
   {
     "slug": "haskell",
     "name": "Haskell",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/package.yaml",
-    "stub_file": "exercises/{slug}/src/{ExerciseSlug}.hs",
-    "test_file": "exercises/{slug}/test/Tests.hs"
+    "versioning": "exercises/practice/{slug}/package.yaml",
+    "stub_file": "exercises/practice/{slug}/src/{ExerciseSlug}.hs",
+    "test_file": "exercises/practice/{slug}/test/Tests.hs"
   },
   {
     "slug": "haxe",
@@ -194,33 +190,33 @@
     "slug": "java",
     "name": "Java",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/.meta/version",
-    "stub_file": "exercises/{slug}/src/main/java/{Exerciseslug}.java",
-    "test_file": "exercises/{slug}/test/main/java/{Exerciseslug}Test.java"
+    "versioning": "exercises/practice/{slug}/.meta/version",
+    "stub_file": "exercises/practice/{slug}/src/main/java/{Exerciseslug}.java",
+    "test_file": "exercises/practice/{slug}/test/main/java/{Exerciseslug}Test.java"
   },
   {
     "slug": "javascript",
     "name": "JavaScript",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/package.json",
-    "stub_file": "exercises/{slug}/{exercise-slug}.js",
-    "test_file": "exercises/{slug}/{exercise-slug}.spec.js"
+    "versioning": "exercises/practice/{slug}/package.json",
+    "stub_file": "exercises/practice/{slug}/{exercise-slug}.js",
+    "test_file": "exercises/practice/{slug}/{exercise-slug}.spec.js"
   },
   {
     "slug": "julia",
     "name": "Julia",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/runtests.jl",
-    "stub_file": "exercises/{slug}/{exercise-slug}.jl",
+    "versioning": "exercises/practice/{slug}/runtests.jl",
+    "stub_file": "exercises/practice/{slug}/{exercise-slug}.jl",
     "test_file": "{versioning}"
   },
   {
     "slug": "kotlin",
     "name": "Kotlin",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/.meta/version",
-    "stub_file": "exercises/{slug}/src/main/kotlin/{ExerciseSlug}.kt",
-    "test_file": "exercises/{slug}/test/main/kotlin/{ExerciseSlug}Test.kt"
+    "versioning": "exercises/practice/{slug}/.meta/version",
+    "stub_file": "exercises/practice/{slug}/src/main/kotlin/{ExerciseSlug}.kt",
+    "test_file": "exercises/practice/{slug}/test/main/kotlin/{ExerciseSlug}Test.kt"
   },
   {
     "slug": "lfe",
@@ -241,8 +237,8 @@
     "slug": "nim",
     "name": "Nim",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/{exercise_slug}_test.nim",
-    "stub_file": "exercises/{slug}/{exercise_slug}.nim",
+    "versioning": "exercises/practice/{slug}/{exercise_slug}_test.nim",
+    "stub_file": "exercises/practice/{slug}/{exercise_slug}.nim",
     "test_file": "{versioning}"
   },
   {
@@ -254,24 +250,24 @@
     "slug": "ocaml",
     "name": "OCaml",
     "core_enabled": false,
-    "versioning": "exercises/{slug}/dune-project",
-    "stub_file": "exercises/{slug}/{exercise_slug}.ml",
-    "test_file": "exercises/{slug}/test.ml"
+    "versioning": "exercises/practice/{slug}/dune-project",
+    "stub_file": "exercises/practice/{slug}/{exercise_slug}.ml",
+    "test_file": "exercises/practice/{slug}/test.ml"
   },
   {
     "slug": "perl5",
     "name": "Perl 5",
     "core_enabled": false,
-    "versioning": "exercises/{slug}/{slug}.t",
-    "stub_file": "exercises/{slug}/{ExerciseSlug}.pm",
+    "versioning": "exercises/practice/{slug}/{slug}.t",
+    "stub_file": "exercises/practice/{slug}/{ExerciseSlug}.pm",
     "test_file": "{versioning}"
   },
   {
     "slug": "perl6",
     "name": "Raku",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/{slug}.t6",
-    "stub_file": "exercises/{slug}/{ExerciseSlug}.pm6",
+    "versioning": "exercises/practice/{slug}/{slug}.t6",
+    "stub_file": "exercises/practice/{slug}/{ExerciseSlug}.pm6",
     "test_file": "{versioning}"
   },
   {
@@ -303,9 +299,9 @@
     "slug": "prolog",
     "name": "Prolog",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/.meta/version",
-    "stub_file": "exercises/{slug}/{exercise_slug}.pl",
-    "test_file": "exercises/{slug}/{exercise_slug}_tests.plt"
+    "versioning": "exercises/practice/{slug}/.meta/version",
+    "stub_file": "exercises/practice/{slug}/{exercise_slug}.pl",
+    "test_file": "exercises/practice/{slug}/{exercise_slug}_tests.plt"
   },
   {
     "slug": "purescript",
@@ -316,8 +312,8 @@
     "slug": "python",
     "name": "Python",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/{exercise_slug}_test.py",
-    "stub_file": "exercises/{slug}/{exercise_slug}.py",
+    "versioning": "exercises/practice/{slug}/{exercise_slug}_test.py",
+    "stub_file": "exercises/practice/{slug}/{exercise_slug}.py",
     "test_file": "{versioning}"
   },
   {
@@ -334,41 +330,41 @@
     "slug": "reasonml",
     "name": "ReasonML",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/package.json",
-    "stub_file": "exercises/{slug}/src/{ExerciseSlug}.re",
-    "test_file": "exercises/{slug}/__tests__/{ExerciseSlug}_test.re"
+    "versioning": "exercises/practice/{slug}/package.json",
+    "stub_file": "exercises/practice/{slug}/src/{ExerciseSlug}.re",
+    "test_file": "exercises/practice/{slug}/__tests__/{ExerciseSlug}_test.re"
   },
   {
     "slug": "ruby",
     "name": "Ruby",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/{exercise_slug}_test.rb",
-    "stub_file": "exercises/{slug}/{exercise_slug}.rb",
+    "versioning": "exercises/practice/{slug}/{exercise_slug}_test.rb",
+    "stub_file": "exercises/practice/{slug}/{exercise_slug}.rb",
     "test_file": "{versioning}"
   },
   {
     "slug": "rust",
     "name": "Rust",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/Cargo.toml",
-    "stub_file": "exercises/{slug}/src/lib.rs",
-    "test_file": "exercises/{slug}/tests/{exercise-slug}.rs"
+    "versioning": "exercises/practice/{slug}/Cargo.toml",
+    "stub_file": "exercises/practice/{slug}/src/lib.rs",
+    "test_file": "exercises/practice/{slug}/tests/{exercise-slug}.rs"
   },
   {
     "slug": "scala",
     "name": "Scala",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/src/test/scala/{ExerciseSlug}Test.scala",
-    "stub_file": "exercises/{slug}/src/main/scala/{ExerciseSlug}.scala",
+    "versioning": "exercises/practice/{slug}/src/test/scala/{ExerciseSlug}Test.scala",
+    "stub_file": "exercises/practice/{slug}/src/main/scala/{ExerciseSlug}.scala",
     "test_file": "{versioning}"
   },
   {
     "slug": "scheme",
     "name": "Scheme",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/.meta/version",
-    "stub_file": "exercises/{slug}/{exercise-slug}.scm",
-    "test_file": "exercises/{slug}/test.scm"
+    "versioning": "exercises/practice/{slug}/.meta/version",
+    "stub_file": "exercises/practice/{slug}/{exercise-slug}.scm",
+    "test_file": "exercises/practice/{slug}/test.scm"
   },
   {
     "slug": "sml",
@@ -394,17 +390,17 @@
     "slug": "tcl",
     "name": "Tcl",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/{exercise-slug}.test",
-    "stub_file": "exercises/{slug}/{exercise-slug}.tcl",
+    "versioning": "exercises/practice/{slug}/{exercise-slug}.test",
+    "stub_file": "exercises/practice/{slug}/{exercise-slug}.tcl",
     "test_file": "{versioning}"
   },
   {
     "slug": "typescript",
     "name": "TypeScript",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/package.json",
-    "stub_file": "exercises/{slug}/{exercise-slug}.ts",
-    "test_file": "exercises/{slug}/{exercise-slug}.spec.ts"
+    "versioning": "exercises/practice/{slug}/package.json",
+    "stub_file": "exercises/practice/{slug}/{exercise-slug}.ts",
+    "test_file": "exercises/practice/{slug}/{exercise-slug}.spec.ts"
   },
   {
     "slug": "vbnet",
@@ -420,8 +416,8 @@
     "slug": "x86-64-assembly",
     "name": "x86-64 Assembly",
     "core_enabled": true,
-    "versioning": "exercises/{slug}/{exercise_slug}_test.c",
-    "stub_file": "exercises/{slug}/{exercise_slug}.asm",
+    "versioning": "exercises/practice/{slug}/{exercise_slug}_test.c",
+    "stub_file": "exercises/practice/{slug}/{exercise_slug}.asm",
     "test_file": "{versioning}"
   }
 ]

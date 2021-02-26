@@ -1,12 +1,15 @@
 import React, { useCallback } from 'react'
-
 import { useBranch, useUrl } from '../hooks/useUrlState'
+import type { Branch } from '../types'
 
 interface BranchSelectLinkProps {
   branch: Branch
   children: React.ReactNode
 }
-export function BranchSelectLink({ branch, children }: BranchSelectLinkProps): JSX.Element {
+export function BranchSelectLink({
+  branch,
+  children,
+}: BranchSelectLinkProps): JSX.Element {
   const [actualBranch, onChangeBranch] = useBranch()
   const { href } = useUrl({ branch })
 

@@ -1,7 +1,8 @@
-import { useReducer, useEffect } from 'react'
+import { useEffect, useReducer } from 'react'
+import type { ExerciseIdentifier } from '../types'
 import {
-  useProblemSpecificationBranch,
   NormalisedBranch,
+  useProblemSpecificationBranch,
 } from './useLegacyProblemSpecificationBranch'
 
 type Version = string | undefined
@@ -65,9 +66,11 @@ function fetchReducer(
 }
 
 type ProblemSpecBranch = ReturnType<typeof useProblemSpecificationBranch>
-function ensureV2Branch(branch: ProblemSpecBranch): Exclude<ProblemSpecBranch, 'v3'> {
+function ensureV2Branch(
+  branch: ProblemSpecBranch
+): Exclude<ProblemSpecBranch, 'v3'> {
   if (branch === 'v3') {
-    return 'master'
+    return 'main'
   }
 
   return branch

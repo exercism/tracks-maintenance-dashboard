@@ -1,5 +1,9 @@
 # tracks-maintenance-dashboard
 
+> :warning: Only works with tracks that have updated their track folders to the
+> v3 format. Does NOT require the full v3 spec at all, just exercises/practice
+> to exist.
+
 A dashboard to help maintainers understand the state of tracks.
 
 ## Track versioning

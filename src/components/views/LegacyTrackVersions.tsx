@@ -1,24 +1,28 @@
 import React, { useCallback } from 'react'
 import semver from 'semver'
-
-import { RemoteConfig } from '../../net/LegacyRemoteConfig'
-import { useTrackData } from '../../hooks/useLegacyTrackData'
-import { useRemoteVersion } from '../../hooks/useLegacyRemoteVersion'
-import { useToggleState } from '../../hooks/useToggleState'
+import { useActionableState } from '../../hooks/useActionableOnly'
+import { useKeyPressListener } from '../../hooks/useKeyListener'
 import { useRemoteCanonicalVersion } from '../../hooks/useLegacyRemoteCanonicalVersion'
-
+import { useRemoteVersion } from '../../hooks/useLegacyRemoteVersion'
+import { useTrackData } from '../../hooks/useLegacyTrackData'
+import { useToggleState } from '../../hooks/useToggleState'
+import { RemoteConfig } from '../../net/LegacyRemoteConfig'
+import type {
+  ExerciseIdentifier,
+  Legacy,
+  TrackData,
+  TrackIdentifier,
+} from '../../types'
 import { CheckOrCross } from '../CheckOrCross'
+import { ExerciseIcon } from '../ExerciseIcon'
 import { LoadingIndicator } from '../LoadingIndicator'
 import { ContainedPopover } from '../Popover'
-import { ExerciseIcon } from '../ExerciseIcon'
-import { useKeyPressListener } from '../../hooks/useKeyListener'
-import { useActionableState } from '../../hooks/useActionableOnly'
 
 type ExerciseConfiguration = Legacy.ExerciseConfiguration
 type TrackConfiguration = Legacy.TrackConfiguration
 
 const TRACKS_JSON_GITHUB_URL =
-  'https://github.com/exercism/tracks-maintenance-dashboard/blob/master/src/data/tracks.json'
+  'https://github.com/exercism/tracks-maintenance-dashboard/blob/main/src/data/tracks.json'
 
 interface TrackVersionsProps {
   trackId: TrackIdentifier
@@ -73,11 +77,11 @@ function ExerciseTable({
   const track = useTrackData(trackId)
   const validExercises = useValidExercises(
     foregone || NO_FOREGONE_EXERCISES,
-    exercises
+    Array.isArray(exercises) ? exercises : exercises.practice
   )
   const { deprecated } = useInvalidExercises(
     foregone || NO_FOREGONE_EXERCISES,
-    exercises
+    Array.isArray(exercises) ? exercises : exercises.practice
   )
 
   const doShowExercise = useCallback(
@@ -104,7 +108,12 @@ function ExerciseTable({
     [details, doSetDetails, doShowExercise, trackId]
   )
 
-  if (!exercises || exercises.length === 0) {
+  const numberOfExercises = (Array.isArray(exercises)
+    ? exercises
+    : exercises.practice
+  ).length
+
+  if (!exercises || numberOfExercises === 0) {
     return <div>No exercises found</div>
   }
 
@@ -135,16 +144,16 @@ function ExerciseTable({
                 </span>{' '}
                 out of{' '}
                 <span className="badge badge-pill badge-secondary">
-                  {exercises.length}
+                  {numberOfExercises}
                 </span>{' '}
                 exercises. Deprecated and foregone exercises are hidden.
               </p>
               <p className="text-muted mb-0">
                 If exercises are not matching the canonical version for a
                 different reason than being out of date, for example because its
-                canonical updates don&apos;t make sense for this track, open a PR to
-                change <a href={TRACKS_JSON_GITHUB_URL}>this file</a> and add
-                each exercises&apos; <code>slug</code> to{' '}
+                canonical updates don&apos;t make sense for this track, open a
+                PR to change <a href={TRACKS_JSON_GITHUB_URL}>this file</a> and
+                add each exercises&apos; <code>slug</code> to{' '}
                 <code>unactionable -&gt; versioning</code>.
               </p>
             </td>
@@ -209,7 +218,6 @@ function ExerciseRow({
   onToggleDetails,
   onShowExercise,
 }: ExerciseRowProps): JSX.Element | null {
-
   const { unactionable } = useTrackData(trackId)
 
   const {
@@ -310,7 +318,7 @@ function VersionCell({ url, version, done }: VersionCellProps): JSX.Element {
   return (
     <td>
       <a href={url}>
-        <code>{version || ((done && '<none>') || <LoadingIndicator />)}</code>
+        <code>{version || (done && '<none>') || <LoadingIndicator />}</code>
       </a>
     </td>
   )
@@ -406,16 +414,21 @@ function WontFixIcon(): JSX.Element {
 function WontFixExplanation(): JSX.Element {
   return (
     <p className="mb-0">
-      This exercise has been added to the <code>unactionable -&gt; versioning</code>{' '}
-      list in <a href={TRACKS_JSON_GITHUB_URL}>this file</a> , which means it is
-      marked to be never in sync with the canonical data. A common reason is
-      that the canonical updates don&apos;t make sense for this track and therefore
-      are not going to be applied.
+      This exercise has been added to the{' '}
+      <code>unactionable -&gt; versioning</code> list in{' '}
+      <a href={TRACKS_JSON_GITHUB_URL}>this file</a> , which means it is marked
+      to be never in sync with the canonical data. A common reason is that the
+      canonical updates don&apos;t make sense for this track and therefore are
+      not going to be applied.
     </p>
   )
 }
 
-function ForegoneSection({ exercises }: { exercises: ReadonlyArray<string> }): JSX.Element | null {
+function ForegoneSection({
+  exercises,
+}: {
+  exercises: ReadonlyArray<string>
+}): JSX.Element | null {
   if (!exercises || exercises.length === 0) {
     return null
   }

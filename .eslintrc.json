@@ -36,8 +36,6 @@
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier",
-    "prettier/@typescript-eslint",
-    "prettier/react",
     "plugin:import/errors",
     "plugin:import/warnings",
     "plugin:import/typescript"
@@ -87,6 +85,8 @@
       }
     ],
     "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn"
+    "react-hooks/exhaustive-deps": "warn",
+    "react/react-in-jsx-scope": 0,
+    "no-debugger": 0
   }
 }

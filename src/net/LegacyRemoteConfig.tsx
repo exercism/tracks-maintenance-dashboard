@@ -1,6 +1,7 @@
 import React from 'react'
 import { useRemoteConfig } from '../hooks/useLegacyRemoteConfig'
 import { LoadingIndicator } from '../components/LoadingIndicator'
+import { Legacy, TrackIdentifier } from '../types'
 
 type TrackConfiguration = Legacy.TrackConfiguration
 

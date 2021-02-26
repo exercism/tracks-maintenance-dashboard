@@ -5,6 +5,7 @@ import {
   useProvideActionableState,
 } from '../hooks/useActionableOnly'
 import { useBranch } from '../hooks/useUrlState'
+import { Branch, TrackIdentifier } from '../types'
 
 import { BranchSelectLink } from './BranchSelectLink'
 import { CurrentTrackTool } from './LegacyTrackTool'
@@ -52,7 +53,7 @@ function BranchView({ trackId }: { trackId: TrackIdentifier }): JSX.Element {
 function ToggleV3Button(): JSX.Element {
   return (
     <div className="btn-group">
-      <BranchSelectLink branch="master">Current</BranchSelectLink>
+      <BranchSelectLink branch="main">Current</BranchSelectLink>
       <BranchSelectLink branch="v3">V3</BranchSelectLink>
     </div>
   )

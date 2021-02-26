@@ -4,6 +4,7 @@ import { useRemoteCanonicalList } from '../../hooks/useLegacyRemoteCanonicalList
 import { LoadingIndicator } from '../LoadingIndicator'
 import { useProblemSpecificationBranch } from '../../hooks/useLegacyProblemSpecificationBranch'
 import { ExerciseIcon } from '../ExerciseIcon'
+import { ExerciseIdentifier, Legacy, TrackIdentifier } from '../../types'
 
 type ExerciseConfiguration = Legacy.ExerciseConfiguration
 
@@ -32,14 +33,15 @@ export function TrackMissing({
 
     const foregone = track.config!.foregone || []
 
+    const practiceExercises = Array.isArray(track.config!.exercises)
+      ? (track.config!.exercises as readonly Legacy.ExerciseConfiguration[])
+      : track.config!.exercises.practice
+
     // Create lookup table for known exericses so that they can be removed from the un-implementedlist
-    const lookup = track.config!.exercises.reduce(
-      (lookup, item) => {
-        lookup[item.slug] = item
-        return lookup
-      },
-      {} as Record<string, ExerciseConfiguration>
-    )
+    const lookup = practiceExercises.reduce((lookup, item) => {
+      lookup[item.slug] = item
+      return lookup
+    }, {} as Record<string, ExerciseConfiguration>)
 
     // Only keep exercises that can't be looked up
     return canonical.list!.filter(
@@ -60,7 +62,7 @@ export function TrackMissing({
           <code>config.json</code>. In order to add or port an exercise to the{' '}
           <code>{trackId}</code> track, see the{' '}
           <a
-            href={`https://github.com/exercism/${trackId}/blob/master/CONTRIBUTING.md`}
+            href={`https://github.com/exercism/${trackId}/blob/main/CONTRIBUTING.md`}
           >
             CONTRIBUTING guidelines
           </a>
@@ -91,7 +93,7 @@ function ProblemSpecLink({
   children: React.ReactNode
 }): JSX.Element {
   return (
-    <a href="https://github.com/exercism/problem-specifications/tree/master/exercises">
+    <a href="https://github.com/exercism/problem-specifications/tree/main/exercises">
       {children}
     </a>
   )
@@ -111,7 +113,7 @@ function MissingExercisesList({
         return null
       }
 
-      const canonicalUrl = `https://github.com/exercism/problem-specifications/tree/master/exercises/${exercise}`
+      const canonicalUrl = `https://github.com/exercism/problem-specifications/tree/main/exercises/${exercise}`
       return (
         <li key={exercise} className="col-12 col-sm-6 col-md-4 col-lg-3 mb-2">
           <a href={canonicalUrl} className="d-flex align-items-center">

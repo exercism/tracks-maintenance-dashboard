@@ -1,6 +1,6 @@
-import { useMemo, useReducer, useEffect } from 'react'
-
+import { useEffect, useMemo, useReducer } from 'react'
 import TRACKS from '../data/tracks.json'
+import { TrackData, TrackIdentifier, Version3 } from '../types'
 import { useRemoteConfig } from './useRemoteConfig'
 
 type ExerciseConfiguration = Version3.ExerciseConfiguration
@@ -141,7 +141,7 @@ export function useTrackAsideData(trackId: TrackIdentifier): TrackAsideData {
     const fetchAnalyzer =
       currentData.analyzer === undefined
         ? fetch(
-            `https://raw.githubusercontent.com/exercism/${trackId}-analyzer/master/Dockerfile`,
+            `https://raw.githubusercontent.com/exercism/${trackId}-analyzer/main/Dockerfile`,
             { method: 'HEAD' }
           ).then(
             (result) => result.ok,
@@ -152,7 +152,7 @@ export function useTrackAsideData(trackId: TrackIdentifier): TrackAsideData {
     const fetchTestRunner =
       currentData.testRunner === undefined
         ? fetch(
-            `https://raw.githubusercontent.com/exercism/${trackId}-test-runner/master/Dockerfile`,
+            `https://raw.githubusercontent.com/exercism/${trackId}-test-runner/main/Dockerfile`,
             { method: 'HEAD' }
           ).then(
             (result) => result.ok,
@@ -163,7 +163,7 @@ export function useTrackAsideData(trackId: TrackIdentifier): TrackAsideData {
     const fetchRepresenter =
       currentData.representer === undefined
         ? fetch(
-            `https://raw.githubusercontent.com/exercism/${trackId}-representer/master/Dockerfile`,
+            `https://raw.githubusercontent.com/exercism/${trackId}-representer/main/Dockerfile`,
             { method: 'HEAD' }
           ).then(
             (result) => result.ok,
@@ -200,8 +200,7 @@ export function useTrackAsideData(trackId: TrackIdentifier): TrackAsideData {
 
   const remoteExercises = {
     ...NO_EXERCISES,
-    ...((remoteTrackDone && remoteTrackData && remoteTrackData.exercises) ||
-      NO_EXERCISES),
+    ...(remoteTrackDone && remoteTrackData && remoteTrackData.exercises),
   }
 
   const hasBlurb = !!(remoteTrackData && remoteTrackData.blurb)

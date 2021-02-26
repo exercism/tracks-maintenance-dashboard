@@ -10,7 +10,9 @@ type ActionableState = [boolean, Dispatch<SetStateAction<boolean>>]
 
 const ActionableContext = createContext<ActionableState>([
   false,
-  (): void => { /* no-op */ },
+  (): void => {
+    /* no-op */
+  },
 ])
 export const ProvideActionable = ActionableContext.Provider
 

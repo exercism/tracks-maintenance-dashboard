@@ -1,10 +1,9 @@
 # Contributing
 
 We welcome contributions of all sorts and sizes, from reporting [issues](https://github.com/exercism/tracks-maintenance-dashboard/issues) to
-submitting patches. 
+submitting patches.
 
------
-
+---
 
 ## Code of Conduct
 
@@ -29,8 +28,6 @@ yarn start
 ```
 
 This should open the app in `localhost:3000` in your browser
-
-
 
 ### Testing
 

@@ -1,4 +1,9 @@
-import { useReducer, useEffect } from 'react'
+import { useEffect, useReducer } from 'react'
+import type {
+  ExerciseIdentifier,
+  ExerciseType,
+  TrackIdentifier,
+} from '../types'
 import { useTrackData } from './useLegacyTrackData'
 
 type Version = string | undefined
@@ -63,7 +68,7 @@ function fetchReducer(
 export function useRemoteVersion(
   trackId: TrackIdentifier,
   slug: ExerciseIdentifier,
-  type: ExerciseType = 'concept',
+  type: ExerciseType = 'concept'
 ): RemoteVersion {
   const trackData = useTrackData(trackId)
   const [state, dispatch] = useReducer(fetchReducer, initialState)

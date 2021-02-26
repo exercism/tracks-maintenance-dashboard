@@ -1,9 +1,10 @@
 import React from 'react'
-import { useTrackAsideData } from '../hooks/useLegacyTrackData'
-import { LoadingIconWithPopover } from './Popover'
-import { useToggleState } from '../hooks/useToggleState'
-import { useKeyPressListener } from '../hooks/useKeyListener'
 import { useActionableState } from '../hooks/useActionableOnly'
+import { useKeyPressListener } from '../hooks/useKeyListener'
+import { useTrackAsideData } from '../hooks/useLegacyTrackData'
+import { useToggleState } from '../hooks/useToggleState'
+import type { TrackIdentifier } from '../types'
+import { LoadingIconWithPopover } from './Popover'
 
 export function TrackChecklist({
   trackId,
@@ -196,7 +197,7 @@ function AboutConfigJson(): JSX.Element {
   return (
     <p className="mb-0">
       You can find more information about the <code>config.json</code> file{' '}
-      <a href="https://github.com/exercism/problem-specifications/blob/master/CONTRIBUTING.md#track-configuration-file">
+      <a href="https://github.com/exercism/problem-specifications/blob/main/CONTRIBUTING.md#track-configuration-file">
         here
       </a>
       .

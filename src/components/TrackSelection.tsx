@@ -3,6 +3,7 @@ import React, { useCallback } from 'react'
 import TRACKS from '../data/tracks.json'
 
 import { useTrack } from '../hooks/useUrlState'
+import { TrackData } from '../types'
 
 const ENABLED_TRACKS = TRACKS as ReadonlyArray<TrackData>
 
@@ -56,7 +57,7 @@ export function TrackSelection(): JSX.Element {
         Tracks are highlighted if the track has a defined versioning scheme. If
         a track isn&apos;t highlighted, but the track does keep track of the
         exercise versions, you may{' '}
-        <a href="https://github.com/exercism/tracks-maintenance-dashboard/edit/master/src/data/tracks.json">
+        <a href="https://github.com/exercism/tracks-maintenance-dashboard/edit/main/src/data/tracks.json">
           edit this file
         </a>
         . Add the <code>versioning</code> key to the right track data. Follow

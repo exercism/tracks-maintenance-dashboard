@@ -8,15 +8,17 @@ import {
   useRawGithubFileDoesNotContain,
   useRawGithubFileMatches,
 } from '../../hooks/useRawGithubFile'
+import { TrackIdentifier } from '../../types'
 
 export interface LaunchListProps {
   trackId: TrackIdentifier
 }
 
 export function LaunchList({ trackId }: LaunchListProps): JSX.Element {
-  const [activeDetailsKey, setActiveDetailsKey] = useToggleState<
-    HTMLUListElement
-  >(undefined, 'popover', 'popover-toggle')
+  const [
+    activeDetailsKey,
+    setActiveDetailsKey,
+  ] = useToggleState<HTMLUListElement>(undefined, 'popover', 'popover-toggle')
 
   return (
     <article>
@@ -31,7 +33,7 @@ export function LaunchList({ trackId }: LaunchListProps): JSX.Element {
         <p>
           Find the {trackId} track in the v3 repository{' '}
           <a
-            href={`https://github.com/exercism/v3/tree/master/languages/${trackId}`}
+            href={`https://github.com/exercism/v3/tree/main/languages/${trackId}`}
           >
             here
           </a>
@@ -73,22 +75,22 @@ function ReadyForLaunch({
       <h2>Readiness for Launch</h2>
       <ol className="list-group mt-4">
         <li
-          className={`list-group-item d-flex justify-content-between flex-column flex-md-row ${(actionableOnly &&
-            done &&
-            configDone &&
-            'not-actionable') ||
-            ''}`}
+          className={`list-group-item d-flex justify-content-between flex-column flex-md-row ${
+            (actionableOnly && done && configDone && 'not-actionable') || ''
+          }`}
         >
-          <a href="https://github.com/exercism/v3/blob/master/docs/maintainers/migrating-your-config-json-files.md">
+          <a href="https://github.com/exercism/v3/blob/main/docs/maintainers/migrating-your-config-json-files.md">
             Updated <code>config.json</code>
           </a>
           <ul className="mt-2 d-flex flex-column flex-md-row">
             <li
-              className={`ml-auto ml-md-0 badge badge-pill badge-light d-flex justify-content-between ${(actionableOnly &&
-                done &&
-                checklist.hasVersion3 &&
-                'not-actionable') ||
-                ''}`}
+              className={`ml-auto ml-md-0 badge badge-pill badge-light d-flex justify-content-between ${
+                (actionableOnly &&
+                  done &&
+                  checklist.hasVersion3 &&
+                  'not-actionable') ||
+                ''
+              }`}
             >
               <span>
                 Added <code>version</code> key
@@ -108,11 +110,13 @@ function ReadyForLaunch({
               </LoadingIconWithPopover>
             </li>
             <li
-              className={`ml-auto ml-md-0 mt-1 mt-md-0 badge badge-pill badge-light ml-md-2 d-flex justify-content-between ${(actionableOnly &&
-                done &&
-                checklist.hasOnlineEditor &&
-                'not-actionable') ||
-                ''}`}
+              className={`ml-auto ml-md-0 mt-1 mt-md-0 badge badge-pill badge-light ml-md-2 d-flex justify-content-between ${
+                (actionableOnly &&
+                  done &&
+                  checklist.hasOnlineEditor &&
+                  'not-actionable') ||
+                ''
+              }`}
             >
               <span>Added online editor settings</span>
               <LoadingIconWithPopover
@@ -134,11 +138,13 @@ function ReadyForLaunch({
         </li>
 
         <li
-          className={`list-group-item d-flex justify-content-between ${(actionableOnly &&
-            done &&
-            checklist.exerciseConceptCount >= 20 &&
-            'not-actionable') ||
-            ''}`}
+          className={`list-group-item d-flex justify-content-between ${
+            (actionableOnly &&
+              done &&
+              checklist.exerciseConceptCount >= 20 &&
+              'not-actionable') ||
+            ''
+          }`}
         >
           Implemented 20+ Concept Exercises
           <LoadingIconWithPopover
@@ -155,13 +161,15 @@ function ReadyForLaunch({
           </LoadingIconWithPopover>
         </li>
         <li
-          className={`list-group-item d-flex justify-content-between ${(actionableOnly &&
-            done &&
-            checklist.exercisePracticeWithConceptCount ===
-              checklist.exercisePracticeCount &&
-            checklist.exercisePracticeCount > 0 &&
-            'not-actionable') ||
-            ''}`}
+          className={`list-group-item d-flex justify-content-between ${
+            (actionableOnly &&
+              done &&
+              checklist.exercisePracticeWithConceptCount ===
+                checklist.exercisePracticeCount &&
+              checklist.exercisePracticeCount > 0 &&
+              'not-actionable') ||
+            ''
+          }`}
         >
           Added Concepts for all Practice Exercises
           <LoadingIconWithPopover
@@ -185,11 +193,10 @@ function ReadyForLaunch({
         </li>
 
         <li
-          className={`list-group-item d-flex justify-content-between ${(actionableOnly &&
-            done &&
-            data.testRunner &&
-            'not-actionable') ||
-            ''}`}
+          className={`list-group-item d-flex justify-content-between ${
+            (actionableOnly && done && data.testRunner && 'not-actionable') ||
+            ''
+          }`}
         >
           Build Test Runner
           <LoadingIconWithPopover
@@ -209,18 +216,17 @@ function ReadyForLaunch({
             <p className="mb-0">
               You can find more information about the <code>Dockerfile</code>{' '}
               file{' '}
-              <a href="https://github.com/exercism/automated-tests/blob/master/docs/docker.md">
+              <a href="https://github.com/exercism/automated-tests/blob/main/docs/docker.md">
                 here
               </a>
             </p>
           </LoadingIconWithPopover>
         </li>
         <li
-          className={`list-group-item d-flex justify-content-between ${(actionableOnly &&
-            done &&
-            data.representer &&
-            'not-actionable') ||
-            ''}`}
+          className={`list-group-item d-flex justify-content-between ${
+            (actionableOnly && done && data.representer && 'not-actionable') ||
+            ''
+          }`}
         >
           Build Representer
           <LoadingIconWithPopover
@@ -240,15 +246,15 @@ function ReadyForLaunch({
             <p className="mb-0">
               You can find more information about the <code>Dockerfile</code>{' '}
               file{' '}
-              <a href="https://github.com/exercism/automated-analysis/blob/master/docs/docker.md">
+              <a href="https://github.com/exercism/automated-analysis/blob/main/docs/docker.md">
                 here
               </a>
               , or about{' '}
-              <a href="https://github.com/exercism/automated-analysis/blob/master/docs/about.md">
+              <a href="https://github.com/exercism/automated-analysis/blob/main/docs/about.md">
                 the automated analysis in general
               </a>
               , as well as the steps to{' '}
-              <a href="https://github.com/exercism/automated-analysis/blob/master/docs/representers/getting-started.md">
+              <a href="https://github.com/exercism/automated-analysis/blob/main/docs/representers/getting-started.md">
                 pass this test
               </a>
               .
@@ -256,11 +262,9 @@ function ReadyForLaunch({
           </LoadingIconWithPopover>
         </li>
         <li
-          className={`list-group-item d-flex justify-content-between ${(actionableOnly &&
-            done &&
-            data.analyzer &&
-            'not-actionable') ||
-            ''}`}
+          className={`list-group-item d-flex justify-content-between ${
+            (actionableOnly && done && data.analyzer && 'not-actionable') || ''
+          }`}
         >
           (Optional) Build Analyzer
           <LoadingIconWithPopover
@@ -280,15 +284,15 @@ function ReadyForLaunch({
             <p className="mb-0">
               You can find more information about the <code>Dockerfile</code>{' '}
               file{' '}
-              <a href="https://github.com/exercism/automated-analysis/blob/master/docs/docker.md">
+              <a href="https://github.com/exercism/automated-analysis/blob/main/docs/docker.md">
                 here
               </a>
               , or about{' '}
-              <a href="https://github.com/exercism/automated-analysis/blob/master/docs/about.md">
+              <a href="https://github.com/exercism/automated-analysis/blob/main/docs/about.md">
                 the automated analysis in general
               </a>
               , as well as the steps to{' '}
-              <a href="https://github.com/exercism/automated-analysis/blob/master/docs/analyzers/getting-started.md">
+              <a href="https://github.com/exercism/automated-analysis/blob/main/docs/analyzers/getting-started.md">
                 pass this test
               </a>
               .
@@ -367,15 +371,17 @@ function PreparationList({
       <h2>Preparation Status</h2>
       <ol className="list-group mt-4">
         <li
-          className={`list-group-item d-flex justify-content-between ${(actionableOnly &&
-            asyncStructureCheck.done &&
-            asyncStructureCheck.result &&
-            'not-actionable') ||
-            ''}`}
+          className={`list-group-item d-flex justify-content-between ${
+            (actionableOnly &&
+              asyncStructureCheck.done &&
+              asyncStructureCheck.result &&
+              'not-actionable') ||
+            ''
+          }`}
         >
           <span>
             Convert existing files to{' '}
-            <a href="https://github.com/exercism/v3/blob/master/docs/maintainers/repository-structure.md">
+            <a href="https://github.com/exercism/v3/blob/main/docs/maintainers/repository-structure.md">
               new repository structure
             </a>
           </span>
@@ -410,7 +416,7 @@ function PreparationList({
               <p className="mb-0">
                 You can find more information about the converting existing
                 files to the new repository structure{' '}
-                <a href="https://github.com/exercism/v3/blob/master/docs/maintainers/repository-structure.md">
+                <a href="https://github.com/exercism/v3/blob/main/docs/maintainers/repository-structure.md">
                   here
                 </a>
                 .
@@ -419,25 +425,27 @@ function PreparationList({
           </span>
         </li>
         <li
-          className={`list-group-item d-flex ${(actionableOnly &&
-            'not-actionable') ||
-            ''}`}
+          className={`list-group-item d-flex ${
+            (actionableOnly && 'not-actionable') || ''
+          }`}
         >
           Have a kick-off discussion between track maintainers
         </li>
         <li
-          className={`list-group-item d-flex justify-content-between ${(actionableOnly &&
-            asyncMaintainersFilled.done &&
-            asyncMaintainersFilled.result &&
-            'not-actionable') ||
-            ''}`}
+          className={`list-group-item d-flex justify-content-between ${
+            (actionableOnly &&
+              asyncMaintainersFilled.done &&
+              asyncMaintainersFilled.result &&
+              'not-actionable') ||
+            ''
+          }`}
         >
           <span>
             Fill out the{' '}
             <code>
               /languages/{trackId}/
               <a
-                href={`https://github.com/exercism/v3/blob/master/languages/${trackId}/maintainers.md`}
+                href={`https://github.com/exercism/v3/blob/main/languages/${trackId}/maintainers.md`}
               >
                 maintainers.md
               </a>
@@ -483,25 +491,27 @@ function PreparationList({
           </span>
         </li>
         <li
-          className={`list-group-item d-flex justify-content-between ${(actionableOnly &&
-            asyncCheckLinkToTrack.done &&
-            asyncCheckLinkToTrack.result &&
-            'not-actionable') ||
-            ''}`}
+          className={`list-group-item d-flex justify-content-between ${
+            (actionableOnly &&
+              asyncCheckLinkToTrack.done &&
+              asyncCheckLinkToTrack.result &&
+              'not-actionable') ||
+            ''
+          }`}
         >
           <span>
             Ensure there is a link to your track&apos;s GitHub issues on the{' '}
-            <a href="https://github.com/exercism/v3/blob/master/README.md">
+            <a href="https://github.com/exercism/v3/blob/main/README.md">
               main README.md
             </a>
           </span>
 
           <LoadingIconWithPopover
-            active={activeDetailsKey === 'link-in-master-readme'}
+            active={activeDetailsKey === 'link-in-main-readme'}
             loading={!asyncCheckLinkToTrack.done}
             valid={!!asyncCheckLinkToTrack.result}
             onToggle={(): void => {
-              setActiveDetailsKey('link-in-master-readme')
+              setActiveDetailsKey('link-in-main-readme')
             }}
           >
             <p>
@@ -518,14 +528,16 @@ function PreparationList({
           </LoadingIconWithPopover>
         </li>
         <li
-          className={`list-group-item d-flex justify-content-between ${(actionableOnly &&
-            asyncConceptExerciseGuideCheck.done &&
-            asyncConceptExerciseGuideCheck.result &&
-            'not-actionable') ||
-            ''}`}
+          className={`list-group-item d-flex justify-content-between ${
+            (actionableOnly &&
+              asyncConceptExerciseGuideCheck.done &&
+              asyncConceptExerciseGuideCheck.result &&
+              'not-actionable') ||
+            ''
+          }`}
         >
           <span>
-            <a href="https://github.com/exercism/v3/blob/master/docs/maintainers/writing-a-concept-exercise-github-issue.md">
+            <a href="https://github.com/exercism/v3/blob/main/docs/maintainers/writing-a-concept-exercise-github-issue.md">
               Write a Concept Exercise implementation guide
             </a>
           </span>
@@ -563,7 +575,7 @@ function PreparationList({
 
               <p className="mb-0">
                 There is a{' '}
-                <a href="https://github.com/exercism/v3/blob/master/docs/maintainers/writing-a-concept-exercise-github-issue.md">
+                <a href="https://github.com/exercism/v3/blob/main/docs/maintainers/writing-a-concept-exercise-github-issue.md">
                   document
                 </a>{' '}
                 that has valuable resources when writing the guide for the
@@ -573,14 +585,16 @@ function PreparationList({
           </span>
         </li>
         <li
-          className={`list-group-item d-flex justify-content-between ${(actionableOnly &&
-            asyncConceptsReferenceCheck.done &&
-            asyncConceptsReferenceCheck.result &&
-            'not-actionable') ||
-            ''}`}
+          className={`list-group-item d-flex justify-content-between ${
+            (actionableOnly &&
+              asyncConceptsReferenceCheck.done &&
+              asyncConceptsReferenceCheck.result &&
+              'not-actionable') ||
+            ''
+          }`}
         >
           <span>
-            <a href="https://github.com/exercism/v3/blob/master/docs/maintainers/determining-concepts.md">
+            <a href="https://github.com/exercism/v3/blob/main/docs/maintainers/determining-concepts.md">
               List out key Concepts for your language
             </a>
           </span>
@@ -613,7 +627,7 @@ function PreparationList({
 
               <p>
                 Read more about determining concepts{' '}
-                <a href="https://github.com/exercism/v3/blob/master/docs/maintainers/determining-concepts.md">
+                <a href="https://github.com/exercism/v3/blob/main/docs/maintainers/determining-concepts.md">
                   here
                 </a>
                 .
@@ -634,12 +648,12 @@ function PreparationList({
           </span>
         </li>
         <li
-          className={`list-group-item d-flex ${(actionableOnly &&
-            'not-actionable') ||
-            ''}`}
+          className={`list-group-item d-flex ${
+            (actionableOnly && 'not-actionable') || ''
+          }`}
         >
           <span>
-            <a href="https://github.com/exercism/v3/blob/master/docs/maintainers/writing-a-concept-exercise-github-issue.md">
+            <a href="https://github.com/exercism/v3/blob/main/docs/maintainers/writing-a-concept-exercise-github-issue.md">
               Add GitHub issues for 20 Concept Exercises
             </a>
           </span>

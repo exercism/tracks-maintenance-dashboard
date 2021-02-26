@@ -1,26 +1,28 @@
 import React, { Fragment, useCallback } from 'react'
-
 import { useActionableState } from '../hooks/useActionableOnly'
 import { useRemoteConfig } from '../hooks/useLegacyRemoteConfig'
 import { useTrackData } from '../hooks/useLegacyTrackData'
-import { useView, setOptionsInUrl } from '../hooks/useUrlState'
-
-import { SwitchToggle } from './SwitchToggle'
+import { setOptionsInUrl, useView } from '../hooks/useUrlState'
+import { ExerciseIdentifier, TrackIdentifier, View } from '../types'
 import { TrackAside } from './LegacyTrackAside'
 import { TrackChecklist } from './LegacyTrackChecklist'
 import { TrackDescription } from './LegacyTrackDescription'
+import { SwitchToggle } from './SwitchToggle'
 import { TrackIcon } from './TrackIcon'
-import { ViewSelectLink } from './ViewSelectLink'
-
 import { ExerciseDetails } from './views/ExerciseDetails'
 import { TrackMissing } from './views/LegacyTrackMissing'
 import { TrackStubs } from './views/LegacyTrackStubs'
 import { TrackTopics } from './views/LegacyTrackTopics'
 import { TrackVersions } from './views/LegacyTrackVersions'
+import { ViewSelectLink } from './ViewSelectLink'
 
 const DEFAULT_VIEW: View = 'versions'
 
-export function CurrentTrackTool({ trackId }: { trackId: TrackIdentifier }): JSX.Element {
+export function CurrentTrackTool({
+  trackId,
+}: {
+  trackId: TrackIdentifier
+}): JSX.Element {
   const [selectedView] = useView()
   const actualView = selectedView || DEFAULT_VIEW
 
@@ -92,7 +94,6 @@ function SwitchActionableState(): JSX.Element {
     />
   )
 }
-
 
 function ViewSelect(): JSX.Element {
   return (

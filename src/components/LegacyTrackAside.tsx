@@ -1,10 +1,11 @@
 import React from 'react'
+import { useActionableState } from '../hooks/useActionableOnly'
+import { useKeyPressListener } from '../hooks/useKeyListener'
 import { useRemoteConfig } from '../hooks/useLegacyRemoteConfig'
 import { useTrackAsideData } from '../hooks/useLegacyTrackData'
-import { LoadingIconWithPopover } from './Popover'
 import { useToggleState } from '../hooks/useToggleState'
-import { useKeyPressListener } from '../hooks/useKeyListener'
-import { useActionableState } from '../hooks/useActionableOnly'
+import type { TrackIdentifier } from '../types'
+import { LoadingIconWithPopover } from './Popover'
 
 export interface TrackAsideProps {
   trackId: TrackIdentifier
@@ -15,9 +16,10 @@ export function TrackAside({ trackId }: TrackAsideProps): JSX.Element {
   const { done, data } = useTrackAsideData(trackId)
   const [actionableOnly] = useActionableState()
 
-  const [activeDetailsKey, setActiveDetailsKey] = useToggleState<
-    HTMLUListElement
-  >(undefined, 'popover', 'popover-toggle')
+  const [
+    activeDetailsKey,
+    setActiveDetailsKey,
+  ] = useToggleState<HTMLUListElement>(undefined, 'popover', 'popover-toggle')
 
   useKeyPressListener(['Esc', 'Escape'], setActiveDetailsKey)
 
@@ -29,7 +31,7 @@ export function TrackAside({ trackId }: TrackAsideProps): JSX.Element {
         </li>
         <AsideItem disabled={actionableOnly && !!config}>
           <a
-            href={`https://github.com/exercism/${trackId}/blob/master/config.json`}
+            href={`https://github.com/exercism/${trackId}/blob/main/config.json`}
             className="d-block mr-4"
           >
             Normalized Configuration
@@ -128,31 +130,33 @@ interface PreconfiguredIconProps {
   currentDetails: string | undefined
 }
 
-const ConfigurationIcon = ({
+function ConfigurationIcon({
   loading,
   valid,
   currentDetails,
   onToggleDetails,
-}: PreconfiguredIconProps): JSX.Element => (
-  <LoadingIconWithPopover
-    active={currentDetails === 'config.json'}
-    loading={loading}
-    valid={valid}
-    onToggle={onToggleDetails}
-  >
-    <p>
-      This check passes if there is a <code>config.json</code> file present at
-      the root of the repository.
-    </p>
-    <p className="mb-0">
-      You can find more information about the <code>config.json</code> file{' '}
-      <a href="https://github.com/exercism/problem-specifications/blob/master/CONTRIBUTING.md#track-configuration-file">
-        here
-      </a>
-      .
-    </p>
-  </LoadingIconWithPopover>
-)
+}: PreconfiguredIconProps): JSX.Element {
+  return (
+    <LoadingIconWithPopover
+      active={currentDetails === 'config.json'}
+      loading={loading}
+      valid={valid}
+      onToggle={onToggleDetails}
+    >
+      <p>
+        This check passes if there is a <code>config.json</code> file present at
+        the root of the repository.
+      </p>
+      <p className="mb-0">
+        You can find more information about the <code>config.json</code> file{' '}
+        <a href="https://github.com/exercism/problem-specifications/blob/main/CONTRIBUTING.md#track-configuration-file">
+          here
+        </a>
+        .
+      </p>
+    </LoadingIconWithPopover>
+  )
+}
 
 function AnalyzerIcon({
   loading,
@@ -175,15 +179,15 @@ function AnalyzerIcon({
 
       <p className="mb-0">
         You can find more information about the <code>Dockerfile</code> file{' '}
-        <a href="https://github.com/exercism/automated-analysis/blob/master/docs/docker.md">
+        <a href="https://github.com/exercism/automated-analysis/blob/main/docs/docker.md">
           here
         </a>
         , or about{' '}
-        <a href="https://github.com/exercism/automated-analysis/blob/master/docs/about.md">
+        <a href="https://github.com/exercism/automated-analysis/blob/main/docs/about.md">
           the automated analysis in general
         </a>
         , as well as the steps to{' '}
-        <a href="https://github.com/exercism/automated-analysis/blob/master/docs/creating-an-analyzer.md">
+        <a href="https://github.com/exercism/automated-analysis/blob/main/docs/creating-an-analyzer.md">
           pass this test
         </a>
         .
@@ -213,7 +217,7 @@ function TestRunnerIcon({
 
       <p className="mb-0">
         You can find more information about the <code>Dockerfile</code> file{' '}
-        <a href="https://github.com/exercism/automated-tests/blob/master/docs/docker.md">
+        <a href="https://github.com/exercism/automated-tests/blob/main/docs/docker.md">
           here
         </a>
       </p>
