@@ -2,6 +2,10 @@
 
 ## main
 
+## 0.9.0
+
+- Remove remote TOPICS.txt integration
+
 ## 0.8.1
 
 - Update test pattern for Nim

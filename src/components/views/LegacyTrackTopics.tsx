@@ -1,14 +1,7 @@
 import levenshtein from 'js-levenshtein'
-import React, { useCallback, useMemo } from 'react'
-import { useRemoteTopics } from '../../hooks/useLegacyRemoteTopics'
-import { useToggleState } from '../../hooks/useToggleState'
+import React, { useCallback } from 'react'
 import { RemoteConfig } from '../../net/LegacyRemoteConfig'
-import { LoadingIndicator } from '../LoadingIndicator'
-import { ContainedPopover } from '../Popover'
-import { CheckOrCross } from '../CheckOrCross'
 import { ExerciseIcon } from '../ExerciseIcon'
-import { useKeyPressListener } from '../../hooks/useKeyListener'
-import { useActionableState } from '../../hooks/useActionableOnly'
 import { ExerciseIdentifier, Legacy, TrackIdentifier } from '../../types'
 
 type ExerciseConfiguration = Legacy.ExerciseConfiguration
@@ -31,16 +24,7 @@ export function TrackTopics({
           This is the list of exercises as found in the <code>{trackId}</code>{' '}
           track, without the deprecated or foregone exercises. Each exercise
           should have one or more <strong>topics</strong> which indicate what
-          the exercise is about. In order to normalise these topics accorss
-          tracks, a list of available topics lives in the{' '}
-          <TopicsFileLink>
-            <code>exercism/problem-specifications</code> repository
-          </TopicsFileLink>{' '}
-          as the file{' '}
-          <TopicsFileLink>
-            <code>TOPICS.txt</code>
-          </TopicsFileLink>
-          .
+          the exercise is about.
         </p>
       </header>
 
@@ -54,24 +38,6 @@ export function TrackTopics({
         )}
       </RemoteConfig>
     </section>
-  )
-}
-
-function TopicsFileLink({
-  children,
-  edit,
-}: {
-  children: React.ReactNode
-  edit?: boolean
-}): JSX.Element {
-  return (
-    <a
-      href={`https://github.com/exercism/problem-specifications/${
-        edit === true ? 'edit' : 'blob'
-      }/main/TOPICS.txt`}
-    >
-      {children}
-    </a>
   )
 }
 
@@ -89,61 +55,26 @@ function ExerciseTable({
   config: { exercises, foregone },
   onShowExercise,
 }: ExerciseTableProps): JSX.Element {
-  const [details, doSetDetails] = useToggleState(
-    undefined,
-    'popover',
-    'popover-toggle'
-  )
-
   const practiceExercises = Array.isArray(exercises)
     ? (exercises as readonly Legacy.ExerciseConfiguration[])
     : exercises.practice
-  const { list, done } = useRemoteTopics()
   const validExercises = useValidExercises(
     foregone || NO_FOREGONE_EXERCISES,
     practiceExercises
   )
 
-  useKeyPressListener(['Esc', 'Escape'], doSetDetails)
-
-  const lookupTopic = useMemo(() => {
-    if (!list) {
-      return {}
-    }
-
-    return list.reduce((result, item) => {
-      result[item] = true
-      return result
-    }, {} as Record<string, true>)
-  }, [list])
-
   const renderExercise = useCallback(
     (exercise: ExerciseConfiguration) => {
-      const detailsActive = details === exercise.slug
-
       return (
         <ExerciseRow
           key={exercise.slug}
           exercise={exercise}
-          topics={lookupTopic}
-          detailsActive={detailsActive}
-          onToggleDetails={doSetDetails}
           onShowExercise={onShowExercise}
         />
       )
     },
-    [details, doSetDetails, lookupTopic, onShowExercise]
+    [onShowExercise]
   )
-
-  if (!done) {
-    return (
-      <div className="alert alert-info">
-        <LoadingIndicator>
-          Fetching list of all <em>topics</em>...
-        </LoadingIndicator>
-      </div>
-    )
-  }
 
   if (!exercises || practiceExercises.length === 0) {
     return <div>No exercises found</div>
@@ -189,141 +120,37 @@ function TotalBadge({ count }: { count: number }): JSX.Element {
 
 interface ExerciseRowProps {
   exercise: ExerciseConfiguration
-  topics: Record<string, boolean>
-  detailsActive: boolean
-  onToggleDetails(key: string): void
   onShowExercise(exercise: ExerciseIdentifier): void
 }
 
 function ExerciseRow({
   exercise,
-  topics,
-  detailsActive,
-  onToggleDetails,
   onShowExercise,
-}: ExerciseRowProps): JSX.Element | null {
-  const topicsList = useMemo(() => Object.keys(topics), [topics])
-  const annotatedTopics = useMemo(
-    () =>
-      (exercise.topics || []).map((topic) => ({
-        topic,
-        valid: !!topics[topic],
-      })),
-    [exercise.topics, topics]
-  )
-  const suggestions = useMemo(
-    () =>
-      annotatedTopics.reduce((suggestions, annotated) => {
-        if (annotated.valid) {
-          return suggestions
-        }
-
-        suggestions[annotated.topic] = findNearbyTopics(
-          annotated.topic,
-          topicsList
-        )
-        return suggestions
-      }, {} as Record<string, ReadonlyArray<string>>),
-    [annotatedTopics, topicsList]
-  )
-
-  const hasSuggestions = Object.keys(suggestions).length > 0
+}: ExerciseRowProps): JSX.Element | null {  
   const doShowExercise = useCallback(() => onShowExercise(exercise.slug), [
     exercise,
     onShowExercise,
   ])
-
-  const [actionableOnly] = useActionableState()
-
-  if (actionableOnly) {
-    // Hide if all valid
-    const valid = !hasSuggestions
-    if (valid) {
-      return null
-    }
-  }
 
   return (
     <tr key={exercise.slug}>
       <ExerciseNameCell exercise={exercise} onShowDetails={doShowExercise} />
       <td>
         <ul className="list-inline mb-0">
-          {annotatedTopics.map((annotated) => (
+          {(exercise.topics || []) .map((topic) => (
             <li
-              key={annotated.topic}
-              className={`list-inline-item badge badge-${
-                annotated.valid ? 'success' : 'danger'
-              }`}
+              key={topic}
+              className={`list-inline-item badge badge-success`}
             >
-              {annotated.topic}
+              {topic}
             </li>
           ))}
-          {annotatedTopics.length === 0 && (
+          {exercise.topics === null || exercise.topics.length === 0 && (
             <li className="list-inline-item badge badge-warning">{'<none>'}</li>
           )}
         </ul>
       </td>
-      <td>
-        <ContainedPopover
-          active={detailsActive}
-          onToggle={(): void => onToggleDetails(exercise.slug)}
-          toggle={<CheckOrCross value={!hasSuggestions} />}
-          align="right"
-        >
-          {hasSuggestions ? (
-            <SuggestionsList suggestions={suggestions} />
-          ) : (
-            <NoSuggestions />
-          )}
-        </ContainedPopover>
-      </td>
     </tr>
-  )
-}
-
-function SuggestionsList({
-  suggestions,
-}: {
-  suggestions: Record<string, ReadonlyArray<string>>
-}): JSX.Element {
-  return (
-    <>
-      <ul className="list-unstyled mb-2">
-        {Object.keys(suggestions).map((topic) => (
-          <li key={topic}>
-            <span className="badge badge-danger mr-2">{topic}</span>
-            {suggestions[topic].length === 0 ? (
-              <span>no suggestions</span>
-            ) : (
-              <span>
-                perhaps{' '}
-                {suggestions[topic].map((suggestion) => (
-                  <span key={suggestion} className="badge mr-1">
-                    {suggestion}
-                  </span>
-                ))}
-              </span>
-            )}
-          </li>
-        ))}
-      </ul>
-      <p className="mb-0">
-        If you believe a topic is missing, add it{' '}
-        <TopicsFileLink edit={true}>here</TopicsFileLink> via a pull request.
-      </p>
-    </>
-  )
-}
-
-function NoSuggestions(): JSX.Element {
-  return (
-    <span>
-      All topics are in{' '}
-      <TopicsFileLink>
-        <code>TOPICS.txt</code>
-      </TopicsFileLink>
-      .
-    </span>
   )
 }
 
