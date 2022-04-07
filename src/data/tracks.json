@@ -1,5 +1,10 @@
 [
   {
+    "slug": "abap",
+    "name": "ABAP",
+    "core_enabled": true
+  },
+  {
     "slug": "ada",
     "name": "Ada",
     "core_enabled": false
