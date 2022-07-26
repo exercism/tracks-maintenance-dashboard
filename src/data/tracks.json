@@ -10,6 +10,11 @@
     "core_enabled": false
   },
   {
+    "slug": "awk",
+    "name": "AWK",
+    "core_enabled": true
+  },
+  {
     "slug": "ballerina",
     "name": "Ballerina",
     "core_enabled": true
