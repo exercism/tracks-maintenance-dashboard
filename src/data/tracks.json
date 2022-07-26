@@ -413,6 +413,11 @@
     "test_file": "exercises/practice/{slug}/{exercise-slug}.spec.ts"
   },
   {
+    "slug": "unison",
+    "name": "Unison",
+    "core_enabled": true
+  },
+  {
     "slug": "vbnet",
     "name": "VB.Net",
     "core_enabled": false
