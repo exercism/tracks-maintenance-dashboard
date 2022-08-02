@@ -41,6 +41,7 @@
     "plugin:import/typescript"
   ],
   "rules": {
+    "import/no-unresolved": "off",
     "@typescript-eslint/explicit-function-return-type": [
       "warn",
       {

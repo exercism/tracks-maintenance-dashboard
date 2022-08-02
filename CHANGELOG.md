@@ -2,6 +2,12 @@
 
 ## main
 
+## 0.12.0
+
+- Upgrade packages to latest versions
+- Upgrade React to v18
+- ⚠ If you run into issues upgrading, nuke `node_modules`
+
 ## 0.9.0
 
 - Remove remote TOPICS.txt integration
