@@ -15,29 +15,28 @@ export interface LaunchListProps {
 }
 
 export function LaunchList({ trackId }: LaunchListProps): JSX.Element {
-  const [
-    activeDetailsKey,
-    setActiveDetailsKey,
-  ] = useToggleState<HTMLUListElement>(undefined, 'popover', 'popover-toggle')
+  const [activeDetailsKey, setActiveDetailsKey] =
+    useToggleState<HTMLUListElement>(undefined, 'popover', 'popover-toggle')
 
   return (
     <article>
       <header>
         <p>
-          During the initial stages of exercism v3, this view will list the
+          During the initial stages of Exercism v3, this view will list the
           generic list to launch. All tracks should attempt to follow all the
           steps and check all the items on this list, before launching the track
           in version three.
         </p>
 
         <p>
-          Find the {trackId} track in the v3 repository{' '}
-          <a
-            href={`https://github.com/exercism/v3/tree/main/languages/${trackId}`}
-          >
-            here
-          </a>
-          .
+          Find the {trackId} track in the Exercism organisation{' '}
+          <a href={`https://github.com/exercism/${trackId}`}>here</a>.
+        </p>
+
+        <p>
+          Follow{' '}
+          <a href="https://exercism.org/docs/building/tracks/new">the guide</a>{' '}
+          to launch a new track from scratch.
         </p>
       </header>
 
@@ -216,7 +215,7 @@ function ReadyForLaunch({
             <p className="mb-0">
               You can find more information about the <code>Dockerfile</code>{' '}
               file{' '}
-              <a href="https://github.com/exercism/automated-tests/blob/main/docs/docker.md">
+              <a href="https://exercism.org/docs/building/tooling/docker">
                 here
               </a>
             </p>
@@ -246,15 +245,15 @@ function ReadyForLaunch({
             <p className="mb-0">
               You can find more information about the <code>Dockerfile</code>{' '}
               file{' '}
-              <a href="https://github.com/exercism/automated-analysis/blob/main/docs/docker.md">
+              <a href="https://exercism.org/docs/building/tooling/docker">
                 here
               </a>
               , or about{' '}
-              <a href="https://github.com/exercism/automated-analysis/blob/main/docs/about.md">
+              <a href="hhttps://exercism.org/docs/building/tooling/representers">
                 the automated analysis in general
               </a>
               , as well as the steps to{' '}
-              <a href="https://github.com/exercism/automated-analysis/blob/main/docs/representers/getting-started.md">
+              <a href="https://exercism.org/docs/building/tooling/representers/creating-from-scratch">
                 pass this test
               </a>
               .
@@ -284,15 +283,15 @@ function ReadyForLaunch({
             <p className="mb-0">
               You can find more information about the <code>Dockerfile</code>{' '}
               file{' '}
-              <a href="https://github.com/exercism/automated-analysis/blob/main/docs/docker.md">
+              <a href="https://exercism.org/docs/building/tooling/docker">
                 here
               </a>
               , or about{' '}
-              <a href="https://github.com/exercism/automated-analysis/blob/main/docs/about.md">
+              <a href="https://exercism.org/docs/building/tooling/analyzers">
                 the automated analysis in general
               </a>
               , as well as the steps to{' '}
-              <a href="https://github.com/exercism/automated-analysis/blob/main/docs/analyzers/getting-started.md">
+              <a href="https://exercism.org/docs/building/tooling/analyzers/creating-from-scratch">
                 pass this test
               </a>
               .
@@ -537,7 +536,7 @@ function PreparationList({
           }`}
         >
           <span>
-            <a href="https://github.com/exercism/v3/blob/main/docs/maintainers/writing-a-concept-exercise-github-issue.md">
+            <a href="https://exercism.org/docs/building/tracks/concept-exercises">
               Write a Concept Exercise implementation guide
             </a>
           </span>
@@ -575,7 +574,7 @@ function PreparationList({
 
               <p className="mb-0">
                 There is a{' '}
-                <a href="https://github.com/exercism/v3/blob/main/docs/maintainers/writing-a-concept-exercise-github-issue.md">
+                <a href="https://exercism.org/docs/building/tracks/concept-exercises">
                   document
                 </a>{' '}
                 that has valuable resources when writing the guide for the
