@@ -273,14 +273,6 @@
     "test_file": "{versioning}"
   },
   {
-    "slug": "perl6",
-    "name": "Raku",
-    "core_enabled": true,
-    "versioning": "exercises/practice/{slug}/{slug}.t6",
-    "stub_file": "exercises/practice/{slug}/{ExerciseSlug}.pm6",
-    "test_file": "{versioning}"
-  },
-  {
     "slug": "pharo-smalltalk",
     "name": "Pharo Smalltalk",
     "core_enabled": true
@@ -335,6 +327,14 @@
     "slug": "racket",
     "name": "Racket",
     "core_enabled": true
+  },
+  {
+    "slug": "perl6",
+    "name": "Raku",
+    "core_enabled": true,
+    "versioning": "exercises/practice/{slug}/{slug}.t6",
+    "stub_file": "exercises/practice/{slug}/{ExerciseSlug}.pm6",
+    "test_file": "{versioning}"
   },
   {
     "slug": "reasonml",
